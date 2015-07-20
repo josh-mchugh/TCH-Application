@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="channel_ids">
+        <item>UC6JmDMC2x3vafwH5QRB1khA</item> <!-- The Creature Hub -->
+        <item>UCQVit9QMtq4TgdmQbGaDvmA</item> <!-- Danz Newz -->
+        <item>UC22TOQWJue006Lp6DB5QhDA</item> <!-- UberHaxorNova -->
+        <item>UCVdtW2E4vwvf8yh4FY5us9A</item> <!-- SSoHPKC -->
+        <item>UCy20p1JAXEBqWGmMmSRRTgg</item> <!-- ZeRoyalViking -->
+        <item>UCICngZf7CfJ84sQzAQ1OiUg</item> <!-- Sp00nerism -->
+        <item>UC5DRS1AfES0hVY8eBRUqlrA</item> <!-- kootra -->
+        <item>UCwK6hu9UL4R0HvxdT8JV4XQ</item> <!-- ImmortalHD -->
+        <item>UCRuXGzAEr1f7nxyx35RF2YQ</item> <!-- Dexter Manning -->
+        <item>UCBr6EBzGSzykCHm4L5-9tyQ</item> <!-- GoldenBlackHawk -->
+    </string-array>
+
+</resources>

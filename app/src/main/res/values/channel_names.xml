@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="channel_names">
+        <item>The Creature Hub</item> <!-- The Creature Hub -->
+        <item>Danz Newz</item>        <!-- Danz Newz -->
+        <item>UberHaxorNova</item>    <!-- UberHaxorNova -->
+        <item>SSoHPKC</item>          <!-- SSoHPKC -->
+        <item>ZeRoyalViking</item>    <!-- ZeRoyalViking -->
+        <item>Sp00nerism</item>       <!-- Sp00nerism -->
+        <item>kootra</item>           <!-- kootra -->
+        <item>ImmortalHD</item>       <!-- ImmortalHD -->
+        <item>Dexter Manning</item>   <!-- Dexter Manning -->
+        <item>GoldenBlackHawk</item>  <!-- GoldenBlackHawk -->
+    </string-array>
+
+</resources>
