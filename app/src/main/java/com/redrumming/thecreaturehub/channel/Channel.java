@@ -1,5 +1,7 @@
 package com.redrumming.thecreaturehub.channel;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by ME on 7/19/2015.
  */
@@ -7,6 +9,7 @@ public class Channel {
 
     private String channelName;
     private String channelId;
+    private Drawable displayIcon;
 
     public String getChannelName() {
         return channelName;
@@ -22,5 +25,13 @@ public class Channel {
 
     public void setChannelId(String channelId) {
         this.channelId = channelId;
+    }
+
+    public Drawable getDisplayIcon() {
+        return displayIcon;
+    }
+
+    public void setDisplayIcon(Drawable displayIcon) {
+        this.displayIcon = displayIcon;
     }
 }

@@ -28,6 +28,6 @@ match_parent for both width and height to consume the full space available. -->
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:name="com.redrumming.thecreaturehub.drawer.NavigationDrawerFragment"
-        tools:layout="@layout/fragment_navigation_drawer" />
+        tools:layout="@layout/drawer_fragment" />
 
 </android.support.v4.widget.DrawerLayout>

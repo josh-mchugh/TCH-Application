@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.adapters;
+package com.redrumming.thecreaturehub.drawer;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ME on 7/19/2015.
+ *
+ *
+ * Created by RedRumming on 7/19/2015.
  */
 public class DrawerAdapter extends ArrayAdapter<Channel> {
 
@@ -24,7 +26,7 @@ public class DrawerAdapter extends ArrayAdapter<Channel> {
 
     public DrawerAdapter(Activity context, List<Channel> channels){
 
-        super(context, R.layout.fragment_navigation_drawer, channels);
+        super(context, R.layout.drawer_fragment, channels);
 
         this.context = context;
         this.channels = channels;
@@ -40,7 +42,7 @@ public class DrawerAdapter extends ArrayAdapter<Channel> {
         if (row == null) {
 
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(R.layout.fragment_navigation_drawer, parent, false);
+            row = inflater.inflate(R.layout.drawer_item, parent, false);
 
             viewHolder = new ViewHolder();
             viewHolder.displayIcon = (ImageView) row.findViewById(R.id.channel_display_icon);
@@ -53,10 +55,10 @@ public class DrawerAdapter extends ArrayAdapter<Channel> {
             viewHolder = (ViewHolder) row.getTag();
         }
 
-        viewHolder.displayIcon.setImageDrawable(null);
+        viewHolder.displayIcon.setImageDrawable(channel.getDisplayIcon());
         viewHolder.channelName.setText(channel.getChannelName());
 
-        return super.getView(position, convertView, parent);
+        return row;
     }
 
     private static class ViewHolder{
