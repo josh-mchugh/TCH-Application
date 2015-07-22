@@ -1,6 +1,8 @@
 package com.redrumming.thecreaturehub;
 
 import android.app.Activity;
+import android.net.Uri;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EntryActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class EntryActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, TabView.OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,6 +46,12 @@ public class EntryActivity extends ActionBarActivity implements NavigationDrawer
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.container, new TabView());
+        ft.commit();
+
     }
 
     @Override
@@ -88,5 +96,10 @@ public class EntryActivity extends ActionBarActivity implements NavigationDrawer
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
