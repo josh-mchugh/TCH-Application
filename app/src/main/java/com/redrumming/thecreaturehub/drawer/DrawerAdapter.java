@@ -42,7 +42,7 @@ public class DrawerAdapter extends ArrayAdapter<Channel> {
         if (row == null) {
 
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(R.layout.drawer_item, parent, false);
+            row = inflater.inflate(R.layout.drawer_channel_item, parent, false);
 
             viewHolder = new ViewHolder();
             viewHolder.displayIcon = (ImageView) row.findViewById(R.id.channel_display_icon);

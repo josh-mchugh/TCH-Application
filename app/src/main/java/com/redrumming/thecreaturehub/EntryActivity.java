@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EntryActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, TabView.OnFragmentInteractionListener{
+public class EntryActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -96,10 +96,5 @@ public class EntryActivity extends ActionBarActivity implements NavigationDrawer
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

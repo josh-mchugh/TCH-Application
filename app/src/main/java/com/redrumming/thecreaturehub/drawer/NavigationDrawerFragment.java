@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.R;
@@ -57,14 +58,14 @@ public class NavigationDrawerFragment extends Fragment {
     private ActionBarDrawerToggle drawerToggle;
 
     private DrawerLayout drawerLayout;
-    private ListView drawerListView;
     private View fragmentContainerView;
 
     private int currentSelectedPosition = 0;
     private boolean fromSavedInstanceState;
     private boolean userLearnedDrawer;
 
-    private List<Channel> channels = new ArrayList<Channel>();
+    private List<DrawerItem> drawerItems;
+    private RecyclerView recyclerView;
 
     public NavigationDrawerFragment() {
     }
@@ -84,7 +85,7 @@ public class NavigationDrawerFragment extends Fragment {
             fromSavedInstanceState = true;
         }
 
-        channels = getChannels();
+        drawerItems = getDrawerItems();
 
         // Select either the default item (0) or the last selected item.
         selectItem(currentSelectedPosition);
@@ -101,24 +102,26 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        drawerListView = (ListView) inflater.inflate(R.layout.drawer_fragment, container, false);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.drawer_fragment, container, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        DrawerRecyclerAdapter adapter = new DrawerRecyclerAdapter(drawerItems);
+        recyclerView.setAdapter(adapter);
 
-        drawerListView.setOnItemClickListener(onItemClickListener);
-
-        drawerListView.setAdapter(new DrawerAdapter(this.getActivity(), channels));
-
-        drawerListView.setItemChecked(currentSelectedPosition, true);
-
-        return drawerListView;
+        return recyclerView;
     }
 
-    private List<Channel> getChannels(){
+    private List<DrawerItem> getDrawerItems(){
 
-        List<Channel> channels = new ArrayList<Channel>();
+        List<DrawerItem> drawerItems = new ArrayList<DrawerItem>();
 
         String[] channelNames = getResources().getStringArray(R.array.channel_names);
         String[] channelIds = getResources().getStringArray(R.array.channel_ids);
         String[] channelDisplayIcons = getResources().getStringArray(R.array.channel_display_icons);
+
+        DrawerHeaderItem headerItem = new DrawerHeaderItem();
+        headerItem.setTitle("Channels");
+        drawerItems.add(headerItem);
 
         for(int i = 0; i < channelNames.length; i++){
 
@@ -130,10 +133,13 @@ public class NavigationDrawerFragment extends Fragment {
             Drawable displayIcon = this.getActivity().getResources().getDrawable(imageResource);
             channel.setDisplayIcon(displayIcon);
 
-            channels.add(channel);
+            DrawerChannelItem drawerChannel = new DrawerChannelItem();
+            drawerChannel.setChannel(channel);
+
+            drawerItems.add(drawerChannel);
         }
 
-        return channels;
+        return drawerItems;
     }
 
     public boolean isDrawerOpen() {
@@ -227,7 +233,12 @@ public class NavigationDrawerFragment extends Fragment {
 
         if (callbacks != null) {
 
-            callbacks.onNavigationDrawerItemSelected(channels.get(position));
+            if(drawerItems.get(position).getType() == DrawerItem.CHANNEL) {
+
+                DrawerChannelItem channelItem = (DrawerChannelItem) drawerItems.get(position);
+
+                callbacks.onNavigationDrawerItemSelected(channelItem.getChannel());
+            }
         }
     }
 
@@ -309,18 +320,10 @@ public class NavigationDrawerFragment extends Fragment {
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(Channel channel);
     }
-
-    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
-    };
 }
