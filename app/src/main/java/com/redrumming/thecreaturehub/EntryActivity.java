@@ -46,12 +46,6 @@ public class EntryActivity extends ActionBarActivity implements NavigationDrawer
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.container, new TabView());
-        ft.commit();
-
     }
 
     @Override

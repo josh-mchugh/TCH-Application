@@ -16,9 +16,9 @@ import com.redrumming.thecreaturehub.video.VideoListFragment;
  */
 public class TabView extends Fragment{
 
-    public TabView() {
-
-    }
+    private final String VIDEO_FRAG_TAG = "videos";
+    private final String PLAYLIST_FRAG_TAG = "playlists";
+    private FragmentTabHost tabHost;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,14 +30,26 @@ public class TabView extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_tab_view, container, false);
 
-        FragmentTabHost tabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
+        tabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
         tabHost.setup(this.getActivity(), getFragmentManager(), android.R.id.tabcontent);
 
-        tabHost.addTab(tabHost.newTabSpec("videos").setIndicator("Videos"), VideoListFragment.class, null);
+        tabHost.addTab(tabHost.newTabSpec(VIDEO_FRAG_TAG).setIndicator(VIDEO_FRAG_TAG), VideoListFragment.class, null);
 
-        tabHost.addTab(tabHost.newTabSpec("playlists").setIndicator("Playlists"), PlaylistListFragment.class, null);
+        tabHost.addTab(tabHost.newTabSpec(PLAYLIST_FRAG_TAG).setIndicator(PLAYLIST_FRAG_TAG), PlaylistListFragment.class, null);
 
         return view;
+    }
+
+    public String getCurrentTabTag(){
+        return tabHost.getCurrentTabTag();
+    }
+
+    public String getVideoFragmentTag() {
+        return VIDEO_FRAG_TAG;
+    }
+
+    public String getPlaylistFragmentTag() {
+        return PLAYLIST_FRAG_TAG;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.redrumming.thecreaturehub.drawer;
 
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -24,7 +26,9 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.R;
+import com.redrumming.thecreaturehub.TabView;
 import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.video.VideoListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,12 +64,13 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout drawerLayout;
     private View fragmentContainerView;
 
-    private int currentSelectedPosition = 0;
+    private int currentSelectedPosition = 1;
     private boolean fromSavedInstanceState;
     private boolean userLearnedDrawer;
 
     private List<DrawerItem> drawerItems;
     private RecyclerView recyclerView;
+    private TabView tabView;
 
     public NavigationDrawerFragment() {
     }
@@ -86,9 +91,6 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         drawerItems = getDrawerItems();
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(currentSelectedPosition);
     }
 
     @Override
@@ -107,6 +109,9 @@ public class NavigationDrawerFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         DrawerRecyclerAdapter adapter = new DrawerRecyclerAdapter(drawerItems);
         recyclerView.setAdapter(adapter);
+
+        // Select either the default item (0) or the last selected item.
+        selectItem(currentSelectedPosition);
 
         return recyclerView;
     }
@@ -220,6 +225,12 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         this.drawerLayout.setDrawerListener(drawerToggle);
+
+        tabView = new TabView();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.container, tabView);
+        ft.commit();
     }
 
     private void selectItem(int position) {
