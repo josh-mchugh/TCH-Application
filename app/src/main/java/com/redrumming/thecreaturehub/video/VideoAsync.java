@@ -16,6 +16,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.util.YouTubeUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,15 +65,13 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
 
     private VideoContainer getVideos(VideoContainer container){
 
-        List<SearchResult> results = retrieveYouTubeData(container);
-
-        container = modifyContainer(results, container);
+        container = retrieveYouTubeData(container);
 
         return container;
 
     }
 
-    private VideoContainer modifyContainer(List<SearchResult> results,VideoContainer container){
+    private VideoContainer modifyContainer(List<SearchResult> results, VideoContainer container){
 
         for(int i = 0; i < results.size(); i++){
 
@@ -97,6 +96,8 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
             container.getVideos().add(video);
         }
 
+        Log.d(this.getClass().getName(), "Next PageToken: " + container.getPageToken());
+
         return container;
     }
 
@@ -106,13 +107,13 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
      * @param container
      * @return searchResultList
      */
-    private List<SearchResult> retrieveYouTubeData(VideoContainer container){
+    private VideoContainer retrieveYouTubeData(VideoContainer container){
 
         List<SearchResult> searchResultList = new ArrayList<>();
 
         try{
 
-            YouTube youtube = initializeYouTube();
+            YouTube youtube = YouTubeUtil.get(context).getYouTube();
 
             YouTube.Search.List search =  getSearchParams(youtube, container);
 
@@ -122,32 +123,19 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
             SearchListResponse searchResponse = search.execute();
             searchResultList.addAll(searchResponse.getItems());
 
+            container.setPageToken(searchResponse.getNextPageToken());
+            container = modifyContainer(searchResultList, container);
+
 
         }catch(Exception e){
 
             Log.e(this.getClass().getName(), "Error Retrieving Search Results: " + e);
         }
 
-        return searchResultList;
+        return container;
     }
 
-    private YouTube initializeYouTube(){
 
-        HttpTransport httpTransport = new NetHttpTransport();
-        JsonFactory jsonFactory = new JacksonFactory();
-
-        YouTube youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
-
-            @Override
-            public void initialize(HttpRequest arg0) throws IOException {
-                //No initialization actions required.
-            }
-
-        }).setApplicationName(context.getResources().getString(R.string.app_name))
-                .build();
-
-        return youtube;
-    }
 
     private YouTube.Search.List getSearchParams(YouTube youtube, VideoContainer container) throws IOException{
 
@@ -165,7 +153,7 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
                 "thumbnails/high/url,snippet/publishedAt), nextPageToken";
         search.setFields(searchFields);
 
-        long numberofvideos = 50;
+        long numberofvideos = 20;
         search.setMaxResults(numberofvideos);
 
         String searchOrder = "date";

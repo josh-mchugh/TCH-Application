@@ -3,10 +3,13 @@ package com.redrumming.thecreaturehub;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
 
 import com.redrumming.thecreaturehub.playlist.PlaylistListFragment;
 import com.redrumming.thecreaturehub.video.VideoListFragment;
@@ -37,6 +40,8 @@ public class TabView extends Fragment{
 
         tabHost.addTab(tabHost.newTabSpec(PLAYLIST_FRAG_TAG).setIndicator(PLAYLIST_FRAG_TAG), PlaylistListFragment.class, null);
 
+        tabHost.setOnTabChangedListener(tabChangeListener);
+
         return view;
     }
 
@@ -61,4 +66,34 @@ public class TabView extends Fragment{
     public void onDetach() {
         super.onDetach();
     }
+
+    private FragmentTabHost.OnTabChangeListener tabChangeListener = new TabHost.OnTabChangeListener() {
+
+        @Override
+        public void onTabChanged(String tabId) {
+
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+
+            PlaylistListFragment playlistsFragment = (PlaylistListFragment)fm.findFragmentByTag(PLAYLIST_FRAG_TAG);
+            VideoListFragment videoListFragment = (VideoListFragment)fm.findFragmentByTag(VIDEO_FRAG_TAG);
+
+            if(tabId.equalsIgnoreCase(VIDEO_FRAG_TAG)) {
+
+                if(videoListFragment == null){
+
+                    ft.add(android.R.id.tabcontent, new VideoListFragment(), VIDEO_FRAG_TAG);
+                }
+
+            }else if(tabId.equalsIgnoreCase(PLAYLIST_FRAG_TAG)){
+
+                if(playlistsFragment == null) {
+
+                    ft.add(android.R.id.tabcontent, new PlaylistListFragment(), PLAYLIST_FRAG_TAG);
+                }
+            }
+
+            ft.commit();
+        }
+    };
 }

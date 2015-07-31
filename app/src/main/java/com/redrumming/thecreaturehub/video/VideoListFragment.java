@@ -18,7 +18,6 @@ import com.redrumming.thecreaturehub.channel.Channel;
  */
 public class VideoListFragment extends Fragment {
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
