@@ -10,32 +10,24 @@ import android.text.format.DateUtils;
 
 public class TimePassedUtil {
 	
-	private String date;
+	private long date;
 	
 	public TimePassedUtil(){
 		
 	}
 	
-	public TimePassedUtil(String date){
+	public TimePassedUtil(long date){
 	
 		this.date = date;
 	}
 	
-	public String getTimeDifference(){
-	
-		String timeDiference = getTimeDifference(date);
-		
-		return timeDiference;
-	}
-	
-	public String getTimeDifference(String date){
+	public String getTimeDifference(long date){
 	
 		//create videoDate and currentDate
-		Calendar videoDate = createVideoDate(date);
 		Calendar currentDate = GregorianCalendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 		
 		//get long of both current time and video time
-		long videoDateLong = videoDate.getTimeInMillis();
+		long videoDateLong = date;
 		long currentDateLong = currentDate.getTimeInMillis();
 		
 		//calculate time passed
@@ -47,53 +39,6 @@ public class TimePassedUtil {
 		//return string
 		return displayTime;
 	}
-	
-	
-	public Calendar createVideoDate(String date){
-	
-		int[] parsedDate = parseDateString(date);
-		
-		Calendar videoDate = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-		videoDate.set(parsedDate[0], parsedDate[1] -1, parsedDate[2], parsedDate[3], parsedDate[4], parsedDate[5]); //month needs to be subtracted by one
-		
-		return videoDate;
-	}
-	
-	
-	private int[] parseDateString(String date){
-	
-		//0 - year, 1 - month, 2 - day, 3 - hour, 4 - min, 5 - second, 6 - millisond.
-		int[] parsedDate = new int[7];
-		String[] dateComponents = new String[7];
-		
-		try{
-		
-			String[] dateAndTimeSplit = date.split("T");
-			
-			String[] dateArray = dateAndTimeSplit[0].split("-");
-			dateComponents[0] = dateArray[0];//year 
-			dateComponents[1] = dateArray[1];//month
-			dateComponents[2] = dateArray[2];//day
-			
-			String[] timeArray = dateAndTimeSplit[1].split(":");
-			dateComponents[3] = timeArray[0];//hour
-			dateComponents[4] = timeArray[1];//minutes
-			
-			String[] secondsArray = timeArray[2].split("\\.");
-			dateComponents[5] = secondsArray[0];//seconds
-			dateComponents[6] = secondsArray[1].replaceAll("[a-zA-Z]+", "");//milliseconds
-			
-			for(int i = 0; i < dateComponents.length; i++){
-				parsedDate[i] = Integer.parseInt(dateComponents[i]);
-			}
-			
-		}catch(Exception e){
-			
-		}
-		
-		return parsedDate;
-	}
-	
 	
 	private long calculateTimePassed(long videoTime, long currentTime){
 	

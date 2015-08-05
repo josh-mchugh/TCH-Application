@@ -2,9 +2,10 @@ package com.redrumming.thecreaturehub.video;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,10 @@ import com.redrumming.thecreaturehub.channel.Channel;
 /**
  *
  */
-public class VideoListFragment extends Fragment {
+public class VideoListFragment extends Fragment implements VideoAsyncListener{
+
+    private RecyclerView recyclerView;
+    private VideoContainer videoContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,15 @@ public class VideoListFragment extends Fragment {
 
         setup(channel);
 
+        recyclerView = (RecyclerView) v.findViewById(R.id.video_recycler_list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        videoContainer = new VideoContainer();
+        videoContainer.setChannel(channel);
+        VideoRecyclerAdapter adapter = new VideoRecyclerAdapter(videoContainer);
+        recyclerView.setAdapter(adapter);
+
         return v;
     }
 
@@ -49,7 +62,7 @@ public class VideoListFragment extends Fragment {
         VideoContainer container = new VideoContainer();
         container.setChannel(channel);
 
-        VideoAsync async = new VideoAsync(getActivity());
+        VideoAsync async = new VideoAsync(getActivity(), this);
         async.execute(container);
     }
 
@@ -62,5 +75,17 @@ public class VideoListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onSuccess(VideoContainer container) {
+
+        this.videoContainer.getVideos().addAll(container.getVideos());
+        this.recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFailure() {
+
     }
 }

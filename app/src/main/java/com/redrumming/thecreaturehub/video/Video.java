@@ -3,7 +3,7 @@ package com.redrumming.thecreaturehub.video;
 /**
  * Created by ME on 7/26/2015.
  */
-public class Video {
+public class Video implements VideoItem{
 
     private String videoId;
     private String videoTitle;
@@ -40,5 +40,10 @@ public class Video {
 
     public void setPublishedDate(long publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    @Override
+    public int getItemType() {
+        return VideoItem.VIDEO_ITEM;
     }
 }

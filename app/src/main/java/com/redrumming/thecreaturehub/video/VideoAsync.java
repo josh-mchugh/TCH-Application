@@ -26,21 +26,24 @@ import java.util.List;
 /**
  * Created by RedRumming on 7/20/2015.
  */
-public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
+public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
 
     private Context context;
+    private VideoAsyncListener listener;
     private String apiKey = "ADD-API-KEY";
 
-    public VideoAsync(Context context){
+    public VideoAsync(Context context, VideoAsyncListener listener){
+
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
-    protected Void doInBackground(VideoContainer... container) {
+    protected VideoContainer doInBackground(VideoContainer... container) {
 
-        VideoContainer newContainer = getVideos(container[0]);
+        VideoContainer updateContainer = getVideos(container[0]);
 
-        return null;
+        return updateContainer;
     }
 
     @Override
@@ -49,8 +52,10 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, Void>{
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(VideoContainer container) {
+        super.onPostExecute(container);
+
+        listener.onSuccess(container);
     }
 
     @Override
