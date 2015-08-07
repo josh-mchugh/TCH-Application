@@ -24,21 +24,24 @@ import java.util.List;
 /**
  * Created by RedRumming on 7/20/2015.
  */
-public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, Void>{
+public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistContainer>{
 
     private Context context;
+    private PlaylistAsyncListener listener;
     private String apiKey = "ADD-API-KEY";
 
-    public PlaylistAsync(Context context){
+    public PlaylistAsync(Context context, PlaylistAsyncListener listener){
+
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
-    protected Void doInBackground(PlaylistContainer... container) {
+    protected PlaylistContainer doInBackground(PlaylistContainer... container) {
 
         PlaylistContainer playlistContainer = getPlaylists(container[0]);
 
-        return null;
+        return playlistContainer;
     }
 
     @Override
@@ -47,8 +50,10 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, Void>{
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(PlaylistContainer container) {
+        super.onPostExecute(container);
+
+        listener.onSuccess(container);
     }
 
     @Override

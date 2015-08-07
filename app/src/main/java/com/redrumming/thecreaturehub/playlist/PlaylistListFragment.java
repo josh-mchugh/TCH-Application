@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,10 @@ import com.redrumming.thecreaturehub.channel.Channel;
 /**
  *
  */
-public class PlaylistListFragment extends Fragment {
+public class PlaylistListFragment extends Fragment implements PlaylistAsyncListener{
+
+    private RecyclerView recyclerView;
+    private PlaylistContainer playlistContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,15 @@ public class PlaylistListFragment extends Fragment {
 
         setup(channel);
 
+        recyclerView = (RecyclerView) view.findViewById(R.id.playlist_recycler_list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        playlistContainer = new PlaylistContainer();
+        playlistContainer.setChannel(channel);
+        PlaylistRecyclerAdapter adapter = new PlaylistRecyclerAdapter(playlistContainer);
+        recyclerView.setAdapter(adapter);
+
         return view;
     }
 
@@ -48,7 +62,7 @@ public class PlaylistListFragment extends Fragment {
         PlaylistContainer container = new PlaylistContainer();
         container.setChannel(channel);
 
-        PlaylistAsync async = new PlaylistAsync(getActivity());
+        PlaylistAsync async = new PlaylistAsync(getActivity(), this);
         async.execute(container);
     }
 
@@ -61,5 +75,18 @@ public class PlaylistListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onSuccess(PlaylistContainer container) {
+
+        this.playlistContainer.getPlaylists().addAll(container.getPlaylists());
+        this.playlistContainer.setPageToken(container.getPageToken());
+        this.recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFailure() {
+
     }
 }

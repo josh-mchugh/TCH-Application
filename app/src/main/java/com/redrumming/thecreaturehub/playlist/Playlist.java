@@ -3,7 +3,7 @@ package com.redrumming.thecreaturehub.playlist;
 /**
  * Created by ME on 7/30/2015.
  */
-public class Playlist {
+public class Playlist implements PlaylistItem{
 
     private String id;
     private String title;
@@ -40,5 +40,10 @@ public class Playlist {
 
     public void setPublishedDate(long publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    @Override
+    public int getItemType() {
+        return PlaylistItem.PLAYLIST_ITEM;
     }
 }

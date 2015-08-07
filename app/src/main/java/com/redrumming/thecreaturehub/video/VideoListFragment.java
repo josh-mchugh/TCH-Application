@@ -81,6 +81,7 @@ public class VideoListFragment extends Fragment implements VideoAsyncListener{
     public void onSuccess(VideoContainer container) {
 
         this.videoContainer.getVideos().addAll(container.getVideos());
+        this.videoContainer.setPageToken(container.getPageToken());
         this.recyclerView.getAdapter().notifyDataSetChanged();
     }
 
