@@ -7,6 +7,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.BitmapDisplayer;
 import com.redrumming.thecreaturehub.R;
 
 /**
@@ -50,9 +51,9 @@ public class ImageLoaderUtil {
                     .showImageOnLoading(R.drawable.loading_video_thumbnail)
                     .showImageForEmptyUri(R.drawable.error_video_thumbnail)
                     .showImageOnFail(R.drawable.error_video_thumbnail)
-                    .cacheInMemory(false)
+                    .cacheInMemory(true)
                     .cacheOnDisk(false)
-                    .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                    .imageScaleType(ImageScaleType.EXACTLY)
                     .build();
 
             return IMAGE_OPTIONS;

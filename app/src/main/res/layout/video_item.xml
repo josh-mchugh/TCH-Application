@@ -16,7 +16,6 @@
                 android:layout_height="wrap_content"
                 android:minHeight="252dp"
                 android:minWidth="366dp"
-                android:scaleType="fitXY"
                 />
 
             <TextView

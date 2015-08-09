@@ -5,12 +5,14 @@ import com.redrumming.thecreaturehub.ContentItem;
 /**
  * Created by ME on 7/30/2015.
  */
-public class Playlist implements ContentItem{
+public class PlaylistWrapper implements ContentItem{
 
     private String id;
     private String title;
     private String thumbnailURL;
     private long publishedDate;
+    private long videoCount;
+    private boolean viewable;
 
     public String getId() {
         return id;
@@ -42,6 +44,22 @@ public class Playlist implements ContentItem{
 
     public void setPublishedDate(long publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    public long getVideoCount() {
+        return videoCount;
+    }
+
+    public void setVideoCount(long videoCount) {
+        this.videoCount = videoCount;
+    }
+
+    public boolean isViewable() {
+        return viewable;
+    }
+
+    public void setViewable(boolean viewable) {
+        this.viewable = viewable;
     }
 
     @Override

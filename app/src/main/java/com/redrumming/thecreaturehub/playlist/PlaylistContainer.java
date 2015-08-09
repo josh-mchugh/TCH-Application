@@ -11,11 +11,11 @@ import java.util.List;
 public class PlaylistContainer {
 
     private Channel channel;
-    private List<Playlist> playlists;
+    private List<PlaylistWrapper> playlistWrappers;
     private String pageToken;
 
     public PlaylistContainer() {
-        playlists = new ArrayList<Playlist>();
+        playlistWrappers = new ArrayList<PlaylistWrapper>();
         pageToken = "";
     }
 
@@ -27,12 +27,12 @@ public class PlaylistContainer {
         this.channel = channel;
     }
 
-    public List<Playlist> getPlaylists() {
-        return playlists;
+    public List<PlaylistWrapper> getPlaylistWrappers() {
+        return playlistWrappers;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
-        this.playlists = playlists;
+    public void setPlaylistWrappers(List<PlaylistWrapper> playlistWrappers) {
+        this.playlistWrappers = playlistWrappers;
     }
 
     public String getPageToken() {

@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.EndlessScrollListener;
 import com.redrumming.thecreaturehub.R;
@@ -91,7 +90,7 @@ public class PlaylistListFragment extends Fragment implements PlaylistAsyncListe
     @Override
     public void onSuccess(PlaylistContainer container) {
 
-        this.playlistContainer.getPlaylists().addAll(container.getPlaylists());
+        this.playlistContainer.getPlaylistWrappers().addAll(container.getPlaylistWrappers());
         this.playlistContainer.setPageToken(container.getPageToken());
         this.recyclerView.getAdapter().notifyDataSetChanged();
     }

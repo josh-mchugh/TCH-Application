@@ -28,7 +28,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(viewType == Playlist.PLAYLIST_ITEM){
+        if(viewType == PlaylistWrapper.PLAYLIST_ITEM){
 
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.playlist_item, parent, false);
@@ -46,30 +46,30 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        ContentItem item = container.getPlaylists().get(position);
+        ContentItem item = container.getPlaylistWrappers().get(position);
 
         if(item.getItemType() == ContentItem.PLAYLIST_ITEM){
 
-            Playlist playlist = (Playlist) item;
+            PlaylistWrapper playlistWrapper = (PlaylistWrapper) item;
             Channel channel = container.getChannel();
             PlaylistViewHolder viewHolder = (PlaylistViewHolder) holder;
 
-            ImageLoaderUtil.get(context).displayImage(playlist.getThumbnailURL(), viewHolder.getThumbnail());
-            viewHolder.getTitle().setText(playlist.getTitle());
+            ImageLoaderUtil.get(context).displayImage(playlistWrapper.getThumbnailURL(), viewHolder.getThumbnail());
+            viewHolder.getTitle().setText(playlistWrapper.getTitle());
             viewHolder.getDisplayIcon().setImageDrawable(channel.getDisplayIcon());
             viewHolder.getChannelName().setText(channel.getChannelName());
-            viewHolder.getPublishedTime().setText(new TimePassedUtil().getTimeDifference(playlist.getPublishedDate()));
+            viewHolder.getPublishedTime().setText(new TimePassedUtil().getTimeDifference(playlistWrapper.getPublishedDate()));
         }
 
     }
 
     @Override
     public int getItemCount() {
-        return container.getPlaylists().size();
+        return container.getPlaylistWrappers().size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return container.getPlaylists().get(position).getItemType();
+        return container.getPlaylistWrappers().get(position).getItemType();
     }
 }
