@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.redrumming.thecreaturehub.EndlessScrollListener;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
 
@@ -19,13 +22,16 @@ import com.redrumming.thecreaturehub.channel.Channel;
  */
 public class VideoListFragment extends Fragment implements VideoAsyncListener{
 
+    private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+
     private VideoContainer videoContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -46,13 +52,18 @@ public class VideoListFragment extends Fragment implements VideoAsyncListener{
         setup(channel);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.video_recycler_list);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         videoContainer = new VideoContainer();
         videoContainer.setChannel(channel);
         VideoRecyclerAdapter adapter = new VideoRecyclerAdapter(videoContainer);
         recyclerView.setAdapter(adapter);
+
+        swipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.video_swipe_refresh);
+        swipeRefresh.setOnRefreshListener(onRefreshListener);
+
+        recyclerView.addOnScrollListener(endlessScrollListener);
+
 
         return v;
     }
@@ -80,7 +91,7 @@ public class VideoListFragment extends Fragment implements VideoAsyncListener{
     @Override
     public void onSuccess(VideoContainer container) {
 
-        this.videoContainer.getVideos().addAll(container.getVideos());
+        this.videoContainer.getVideoWrappers().addAll(container.getVideoWrappers());
         this.videoContainer.setPageToken(container.getPageToken());
         this.recyclerView.getAdapter().notifyDataSetChanged();
     }
@@ -89,4 +100,20 @@ public class VideoListFragment extends Fragment implements VideoAsyncListener{
     public void onFailure() {
 
     }
+
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+
+        @Override
+        public void onRefresh() {
+            Log.d(this.getClass().getName(), "On Refresh called.");
+            swipeRefresh.setRefreshing(false);
+        }
+    };
+
+    private EndlessScrollListener endlessScrollListener = new EndlessScrollListener(linearLayoutManager) {
+        @Override
+        public void onLoadMore() {
+            Log.d(this.getClass().getName(), "On load more.");
+        }
+    };
 }

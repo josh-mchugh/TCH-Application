@@ -1,9 +1,11 @@
 package com.redrumming.thecreaturehub.video;
 
+import com.redrumming.thecreaturehub.ContentItem;
+
 /**
  * Created by ME on 7/26/2015.
  */
-public class Video implements VideoItem{
+public class VideoWrapper implements ContentItem {
 
     private String videoId;
     private String videoTitle;
@@ -44,6 +46,6 @@ public class Video implements VideoItem{
 
     @Override
     public int getItemType() {
-        return VideoItem.VIDEO_ITEM;
+        return ContentItem.VIDEO_ITEM;
     }
 }

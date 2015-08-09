@@ -48,7 +48,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         ContentItem item = container.getPlaylists().get(position);
 
-        if(item.getItemType() == PlaylistItem.PLAYLIST_ITEM){
+        if(item.getItemType() == ContentItem.PLAYLIST_ITEM){
 
             Playlist playlist = (Playlist) item;
             Channel channel = container.getChannel();

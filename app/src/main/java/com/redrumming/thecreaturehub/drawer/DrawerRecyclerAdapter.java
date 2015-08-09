@@ -80,6 +80,6 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void testToast(String message, View view) {
-        Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

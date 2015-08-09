@@ -12,8 +12,6 @@ import com.redrumming.thecreaturehub.channel.Channel;
 import com.redrumming.thecreaturehub.util.ImageLoaderUtil;
 import com.redrumming.thecreaturehub.util.TimePassedUtil;
 
-import java.util.List;
-
 /**
  * Created by ME on 8/4/2015.
  */
@@ -30,7 +28,7 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(viewType == VideoItem.VIDEO_ITEM){
+        if(viewType == ContentItem.VIDEO_ITEM){
 
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.video_item, parent, false);
@@ -47,30 +45,30 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        ContentItem item = container.getVideos().get(position);
+        ContentItem item = container.getVideoWrappers().get(position);
 
-        if(item.getItemType() == VideoItem.VIDEO_ITEM){
+        if(item.getItemType() == ContentItem.VIDEO_ITEM){
 
-            Video video = (Video) item;
+            VideoWrapper videoWrapper = (VideoWrapper) item;
             Channel channel = container.getChannel();
             VideoViewHolder viewHolder = (VideoViewHolder) holder;
 
-            ImageLoaderUtil.get(context).displayImage(video.getThumbnailURL(), viewHolder.getVideoThumbnail());
-            viewHolder.getVideoTitle().setText(video.getVideoTitle());
+            ImageLoaderUtil.get(context).displayImage(videoWrapper.getThumbnailURL(), viewHolder.getVideoThumbnail());
+            viewHolder.getVideoTitle().setText(videoWrapper.getVideoTitle());
             viewHolder.getChannelIcon().setImageDrawable(channel.getDisplayIcon());
             viewHolder.getChannelName().setText(channel.getChannelName());
-            viewHolder.getPushishedDate().setText(new TimePassedUtil().getTimeDifference(video.getPublishedDate()));
+            viewHolder.getPushishedDate().setText(new TimePassedUtil().getTimeDifference(videoWrapper.getPublishedDate()));
         }
 
     }
 
     @Override
     public int getItemCount() {
-        return container.getVideos().size();
+        return container.getVideoWrappers().size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return container.getVideos().get(position).getItemType();
+        return container.getVideoWrappers().get(position).getItemType();
     }
 }

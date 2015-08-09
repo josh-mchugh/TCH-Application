@@ -1,9 +1,11 @@
 package com.redrumming.thecreaturehub.playlist;
 
+import com.redrumming.thecreaturehub.ContentItem;
+
 /**
  * Created by ME on 7/30/2015.
  */
-public class Playlist implements PlaylistItem{
+public class Playlist implements ContentItem{
 
     private String id;
     private String title;
@@ -44,6 +46,6 @@ public class Playlist implements PlaylistItem{
 
     @Override
     public int getItemType() {
-        return PlaylistItem.PLAYLIST_ITEM;
+        return ContentItem.PLAYLIST_ITEM;
     }
 }

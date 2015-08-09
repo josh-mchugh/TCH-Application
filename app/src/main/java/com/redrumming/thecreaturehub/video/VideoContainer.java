@@ -11,12 +11,12 @@ import java.util.List;
 public class VideoContainer {
 
     private Channel channel;
-    private List<Video> videos;
+    private List<VideoWrapper> videoWrappers;
     private String pageToken;
 
     public VideoContainer(){
 
-        videos = new ArrayList<Video>();
+        videoWrappers = new ArrayList<VideoWrapper>();
         pageToken = "";
     }
 
@@ -28,12 +28,12 @@ public class VideoContainer {
         this.channel = channel;
     }
 
-    public List<Video> getVideos() {
-        return videos;
+    public List<VideoWrapper> getVideoWrappers() {
+        return videoWrappers;
     }
 
-    public void setVideos(List<Video> videos) {
-        this.videos = videos;
+    public void setVideoWrappers(List<VideoWrapper> videoWrappers) {
+        this.videoWrappers = videoWrappers;
     }
 
     public String getPageToken() {

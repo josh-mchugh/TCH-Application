@@ -2,15 +2,18 @@ package com.redrumming.thecreaturehub.playlist;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.redrumming.thecreaturehub.EndlessScrollListener;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
 
@@ -20,11 +23,15 @@ import com.redrumming.thecreaturehub.channel.Channel;
  */
 public class PlaylistListFragment extends Fragment implements PlaylistAsyncListener{
 
+    private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity() );
+
     private PlaylistContainer playlistContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 
@@ -46,13 +53,17 @@ public class PlaylistListFragment extends Fragment implements PlaylistAsyncListe
         setup(channel);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.playlist_recycler_list);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         playlistContainer = new PlaylistContainer();
         playlistContainer.setChannel(channel);
         PlaylistRecyclerAdapter adapter = new PlaylistRecyclerAdapter(playlistContainer);
         recyclerView.setAdapter(adapter);
+
+        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.playlist_swipe_refresh);
+        swipeRefresh.setOnRefreshListener(onRefreshListener);
+
+        recyclerView.addOnScrollListener(endlessScrollListener);
 
         return view;
     }
@@ -89,4 +100,21 @@ public class PlaylistListFragment extends Fragment implements PlaylistAsyncListe
     public void onFailure() {
 
     }
+
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+
+        @Override
+        public void onRefresh() {
+            Log.d(this.getClass().getName(), "On Refresh called.");
+            swipeRefresh.setRefreshing(false);
+        }
+    };
+
+    private EndlessScrollListener endlessScrollListener = new EndlessScrollListener(linearLayoutManager) {
+
+        @Override
+        public void onLoadMore() {
+            Log.d(this.getClass().getName(), "On Load More.");
+        }
+    };
 }

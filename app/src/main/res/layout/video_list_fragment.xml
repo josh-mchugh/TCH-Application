@@ -4,13 +4,21 @@
     android:id="@+id/video_list_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.redrumming.thecreaturehub.video.VideoListFragment">
+    tools:context="com.redrumming.thecreaturehub.videoWrapper.VideoListFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/video_recycler_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/video_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000"
-        />
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/video_recycler_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
