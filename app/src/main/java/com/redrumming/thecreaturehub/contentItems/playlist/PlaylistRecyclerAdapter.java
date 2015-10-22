@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.playlist;
+package com.redrumming.thecreaturehub.contentItems.playlist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.LoadingViewHolder;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
 import com.redrumming.thecreaturehub.util.ImageLoaderUtil;
@@ -28,7 +29,7 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(viewType == PlaylistWrapper.PLAYLIST_ITEM){
+        if(viewType == ContentItem.PLAYLIST_ITEM){
 
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.playlist_item, parent, false);
@@ -38,6 +39,14 @@ public class PlaylistRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             return viewHolder;
 
+        }else if(viewType == ContentItem.LOADING_ITEM){
+
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.loading_item, parent, false);
+
+            LoadingViewHolder viewHolder = new LoadingViewHolder(view);
+
+            return viewHolder;
         }
 
         return null;

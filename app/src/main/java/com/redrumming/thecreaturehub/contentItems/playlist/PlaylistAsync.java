@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.playlist;
+package com.redrumming.thecreaturehub.contentItems.playlist;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,7 +9,6 @@ import com.google.api.services.youtube.model.*;
 import com.google.api.services.youtube.model.Playlist;
 import com.redrumming.thecreaturehub.util.YouTubeUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +31,13 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
     @Override
     protected PlaylistContainer doInBackground(PlaylistContainer... container) {
 
-        PlaylistContainer playlistContainer = getPlaylists(container[0]);
+        PlaylistContainer updateContainer = new PlaylistContainer();
+        updateContainer.setChannel(container[0].getChannel());
+        updateContainer.setPageToken(container[0].getPageToken());
 
-        return playlistContainer;
+        updateContainer = getPlaylists(updateContainer);
+
+        return updateContainer;
     }
 
     @Override
@@ -48,17 +51,23 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
 
         String className = this.getClass().getName();
         for(int i = 0; i < container.getPlaylistWrappers().size(); i++){
-            Log.d(className, "Playlist Id: " + container.getPlaylistWrappers().get(i).getId());
-            Log.d(className, "Playlist Title: " + container.getPlaylistWrappers().get(i).getTitle());
-            Log.d(className, "Playlist Thumbnail URL: " + container.getPlaylistWrappers().get(i).getThumbnailURL());
-            Log.d(className, "Playlist Published At: " + new Date(container.getPlaylistWrappers().get(i).getPublishedDate()));
-            Log.d(className, "Playlist Public: " + container.getPlaylistWrappers().get(i).isViewable());
-            Log.d(className, "Playlist Item Count: " + container.getPlaylistWrappers().get(i).getVideoCount());
+
+            PlaylistWrapper playlist = (PlaylistWrapper) container.getPlaylistWrappers().get(i);
+
+            Log.d(className, "Playlist Id: " + playlist.getId());
+            Log.d(className, "Playlist Title: " + playlist.getTitle());
+            Log.d(className, "Playlist Thumbnail URL: " + playlist.getThumbnailURL());
+            Log.d(className, "Playlist Published At: " + new Date(playlist.getPublishedDate()));
+            Log.d(className, "Playlist Public: " + playlist.isViewable());
+            Log.d(className, "Playlist Item Count: " + playlist.getVideoCount());
         }
 
         Log.d(className, "Next Page Token: " + container.getPageToken());
 
-        listener.onSuccess(container);
+        if(isCancelled() != true) {
+
+            listener.onSuccess(container);
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.playlist;
+package com.redrumming.thecreaturehub.contentItems.playlist;
 
 /**
  * Created by ME on 8/6/2015.

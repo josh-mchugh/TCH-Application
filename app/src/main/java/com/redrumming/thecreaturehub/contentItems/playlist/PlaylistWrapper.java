@@ -1,6 +1,6 @@
-package com.redrumming.thecreaturehub.playlist;
+package com.redrumming.thecreaturehub.contentItems.playlist;
 
-import com.redrumming.thecreaturehub.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentItem;
 
 /**
  * Created by ME on 7/30/2015.

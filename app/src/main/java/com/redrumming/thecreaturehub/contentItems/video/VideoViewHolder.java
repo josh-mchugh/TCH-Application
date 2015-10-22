@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.video;
+package com.redrumming.thecreaturehub.contentItems.video;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

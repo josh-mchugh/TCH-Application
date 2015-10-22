@@ -1,5 +1,6 @@
-package com.redrumming.thecreaturehub.video;
+package com.redrumming.thecreaturehub.contentItems.video;
 
+import com.redrumming.thecreaturehub.contentItems.ContentItem;
 import com.redrumming.thecreaturehub.channel.Channel;
 
 import java.util.ArrayList;
@@ -11,12 +12,12 @@ import java.util.List;
 public class VideoContainer {
 
     private Channel channel;
-    private List<VideoWrapper> videoWrappers;
+    private List<ContentItem> videoWrappers;
     private String pageToken;
 
     public VideoContainer(){
 
-        videoWrappers = new ArrayList<VideoWrapper>();
+        videoWrappers = new ArrayList<ContentItem>();
         pageToken = "";
     }
 
@@ -28,12 +29,8 @@ public class VideoContainer {
         this.channel = channel;
     }
 
-    public List<VideoWrapper> getVideoWrappers() {
+    public List<ContentItem> getVideoWrappers() {
         return videoWrappers;
-    }
-
-    public void setVideoWrappers(List<VideoWrapper> videoWrappers) {
-        this.videoWrappers = videoWrappers;
     }
 
     public String getPageToken() {

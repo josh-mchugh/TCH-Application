@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by ME on 7/22/2015.
  */
-public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DrawerItemOnClickListener {
+public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<DrawerItem> items;
 
@@ -29,7 +29,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.drawer_header_item, parent, false);
 
-            DrawerHeaderViewHolder viewHolder = new DrawerHeaderViewHolder(view, this);
+            DrawerHeaderViewHolder viewHolder = new DrawerHeaderViewHolder(view);
 
             return viewHolder;
 
@@ -38,7 +38,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.drawer_channel_item, parent, false);
 
-            DrawerChannelViewHolder viewHolder = new DrawerChannelViewHolder(view, this);
+            DrawerChannelViewHolder viewHolder = new DrawerChannelViewHolder(view);
 
             return viewHolder;
         }
@@ -76,10 +76,5 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public int getItemViewType(int position) {
         return items.get(position).getType();
-    }
-
-    @Override
-    public void testToast(String message, View view) {
-        //Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

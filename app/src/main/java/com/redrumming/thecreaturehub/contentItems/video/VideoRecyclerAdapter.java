@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.video;
+package com.redrumming.thecreaturehub.contentItems.video;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.LoadingViewHolder;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
 import com.redrumming.thecreaturehub.util.ImageLoaderUtil;
@@ -18,7 +19,7 @@ import com.redrumming.thecreaturehub.util.TimePassedUtil;
 public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private VideoContainer container;
-    private Context context = null;
+    private Context context;
 
     public VideoRecyclerAdapter(VideoContainer container){
 
@@ -35,6 +36,15 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             context = parent.getContext();
             VideoViewHolder viewHolder = new VideoViewHolder(view);
+
+            return viewHolder;
+
+        }else if(viewType == ContentItem.LOADING_ITEM){
+
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.loading_item, parent, false);
+
+            LoadingViewHolder viewHolder = new LoadingViewHolder(view);
 
             return viewHolder;
         }

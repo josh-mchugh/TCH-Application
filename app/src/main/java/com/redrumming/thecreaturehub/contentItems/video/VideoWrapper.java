@@ -1,6 +1,6 @@
-package com.redrumming.thecreaturehub.video;
+package com.redrumming.thecreaturehub.contentItems.video;
 
-import com.redrumming.thecreaturehub.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentItem;
 
 import java.math.BigInteger;
 

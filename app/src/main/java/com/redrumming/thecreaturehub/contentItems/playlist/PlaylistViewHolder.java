@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.playlist;
+package com.redrumming.thecreaturehub.contentItems.playlist;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

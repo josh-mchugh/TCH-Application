@@ -49,8 +49,7 @@ public class YouTubeUtil {
         JsonFactory jsonFactory = new JacksonFactory();
 
         YouTube youtube = new YouTube.Builder(httpTransport, jsonFactory, httpRequestInitializer)
-                        .setApplicationName(context.getResources()
-                                .getString(R.string.app_name))
+                        .setApplicationName(context.getResources().getString(R.string.app_name))
                         .build();
 
         return youtube;

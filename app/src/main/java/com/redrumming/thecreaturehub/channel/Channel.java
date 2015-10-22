@@ -2,10 +2,12 @@ package com.redrumming.thecreaturehub.channel;
 
 import android.graphics.drawable.Drawable;
 
+import java.io.Serializable;
+
 /**
  * Created by ME on 7/19/2015.
  */
-public class Channel {
+public class Channel implements Serializable{
 
     private String channelName;
     private String channelId;

@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.video;
+package com.redrumming.thecreaturehub.contentItems.video;
 
 /**
  * Created by ME on 8/4/2015.

@@ -1,21 +1,23 @@
-package com.redrumming.thecreaturehub.playlist;
+package com.redrumming.thecreaturehub.contentItems.playlist;
 
+import com.redrumming.thecreaturehub.contentItems.ContentItem;
 import com.redrumming.thecreaturehub.channel.Channel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ME on 7/30/2015.
  */
-public class PlaylistContainer {
+public class PlaylistContainer{
 
     private Channel channel;
-    private List<PlaylistWrapper> playlistWrappers;
+    private List<ContentItem> playlistWrappers;
     private String pageToken;
 
     public PlaylistContainer() {
-        playlistWrappers = new ArrayList<PlaylistWrapper>();
+        playlistWrappers = new ArrayList<ContentItem>();
         pageToken = "";
     }
 
@@ -27,12 +29,8 @@ public class PlaylistContainer {
         this.channel = channel;
     }
 
-    public List<PlaylistWrapper> getPlaylistWrappers() {
+    public List<ContentItem> getPlaylistWrappers() {
         return playlistWrappers;
-    }
-
-    public void setPlaylistWrappers(List<PlaylistWrapper> playlistWrappers) {
-        this.playlistWrappers = playlistWrappers;
     }
 
     public String getPageToken() {

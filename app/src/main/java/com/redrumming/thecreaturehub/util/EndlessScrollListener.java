@@ -1,8 +1,7 @@
-package com.redrumming.thecreaturehub;
+package com.redrumming.thecreaturehub.util;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.AbsListView;
 
 /**
  * Created by ME on 8/7/2015.
@@ -29,6 +28,13 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         visibleItemCount = recyclerView.getChildCount();
         totalItemCount = linearLayoutManager.getItemCount();
         firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+
+        //Assumming the list has been reset if total item count is 1 or less.
+        //we use one becuase the loading item should be present.
+        if(totalItemCount <= 1){
+
+            previousTotalItemCount = 0;
+        }
 
         if(loading){
 

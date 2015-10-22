@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.video;
+package com.redrumming.thecreaturehub.contentItems.video;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,7 +12,6 @@ import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.redrumming.thecreaturehub.util.YouTubeUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +34,11 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
     @Override
     protected VideoContainer doInBackground(VideoContainer... container) {
 
-        VideoContainer updateContainer = getVideos(container[0]);
+        VideoContainer updateContainer = new VideoContainer();
+        updateContainer.setChannel(container[0].getChannel());
+        updateContainer.setPageToken(container[0].getPageToken());
+
+        updateContainer = getVideos(updateContainer);
 
         return updateContainer;
     }
@@ -50,16 +53,25 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
         super.onPostExecute(container);
 
         String className = this.getClass().getName();
+
         for(int i = 0; i < container.getVideoWrappers().size(); i++){
-            Log.d(className, "Video Id: " + container.getVideoWrappers().get(i).getVideoId());
-            Log.d(className, "Video Title: " + container.getVideoWrappers().get(i).getVideoTitle());
-            Log.d(className, "Video Thumbnail URL: " + container.getVideoWrappers().get(i).getThumbnailURL());
-            Log.d(className, "Video PushDate: " + new Date(container.getVideoWrappers().get(i).getPublishedDate()));
-            Log.d(className, "Video View Count: " + container.getVideoWrappers().get(i).getViewCount());
-            Log.d(className, "Video Like Count: " + container.getVideoWrappers().get(i).getLikeCount());
+
+            VideoWrapper video = (VideoWrapper) container.getVideoWrappers().get(i);
+
+            Log.d(className, "Video Id: " + video.getVideoId());
+            Log.d(className, "Video Title: " + video.getVideoTitle());
+            Log.d(className, "Video Thumbnail URL: " + video.getThumbnailURL());
+            Log.d(className, "Video PushDate: " + new Date(video.getPublishedDate()));
+            Log.d(className, "Video View Count: " + video.getViewCount());
+            Log.d(className, "Video Like Count: " + video.getLikeCount());
         }
 
-        listener.onSuccess(container);
+        Log.d(className, "PageToken: " + container.getPageToken());
+
+        if(isCancelled() != true) {
+
+            listener.onSuccess(container);
+        }
     }
 
     @Override
@@ -70,6 +82,7 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        Log.e(this.getClass().getName(), "Video Async onCancelled was called.");
     }
 
     private VideoContainer getVideos(VideoContainer container){
@@ -106,7 +119,7 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
         search.setKey(apiKey);
         search.setChannelId(container.getChannel().getChannelId());
         search.setType("video");
-        search.setFields("items(id/videoId)");
+        search.setFields("items(id/videoId), nextPageToken");
         search.setMaxResults((long) 20);
         search.setOrder("date");
         search.setPageToken(container.getPageToken());
@@ -121,6 +134,8 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
                 videoIds.add(searchResults.get(i).getId().getVideoId());
             }
 
+            container.setPageToken(searchResponse.getNextPageToken());
+
         }else {
 
             //Cancel this async if results are null
@@ -131,7 +146,7 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
     }
 
 
-    private VideoContainer getVideoDetails(YouTube youTube, List<String> videoIds, VideoContainer container) throws Exception{
+    private VideoContainer getVideoDetails(YouTube youTube, List<String> videoIds, VideoContainer container) throws Exception {
 
         Joiner videoIdJoiner = Joiner.on(',');
         String videoId = videoIdJoiner.join(videoIds);
@@ -144,17 +159,16 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
                 "snippet/thumbnails/medium/url," +
                 "snippet/publishedAt," +
                 "statistics/viewCount," +
-                "statistics/likeCount), nextPageToken");
+                "statistics/likeCount)");
         listVideoRequest.setMaxResults((long) videoIds.size());
-        listVideoRequest.setPageToken(container.getPageToken());
 
         VideoListResponse listResponse = listVideoRequest.execute();
 
         List<Video> videoList = listResponse.getItems();
 
-        if(videoList != null){
+        if (videoList != null) {
 
-            for(int i = 0; i < videoList.size(); i++){
+            for (int i = 0; i < videoList.size(); i++) {
 
                 Video video = videoList.get(i);
                 VideoWrapper videoWrapper = new VideoWrapper();
@@ -169,9 +183,7 @@ public class VideoAsync extends AsyncTask<VideoContainer, Void, VideoContainer>{
                 container.getVideoWrappers().add(videoWrapper);
             }
 
-            container.setPageToken(listResponse.getNextPageToken());
-
-        }else{
+        } else {
 
             //Cancel if list is null.
             onCancelled();
