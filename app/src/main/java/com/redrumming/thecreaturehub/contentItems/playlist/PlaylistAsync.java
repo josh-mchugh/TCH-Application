@@ -1,13 +1,15 @@
 package com.redrumming.thecreaturehub.contentItems.playlist;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
 import com.google.api.services.youtube.model.Playlist;
-import com.redrumming.thecreaturehub.util.YouTubeUtil;
+import com.redrumming.thecreaturehub.YouTubeApiKey;
+import com.redrumming.thecreaturehub.contentItems.ContentAsync;
+import com.redrumming.thecreaturehub.contentItems.ContentAsyncListener;
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,20 +18,14 @@ import java.util.List;
 /**
  * Created by RedRumming on 7/20/2015.
  */
-public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistContainer>{
+public class PlaylistAsync extends ContentAsync{
 
-    private Context context;
-    private PlaylistAsyncListener listener;
-    private String apiKey = "ADD-API-KEY";
-
-    public PlaylistAsync(Context context, PlaylistAsyncListener listener){
-
-        this.context = context;
-        this.listener = listener;
+    public PlaylistAsync(Context context, ContentAsyncListener listener){
+        super(context, listener);
     }
 
     @Override
-    protected PlaylistContainer doInBackground(PlaylistContainer... container) {
+    protected PlaylistContainer doInBackground(ContentContainer... container) {
 
         PlaylistContainer updateContainer = new PlaylistContainer();
         updateContainer.setChannel(container[0].getChannel());
@@ -41,18 +37,13 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected void onPostExecute(PlaylistContainer container) {
+    protected void onPostExecute(ContentContainer container) {
         super.onPostExecute(container);
 
         String className = this.getClass().getName();
-        for(int i = 0; i < container.getPlaylistWrappers().size(); i++){
+        for(int i = 0; i < container.getItems().size(); i++){
 
-            PlaylistWrapper playlist = (PlaylistWrapper) container.getPlaylistWrappers().get(i);
+            PlaylistItem playlist = (PlaylistItem) container.getItems().get(i);
 
             Log.d(className, "Playlist Id: " + playlist.getId());
             Log.d(className, "Playlist Title: " + playlist.getTitle());
@@ -63,21 +54,6 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
         }
 
         Log.d(className, "Next Page Token: " + container.getPageToken());
-
-        if(isCancelled() != true) {
-
-            listener.onSuccess(container);
-        }
-    }
-
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-    }
-
-    @Override
-    protected void onCancelled() {
-        super.onCancelled();
     }
 
     private PlaylistContainer getPlaylists(PlaylistContainer container){
@@ -86,9 +62,7 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
 
         try{
 
-            YouTube youtube = YouTubeUtil.get(context).getYouTube();
-
-            YouTube.Playlists.List playlist = getSearchParams(youtube, container);
+            YouTube.Playlists.List playlist = getSearchParams(super.getYoutube(), container);
 
             PlaylistListResponse searchResponse = playlist.execute();
             List<Playlist> searchItems  = searchResponse.getItems();
@@ -100,7 +74,7 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
 
         }catch(Exception e){
 
-            Log.e(this.getClass().getName().toString(), "Error retrieve search results: " + e);
+            Log.e(this.getClass().getCanonicalName(), "Error retrieve search results: " + e);
         }
 
         return container;
@@ -111,7 +85,7 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
         String searchCategories = "id, snippet, contentDetails, status";
         YouTube.Playlists.List playlist = youtube.playlists().list(searchCategories);
 
-        playlist.setKey(apiKey);
+        playlist.setKey(YouTubeApiKey.API_KEY);
         playlist.setChannelId(container.getChannel().getChannelId());
         playlist.setPageToken(container.getPageToken());
 
@@ -124,8 +98,7 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
                 "contentDetails/itemCount), nextPageToken";
         playlist.setFields(searchFields);
 
-        long numberofvideos = 20;
-        playlist.setMaxResults(numberofvideos);
+        playlist.setMaxResults(super.getMaxResults());
 
         playlist.setPageToken(container.getPageToken());
 
@@ -137,16 +110,16 @@ public class PlaylistAsync extends AsyncTask<PlaylistContainer, Void, PlaylistCo
         for(int i = 0; i < searchResults.size(); i++){
 
             Playlist playlist = searchResults.get(i);
-            PlaylistWrapper playlistWrapper = new PlaylistWrapper();
+            PlaylistItem playlistWrapper = new PlaylistItem();
 
             playlistWrapper.setId(playlist.getId());
             playlistWrapper.setTitle(playlist.getSnippet().getTitle());
             playlistWrapper.setThumbnailURL(playlist.getSnippet().getThumbnails().getMedium().getUrl());
             playlistWrapper.setPublishedDate(playlist.getSnippet().getPublishedAt().getValue());
             playlistWrapper.setVideoCount(playlist.getContentDetails().getItemCount());
-            playlistWrapper.setViewable(playlist.getStatus().getPrivacyStatus().equalsIgnoreCase("public") ? true : false);
+            playlistWrapper.setViewable(playlist.getStatus().getPrivacyStatus().equalsIgnoreCase("public"));
 
-            container.getPlaylistWrappers().add(playlistWrapper);
+            container.getItems().add(playlistWrapper);
         }
 
         return container;

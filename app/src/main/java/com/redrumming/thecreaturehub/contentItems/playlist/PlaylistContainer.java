@@ -1,43 +1,42 @@
 package com.redrumming.thecreaturehub.contentItems.playlist;
 
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 import com.redrumming.thecreaturehub.contentItems.ContentItem;
 import com.redrumming.thecreaturehub.channel.Channel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ME on 7/30/2015.
  */
-public class PlaylistContainer{
-
-    private Channel channel;
-    private List<ContentItem> playlistWrappers;
-    private String pageToken;
+public class PlaylistContainer extends ContentContainer {
 
     public PlaylistContainer() {
-        playlistWrappers = new ArrayList<ContentItem>();
-        pageToken = "";
+        super();
     }
 
+    @Override
     public Channel getChannel() {
-        return channel;
+        return super.getChannel();
     }
 
+    @Override
     public void setChannel(Channel channel) {
-        this.channel = channel;
+        super.setChannel(channel);
     }
 
-    public List<ContentItem> getPlaylistWrappers() {
-        return playlistWrappers;
+    @Override
+    public List<ContentItem> getItems() {
+        return super.getItems();
     }
 
+    @Override
     public String getPageToken() {
-        return pageToken;
+        return super.getPageToken();
     }
 
+    @Override
     public void setPageToken(String pageToken) {
-        this.pageToken = pageToken;
+        super.setPageToken(pageToken);
     }
 }

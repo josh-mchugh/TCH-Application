@@ -7,7 +7,7 @@ import java.math.BigInteger;
 /**
  * Created by ME on 7/26/2015.
  */
-public class VideoWrapper implements ContentItem {
+public class VideoItem implements ContentItem {
 
     private String videoId;
     private String videoTitle;

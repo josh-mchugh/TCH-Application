@@ -5,7 +5,7 @@ import com.redrumming.thecreaturehub.contentItems.ContentItem;
 /**
  * Created by ME on 7/30/2015.
  */
-public class PlaylistWrapper implements ContentItem{
+public class PlaylistItem implements ContentItem{
 
     private String id;
     private String title;

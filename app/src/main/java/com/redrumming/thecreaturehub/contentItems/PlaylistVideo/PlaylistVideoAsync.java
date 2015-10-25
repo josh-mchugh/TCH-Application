@@ -1,7 +1,6 @@
 package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.api.client.util.Joiner;
@@ -10,7 +9,10 @@ import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
-import com.redrumming.thecreaturehub.util.YouTubeUtil;
+import com.redrumming.thecreaturehub.YouTubeApiKey;
+import com.redrumming.thecreaturehub.contentItems.ContentAsync;
+import com.redrumming.thecreaturehub.contentItems.ContentAsyncListener;
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,45 +21,44 @@ import java.util.List;
 /**
  * Created by ME on 10/18/2015.
  */
-public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, PlaylistVideoContainer>{
+public class PlaylistVideoAsync extends ContentAsync{
 
-    private Context context;
-    private PlaylistVideoAsyncListener listener;
-    private String apiKey = "ADD-API-KEY";
-
-    public PlaylistVideoAsync(Context context, PlaylistVideoAsyncListener listener){
-
-        this.context = context;
-        this.listener = listener;
+    public PlaylistVideoAsync(Context context, ContentAsyncListener listener){
+        super(context, listener);
     }
 
     @Override
-    protected PlaylistVideoContainer doInBackground(PlaylistVideoContainer... container) {
+    protected PlaylistVideoContainer doInBackground(ContentContainer... container) {
 
         PlaylistVideoContainer updatedContainer = new PlaylistVideoContainer();
-        updatedContainer.setChannel(container[0].getChannel());
-        updatedContainer.setPageToken(container[0].getPageToken());
-        updatedContainer.setPlaylistId(container[0].getPlaylistId());
 
-        updatedContainer = getVideos(updatedContainer);
+        if(container[0] instanceof PlaylistVideoContainer){
+
+            PlaylistVideoContainer tempContainer = (PlaylistVideoContainer) container[0];
+
+            updatedContainer.setChannel(tempContainer.getChannel());
+            updatedContainer.setPageToken(tempContainer.getPageToken());
+            updatedContainer.setPlaylistId(tempContainer.getPlaylistId());
+
+            updatedContainer = getVideos(updatedContainer);
+
+        }else{
+
+            super.cancel(true);
+        }
 
         return updatedContainer;
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected void onPostExecute(PlaylistVideoContainer container) {
+    protected void onPostExecute(ContentContainer container) {
         super.onPostExecute(container);
 
         String className = this.getClass().getCanonicalName();
 
-        for(int i = 0; i < container.getVideoWrappers().size(); i++){
+        for(int i = 0; i < container.getItems().size(); i++){
 
-            PlaylistVideoWrapper video = (PlaylistVideoWrapper) container.getVideoWrappers().get(i);
+            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
 
             Log.d(className, "Playlist VideoId: " + video.getVideoId());
             Log.d(className, "Playlist Video Title: " + video.getVideoTitle());
@@ -70,16 +71,6 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
         }
 
         Log.d(className, "PageToken: " + container.getPageToken());
-
-        if(isCancelled() != true){
-
-            listener.onSuccess(container);
-        }
-    }
-
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
     }
 
     private PlaylistVideoContainer getVideos(PlaylistVideoContainer container){
@@ -94,17 +85,15 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
 
         try{
 
-            YouTube youtube = YouTubeUtil.get(context).getYouTube();
-
-            YouTube.PlaylistItems.List search = getSearchParms(youtube, container);
+            YouTube.PlaylistItems.List search = getSearchParms(super.getYoutube(), container);
 
             PlaylistItemListResponse response = search.execute();
             List<PlaylistItem> items = response.getItems();
 
-            container.getVideoWrappers().addAll(convertData(items));
+            container.getItems().addAll(convertData(items));
             container.setPageToken(response.getNextPageToken());
 
-            container = getVideoDetails(youtube, container);
+            container = getVideoDetails(super.getYoutube(), container);
 
         }catch (Exception e){
 
@@ -119,7 +108,7 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
         String searchCategories = "id,snippet,status";
         YouTube.PlaylistItems.List search = youtube.playlistItems().list(searchCategories);
 
-        search.setKey(apiKey);
+        search.setKey(YouTubeApiKey.API_KEY);
         search.setPlaylistId(container.getPlaylistId());
         search.setPageToken(container.getPageToken());
 
@@ -136,26 +125,25 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
                 + "nextPageToken";
         search.setFields(searchFields);
 
-        long numberOfVideos = 20;
-        search.setMaxResults(numberOfVideos);
+        search.setMaxResults(super.getMaxResults());
 
         return search;
     }
 
-    private List<PlaylistVideoWrapper> convertData(List<PlaylistItem> items){
+    private List<PlaylistVideoItem> convertData(List<PlaylistItem> items){
 
-        List<PlaylistVideoWrapper> videos = new ArrayList<PlaylistVideoWrapper>();
+        List<PlaylistVideoItem> videos = new ArrayList<PlaylistVideoItem>();
 
         for(int i = 0; i < items.size(); i++){
 
-            PlaylistVideoWrapper video = new PlaylistVideoWrapper();
+            PlaylistVideoItem video = new PlaylistVideoItem();
 
             video.setVideoId(items.get(i).getSnippet().getResourceId().getVideoId());
             video.setPosition(items.get(i).getSnippet().getPosition());
             video.setVideoTitle(items.get(i).getSnippet().getTitle());
             video.setThumbnailURL(items.get(i).getSnippet().getThumbnails().getMedium().getUrl());
             video.setPublishedDate(items.get(i).getSnippet().getPublishedAt().getValue());
-            video.setIsPublic(items.get(i).getStatus().getPrivacyStatus().equals("public") ? true : false);
+            video.setIsPublic(items.get(i).getStatus().getPrivacyStatus().equals("public"));
 
             videos.add(video);
         }
@@ -169,9 +157,9 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
 
         Joiner videoIdJoiner = Joiner.on(',');
 
-        for (int i = 0; i < container.getVideoWrappers().size(); i++) {
+        for (int i = 0; i < container.getItems().size(); i++) {
 
-            PlaylistVideoWrapper videoWrapper = (PlaylistVideoWrapper) container.getVideoWrappers().get(i);
+            PlaylistVideoItem videoWrapper = (PlaylistVideoItem) container.getItems().get(i);
 
             videoIds.add(videoWrapper.getVideoId());
         }
@@ -179,7 +167,7 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
         String videoId = videoIdJoiner.join(videoIds);
 
         YouTube.Videos.List listVideoRequest = youtube.videos().list("id, statistics").setId(videoId);
-        listVideoRequest.setKey(apiKey);
+        listVideoRequest.setKey(YouTubeApiKey.API_KEY);
         listVideoRequest.setFields("items( " +
                 "id, " +
                 "statistics/viewCount, " +
@@ -190,21 +178,21 @@ public class PlaylistVideoAsync extends AsyncTask<PlaylistVideoContainer, Void, 
 
         List<Video> videoList = listResponse.getItems();
 
-        if (videoList != null && container.getVideoWrappers() != null) {
+        if (videoList != null && container.getItems() != null) {
 
             for (int i = 0; i < videoList.size(); i++) {
 
-                for (int j = 0; j < container.getVideoWrappers().size(); j++) {
+                for (int j = 0; j < container.getItems().size(); j++) {
 
-                    PlaylistVideoWrapper videoWrapper = (PlaylistVideoWrapper) container.getVideoWrappers().get(j);
+                    PlaylistVideoItem videoWrapper = (PlaylistVideoItem) container.getItems().get(j);
 
                     if (videoWrapper.getVideoId().equals(videoList.get(i).getId())) {
 
                         videoWrapper.setLikeCount(videoList.get(i).getStatistics().getLikeCount());
                         videoWrapper.setViewCount(videoList.get(i).getStatistics().getViewCount());
 
-                        container.getVideoWrappers().remove(j);
-                        container.getVideoWrappers().add(j, videoWrapper);
+                        container.getItems().remove(j);
+                        container.getItems().add(j, videoWrapper);
                     }
                 }
             }

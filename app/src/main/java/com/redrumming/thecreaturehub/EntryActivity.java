@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.contentItems.playlist.PlaylistAsync;
+import com.redrumming.thecreaturehub.contentItems.video.VideoAsync;
 import com.redrumming.thecreaturehub.drawer.DrawerChannelItem;
 import com.redrumming.thecreaturehub.drawer.DrawerHeaderItem;
 import com.redrumming.thecreaturehub.drawer.DrawerItem;
@@ -64,8 +66,8 @@ public class EntryActivity extends AppCompatActivity{
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeButtonEnabled(true);
 
-        pagerAdapter.getVideoListFragment().setup(this, channels.get(0));
-        pagerAdapter.getPlaylistListFragment().setup(this, channels.get(0));
+        pagerAdapter.getVideoListFragment().setup(channels.get(0), new VideoAsync(this, pagerAdapter.getVideoListFragment()));
+        pagerAdapter.getPlaylistListFragment().setup(channels.get(0), new PlaylistAsync(this, pagerAdapter.getPlaylistListFragment()));
     }
 
     @Override
@@ -202,8 +204,8 @@ public class EntryActivity extends AppCompatActivity{
             DrawerChannelItem channelItem = (DrawerChannelItem) drawerItem;
             Channel channel = channelItem.getChannel();
 
-            pagerAdapter.getVideoListFragment().setup(this, channel);
-            pagerAdapter.getPlaylistListFragment().setup(this, channel);
+            pagerAdapter.getVideoListFragment().setup(channel, new VideoAsync(this, pagerAdapter.getVideoListFragment()));
+            pagerAdapter.getPlaylistListFragment().setup(channel, new PlaylistAsync(this, pagerAdapter.getPlaylistListFragment()));
 
             drawerLayout.closeDrawers();
 

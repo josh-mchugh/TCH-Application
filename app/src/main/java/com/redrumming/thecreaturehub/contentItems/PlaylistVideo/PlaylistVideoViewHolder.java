@@ -1,50 +1,42 @@
 package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.redrumming.thecreaturehub.R;
+import com.redrumming.thecreaturehub.contentItems.ContentViewHolder;
 
 /**
  * Created by ME on 10/18/2015.
  */
-public class PlaylistVideoViewHolder extends RecyclerView.ViewHolder {
-
-    private ImageView thumbnail;
-    private TextView title;
-    private ImageView channelIcon;
-    private TextView channelName;
-    private TextView publishDate;
+public class PlaylistVideoViewHolder extends ContentViewHolder {
 
     public PlaylistVideoViewHolder(View itemView){
         super(itemView);
-
-        thumbnail = (ImageView) itemView.findViewById(R.id.thumbnail);
-        title = (TextView) itemView.findViewById(R.id.title);
-        channelIcon = (ImageView) itemView.findViewById(R.id.channel_icon);
-        channelName = (TextView) itemView.findViewById(R.id.channel_name);
-        publishDate = (TextView) itemView.findViewById(R.id.publish_date);
     }
 
+    @Override
     public ImageView getThumbnail() {
-        return thumbnail;
+        return super.getThumbnail();
     }
 
-    public TextView getTitle() {
-        return title;
-    }
-
+    @Override
     public ImageView getChannelIcon() {
-        return channelIcon;
+        return super.getChannelIcon();
     }
 
+    @Override
+    public TextView getTitle() {
+        return super.getTitle();
+    }
+
+    @Override
     public TextView getChannelName() {
-        return channelName;
+        return super.getChannelName();
     }
 
+    @Override
     public TextView getPublishDate() {
-        return publishDate;
+        return super.getPublishDate();
     }
 }

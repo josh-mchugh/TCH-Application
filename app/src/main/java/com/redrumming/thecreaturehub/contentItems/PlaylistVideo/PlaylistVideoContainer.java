@@ -1,46 +1,45 @@
 package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
 import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 import com.redrumming.thecreaturehub.contentItems.ContentItem;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ME on 10/18/2015.
  */
-public class PlaylistVideoContainer implements Serializable{
+public class PlaylistVideoContainer extends ContentContainer {
 
-    private Channel channel;
-    private List<ContentItem> videoWrappers;
-    private String pageToken;
     private String playlistId;
 
     public PlaylistVideoContainer(){
-
-        videoWrappers = new ArrayList<ContentItem>();
-        pageToken = "";
+        super();
     }
 
+    @Override
     public Channel getChannel() {
-        return channel;
+        return super.getChannel();
     }
 
+    @Override
     public void setChannel(Channel channel) {
-        this.channel = channel;
+        super.setChannel(channel);
     }
 
-    public List<ContentItem> getVideoWrappers() {
-        return videoWrappers;
+    @Override
+    public List<ContentItem> getItems() {
+        return super.getItems();
     }
 
+    @Override
     public String getPageToken() {
-        return pageToken;
+        return super.getPageToken();
     }
 
+    @Override
     public void setPageToken(String pageToken) {
-        this.pageToken = pageToken;
+        super.setPageToken(pageToken);
     }
 
     public String getPlaylistId() {

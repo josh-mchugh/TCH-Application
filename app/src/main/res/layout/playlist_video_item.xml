@@ -9,7 +9,6 @@
     >
     
     <android.support.v7.widget.CardView
-        android:id="@+id/playlist_video_item_card_view"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="2dip"
@@ -17,53 +16,9 @@
         card_view:cardUseCompatPadding="false"
         >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <ImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="252dp"
-                android:minWidth="366dp"
-                />
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/thumbnail"
-                android:layout_alignParentLeft="true"
-                />
-
-            <ImageView
-                android:id="@+id/channel_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_alignParentLeft="true"
-                android:adjustViewBounds="true"
-                />
-
-            <TextView
-                android:id="@+id/channel_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_toRightOf="@id/channel_icon"
-                />
-
-            <TextView
-                android:id="@+id/publish_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/channel_name"
-                android:layout_toRightOf="@id/channel_icon"
-                />
-
-        </RelativeLayout>
+        <include
+            layout="@layout/content_item"
+            />
 
     </android.support.v7.widget.CardView>
 

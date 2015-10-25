@@ -14,14 +14,14 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.contentItems.video.VideoWrapper;
+import com.redrumming.thecreaturehub.contentItems.video.VideoItem;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class VideoPlayer extends Fragment {
 
-    private VideoWrapper video = null;
+    private VideoItem video = null;
     private Channel channel = null;
 
     private YouTubePlayerSupportFragment youTubePlayerFragment;
@@ -37,7 +37,7 @@ public class VideoPlayer extends Fragment {
         Bundle bundle = getArguments();
         if(bundle != null){
 
-            video = (VideoWrapper) getArguments().getSerializable("video");
+            video = (VideoItem) getArguments().getSerializable("video");
             channel = (Channel) getArguments().getSerializable("channel");
         }
 

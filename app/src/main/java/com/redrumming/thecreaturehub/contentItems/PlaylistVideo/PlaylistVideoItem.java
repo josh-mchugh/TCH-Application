@@ -1,14 +1,14 @@
 package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
 import com.redrumming.thecreaturehub.contentItems.ContentItem;
-import com.redrumming.thecreaturehub.contentItems.video.VideoWrapper;
+import com.redrumming.thecreaturehub.contentItems.video.VideoItem;
 
 import java.math.BigInteger;
 
 /**
  * Created by ME on 10/18/2015.
  */
-public class PlaylistVideoWrapper extends VideoWrapper{
+public class PlaylistVideoItem extends VideoItem {
 
     private Long position;
     private boolean isPublic;
