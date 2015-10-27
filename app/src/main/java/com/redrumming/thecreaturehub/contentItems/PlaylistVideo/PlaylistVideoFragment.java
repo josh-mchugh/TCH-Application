@@ -16,7 +16,7 @@ import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 import com.redrumming.thecreaturehub.contentItems.ContentFragment;
 import com.redrumming.thecreaturehub.contentItems.ContentItem;
 import com.redrumming.thecreaturehub.contentItems.ContentRecyclerAdapter;
-import com.redrumming.thecreaturehub.player.VideoPlayer;
+import com.redrumming.thecreaturehub.player.PlaylistPlayer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +60,7 @@ public class PlaylistVideoFragment extends ContentFragment{
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
-            VideoPlayer videoPlayer = new VideoPlayer();
+            PlaylistPlayer videoPlayer = new PlaylistPlayer();
 
             videoPlayer.setArguments(new Bundle());
             videoPlayer.getArguments().putSerializable("video", video);

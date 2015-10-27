@@ -1,30 +1,29 @@
 package com.redrumming.thecreaturehub.player;
 
-
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.youtube.player.YouTubePlayer;
+import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.contentItems.video.VideoItem;
+import com.redrumming.thecreaturehub.contentItems.PlaylistVideo.PlaylistVideoItem;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by ME on 10/26/2015.
  */
-public class VideoPlayer extends Player {
+public class PlaylistPlayer extends Player{
 
-    private VideoItem video = null;
+    private PlaylistVideoItem item = null;
     private Channel channel = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState){
 
         Bundle bundle = getArguments();
         if(bundle != null){
 
-            video = (VideoItem) getArguments().getSerializable("video");
+            item = (PlaylistVideoItem) getArguments().getSerializable("item");
             channel = (Channel) getArguments().getSerializable("channel");
         }
 
@@ -34,6 +33,6 @@ public class VideoPlayer extends Player {
     @Override
     public void loadVideo(YouTubePlayer player) {
 
-        player.loadVideo(video.getVideoId());
+        player.loadPlaylist(item.getPlaylistId(), item.getPosition().intValue(), 0);
     }
 }

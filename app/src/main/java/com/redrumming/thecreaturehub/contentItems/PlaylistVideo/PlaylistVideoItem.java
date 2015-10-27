@@ -12,6 +12,15 @@ public class PlaylistVideoItem extends VideoItem {
 
     private Long position;
     private boolean isPublic;
+    private String playlistId;
+
+    public String getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(String playlistId) {
+        this.playlistId = playlistId;
+    }
 
     public Long getPosition() {
         return position;

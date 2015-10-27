@@ -68,6 +68,7 @@ public class PlaylistVideoAsync extends ContentAsync{
             Log.d(className, "Playlist Video Public: " + video.isPublic());
             Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
             Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
+            Log.d(className, "Playlist Id: " + video.getPlaylistId());
         }
 
         Log.d(className, "PageToken: " + container.getPageToken());
@@ -190,6 +191,7 @@ public class PlaylistVideoAsync extends ContentAsync{
 
                         videoWrapper.setLikeCount(videoList.get(i).getStatistics().getLikeCount());
                         videoWrapper.setViewCount(videoList.get(i).getStatistics().getViewCount());
+                        videoWrapper.setPlaylistId(container.getPlaylistId());
 
                         container.getItems().remove(j);
                         container.getItems().add(j, videoWrapper);
