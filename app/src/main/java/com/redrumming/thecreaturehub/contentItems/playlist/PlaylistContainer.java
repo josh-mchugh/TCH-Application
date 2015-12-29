@@ -1,10 +1,10 @@
 package com.redrumming.thecreaturehub.contentItems.playlist;
 
-import com.redrumming.thecreaturehub.contentItems.ContentContainer;
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
-import com.redrumming.thecreaturehub.channel.Channel;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.List;
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
+import com.redrumming.thecreaturehub.contentItems.ContentContainerType;
 
 /**
  * Created by ME on 7/30/2015.
@@ -12,31 +12,45 @@ import java.util.List;
 public class PlaylistContainer extends ContentContainer {
 
     public PlaylistContainer() {
+
         super();
     }
 
     @Override
-    public Channel getChannel() {
-        return super.getChannel();
+    public int getType() {
+
+        return ContentContainerType.PLAYLIST_CONTAINER;
+    }
+
+    /**
+     * Constructor used to un-flatten this object via the Parcelable.
+     *
+     * @param parcel
+     */
+    public PlaylistContainer(Parcel parcel){
+
+        super(parcel);
     }
 
     @Override
-    public void setChannel(Channel channel) {
-        super.setChannel(channel);
+    public int describeContents() {
+
+        return ContentContainerType.PLAYLIST_CONTAINER;
     }
 
-    @Override
-    public List<ContentItem> getItems() {
-        return super.getItems();
-    }
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PlaylistContainer> CREATOR = new Parcelable.Creator<PlaylistContainer>() {
 
-    @Override
-    public String getPageToken() {
-        return super.getPageToken();
-    }
+        @Override
+        public PlaylistContainer createFromParcel(Parcel parcel) {
 
-    @Override
-    public void setPageToken(String pageToken) {
-        super.setPageToken(pageToken);
-    }
+            return new PlaylistContainer(parcel);
+        }
+
+        @Override
+        public PlaylistContainer[] newArray(int size) {
+
+            return new PlaylistContainer[size];
+        }
+    };
 }

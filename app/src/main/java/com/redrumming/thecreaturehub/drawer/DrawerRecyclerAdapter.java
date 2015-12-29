@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.R;
 
@@ -27,7 +26,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if(viewType == DrawerItem.HEADER){
 
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.drawer_header_item, parent, false);
+                    .inflate(R.layout.item_drawer_header, parent, false);
 
             DrawerHeaderViewHolder viewHolder = new DrawerHeaderViewHolder(view);
 
@@ -36,7 +35,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }else if(viewType == DrawerItem.CHANNEL){
 
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.drawer_channel_item, parent, false);
+                    .inflate(R.layout.item_drawer_channel, parent, false);
 
             DrawerChannelViewHolder viewHolder = new DrawerChannelViewHolder(view);
 
@@ -63,8 +62,8 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             DrawerChannelItem channelItem = (DrawerChannelItem) item;
             DrawerChannelViewHolder viewHolder = (DrawerChannelViewHolder) holder;
 
-            viewHolder.getTitle().setText(channelItem.getChannel().getChannelName());
-            viewHolder.getDisplayIcon().setImageDrawable(channelItem.getChannel().getDisplayIcon());
+            viewHolder.getTitle().setText(channelItem.getChannelItem().getChannelName());
+            viewHolder.getDisplayIcon().setImageBitmap(channelItem.getChannelItem().getDisplayIcon());
         }
     }
 

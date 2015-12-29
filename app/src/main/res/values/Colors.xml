@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App Theme -->
+    <color name="ColorPrimary">#FF5722</color>
+    <color name="ColorPrimaryDark">#E64A19</color>
+
+    <!--Comment Text Colors -->
+    <color name="load_more_text_color">#1b7fcc</color>
+    <color name="publish_date_text_color">#999999</color>
+    <color name="comment_text_color">#666666</color>
+    <color name="display_name_text_color">#333333</color>
+    <color name="no_comments_text_color">#1b7fcc</color>
+
+    <!--Description Text Colors -->
+    <color name="video_title_text_color">#333333</color>
+    <color name="video_views_text_color">#666666</color>
+    <color name="video_like_text_color">#757575</color>
+    <color name="video_description_text_color">#666666</color>
+    <color name="video_category_title_text_color">#999999</color>
+    <color name="video_category_value_text_color">#009688</color>
+    <color name="video_license_title_text_color">#999999</color>
+    <color name="video_license_value_text_color">#999999</color>
+    <color name="video_published_on_text_color">#666666</color>
+    
+    <!--Channel Text Colors -->
+    <color name="channel_user_name_text_color">#333333</color>
+    <color name="channel_subscriber_count_text_color">#999999</color>
+
+    <!-- Divider Color -->
+    <color name="details_divider_color">#757575</color>
+
+    <!--Video Item Color -->
+    <color name="video_card_title_text_color">#333333</color>
+    <color name="video_card_channel_name_text_color">#757575</color>
+    <color name="video_card_view_count_spacer_text_color">#757575</color>
+    <color name="video_card_view_count_text_color">#757575</color>
+    <color name="video_card_published_at_text_color">#757575</color>
+
+    <!-- Drawer Colors -->
+    <color name="drawer_channel_name_color">#757575</color>
+    <color name="drawer_channel_header_color">#333333</color>
+
+</resources>

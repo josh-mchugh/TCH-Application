@@ -1,0 +1,46 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <View
+        style="@style/details_divider"
+        android:layout_alignParentTop="true"
+        />
+
+   <RelativeLayout
+       android:id="@+id/top_comments_load_more_wrapper"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:background="?attr/selectableItemBackground"
+       >
+
+        <TextView
+            android:id="@+id/top_comments_load_more_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="20dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/load_more_text_color"
+            android:text="MORE"
+            />
+
+        <ProgressBar
+            android:id="@+id/top_comments_load_more_progress_bar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginBottom="17dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress"
+            android:indeterminateDuration="700"
+            android:visibility="invisible"
+            />
+
+   </RelativeLayout>
+
+</RelativeLayout>

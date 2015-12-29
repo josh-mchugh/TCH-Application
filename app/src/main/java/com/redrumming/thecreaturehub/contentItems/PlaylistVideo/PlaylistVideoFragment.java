@@ -2,73 +2,105 @@ package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.redrumming.thecreaturehub.FragmentTags;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.channel.ChannelItem;
 import com.redrumming.thecreaturehub.contentItems.ContentAsync;
 import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 import com.redrumming.thecreaturehub.contentItems.ContentFragment;
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentType;
 import com.redrumming.thecreaturehub.contentItems.ContentRecyclerAdapter;
-import com.redrumming.thecreaturehub.player.PlaylistPlayer;
+import com.redrumming.thecreaturehub.navigation.NavigationDrawerHelper;
+import com.redrumming.thecreaturehub.player.PlayerFragment;
+import com.redrumming.thecreaturehub.player.PlaylistPlayerFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PlaylistVideoFragment extends ContentFragment{
 
-    private PlaylistVideoContainer container = new PlaylistVideoContainer();
-    private PlaylistVideoRecyclerAdapter adapter = new PlaylistVideoRecyclerAdapter(container);
+    private PlaylistVideoContainer container;
+    private PlaylistVideoRecyclerAdapter adapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(getArguments() != null){
+
+            container = getArguments().getParcelable("container");
+        }
+
+        if(savedInstanceState != null){
+
+            container = savedInstanceState.getParcelable("container");
+        }
+
+        if(savedInstanceState == null && getArguments() == null) {
+
+            container = new PlaylistVideoContainer();
+        }
+
+        adapter = new PlaylistVideoRecyclerAdapter(container);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
 
-        return super.onCreateView(inflater, viewGroup, savedInstanceState);
+        View view = super.onCreateView(inflater, viewGroup, savedInstanceState);
+
+        NavigationDrawerHelper.get().getDrawerToggle().setDrawerIndicatorEnabled(false);
+
+        return view;
     }
 
-    public void setupPlaylist(PlaylistVideoContainer contentContainer){
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        container.setChannel(contentContainer.getChannel());
-        container.setPageToken(contentContainer.getPageToken());
-        container.setPlaylistId(contentContainer.getPlaylistId());
-
-        super.setup(container.getChannel(), new PlaylistVideoAsync(getActivity(), this));
+        outState.putParcelable("container", container);
     }
 
     @Override
     public void onSelect(int position){
 
-        PlaylistVideoItem video = null;
-        Channel channel = null;
+        PlaylistVideoItem playlistVideo = null;
+        ChannelItem channelItem = null;
 
-        if(getContainer().getItems().get(position).getItemType() == ContentItem.PLAYLIST_VIDEO_ITEM){
+        if(getContainer().getItems().get(position).getItemType() == ContentType.PLAYLIST_VIDEO_ITEM){
 
-            video = (PlaylistVideoItem) getContainer().getItems().get(position);
-            channel = getContainer().getChannel();
+            playlistVideo = (PlaylistVideoItem) getContainer().getItems().get(position);
+            channelItem = getContainer().getChannelItem();
         }
 
-        if(video != null && channel != null){
+       Fragment fragment = getParentFragment().getFragmentManager().findFragmentByTag(FragmentTags.PLAYER_FRAGMENT);
 
-            Toast.makeText(getActivity(), "Playlist Video Id: " + video.getVideoId(), Toast.LENGTH_SHORT).show();
+        if(fragment != null){
 
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
+            if(fragment instanceof PlayerFragment){
 
-            PlaylistPlayer videoPlayer = new PlaylistPlayer();
+                getParentFragment().getFragmentManager().beginTransaction().remove(fragment);
+                getParentFragment().getFragmentManager().popBackStack();
+            }
+        }
 
-            videoPlayer.setArguments(new Bundle());
-            videoPlayer.getArguments().putSerializable("video", video);
-            videoPlayer.getArguments().putSerializable("channel", channel);
+        if(playlistVideo != null && channelItem != null){
 
-            ft.replace(R.id.content, videoPlayer);
-            ft.addToBackStack("tabbedFragment");
-            ft.commit();
+            PlaylistPlayerFragment playlistPlayerFragment = new PlaylistPlayerFragment();
+            playlistPlayerFragment.setArguments(new Bundle());
+            playlistPlayerFragment.getArguments().putParcelable("container", container);
+            playlistPlayerFragment.getArguments().putInt("position", position);
+
+            getFragmentManager()
+                   .beginTransaction()
+                    .add(R.id.activity_layout, playlistPlayerFragment,FragmentTags.PLAYER_FRAGMENT)
+                    .addToBackStack(FragmentTags.CONTENT_ACTIVITY)
+                    .commit();
         }
     }
 
@@ -88,5 +120,13 @@ public class PlaylistVideoFragment extends ContentFragment{
     public ContentRecyclerAdapter getAdapter() {
 
         return adapter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(container.getChannelItem().getChannelName());
+        NavigationDrawerHelper.get().getDrawerToggle().setDrawerIndicatorEnabled(true);
     }
 }

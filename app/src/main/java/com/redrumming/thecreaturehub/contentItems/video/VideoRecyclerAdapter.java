@@ -5,12 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentType;
 import com.redrumming.thecreaturehub.contentItems.ContentRecyclerAdapter;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.util.ImageLoaderUtil;
+import com.redrumming.thecreaturehub.channel.ChannelItem;
+import com.redrumming.thecreaturehub.util.NumberFormatterUtil;
 import com.redrumming.thecreaturehub.util.TimePassedUtil;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by ME on 8/4/2015.
@@ -26,10 +27,10 @@ public class VideoRecyclerAdapter extends ContentRecyclerAdapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(viewType == ContentItem.VIDEO_ITEM){
+        if(viewType == ContentType.VIDEO_ITEM){
 
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.video_item, parent, false);
+                    .inflate(R.layout.item_video, parent, false);
 
             super.setContext(parent.getContext());
             VideoViewHolder viewHolder = new VideoViewHolder(view);
@@ -43,19 +44,20 @@ public class VideoRecyclerAdapter extends ContentRecyclerAdapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        ContentItem item = super.getContainer().getItems().get(position);
+        ContentType item = super.getContainer().getItems().get(position);
 
-        if(item.getItemType() == ContentItem.VIDEO_ITEM){
+        if(item.getItemType() == ContentType.VIDEO_ITEM){
 
             VideoItem videoItem = (VideoItem) item;
-            Channel channel = super.getContainer().getChannel();
+            ChannelItem channelItem = super.getContainer().getChannelItem();
             VideoViewHolder viewHolder = (VideoViewHolder) holder;
 
-            ImageLoaderUtil.get(super.getContext()).displayImage(videoItem.getThumbnailURL(), viewHolder.getThumbnail());
-            viewHolder.getTitle().setText(videoItem.getVideoTitle());
-            viewHolder.getChannelIcon().setImageDrawable(channel.getDisplayIcon());
-            viewHolder.getChannelName().setText(channel.getChannelName());
-            viewHolder.getPublishDate().setText(new TimePassedUtil().getTimeDifference(videoItem.getPublishedDate()));
+            Picasso.with(super.getContext()).load(videoItem.getThumbnailURL()).into(viewHolder.getThumbnail());
+            viewHolder.getTitle().setText(videoItem.getTitle());
+            viewHolder.getChannelIcon().setImageBitmap(channelItem.getDisplayIcon());
+            viewHolder.getPublishDate().setText(TimePassedUtil.getTimeDifference(videoItem.getPublishedAt()));
+            viewHolder.getViewCountSpacer().setText(" \u00B7 ");
+            viewHolder.getViewCount().setText(new NumberFormatterUtil().formatShortView(videoItem.getViewCount()));
         }
     }
 }

@@ -1,79 +1,60 @@
 package com.redrumming.thecreaturehub;
 
-import android.graphics.drawable.Drawable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.content.res.Configuration;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.contentItems.playlist.PlaylistAsync;
-import com.redrumming.thecreaturehub.contentItems.video.VideoAsync;
-import com.redrumming.thecreaturehub.drawer.DrawerChannelItem;
-import com.redrumming.thecreaturehub.drawer.DrawerHeaderItem;
-import com.redrumming.thecreaturehub.drawer.DrawerItem;
-import com.redrumming.thecreaturehub.drawer.DrawerRecyclerAdapter;
+import com.redrumming.thecreaturehub.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.contentItems.PlaylistVideo.PlaylistVideoFragment;
+import com.redrumming.thecreaturehub.navigation.NavigationDrawerHelper;
+import com.redrumming.thecreaturehub.navigation.TabbedContent;
 
-import java.util.ArrayList;
-import java.util.List;
+public class EntryActivity extends AppCompatActivity {
 
-public class EntryActivity extends AppCompatActivity{
 
-    private NavigationPagerAdapter pagerAdapter;
-
-    private DrawerLayout drawerLayout;
-    private RecyclerView drawerRecycler;
-    private ActionBarDrawerToggle drawerToggle;
-
-    private List<Channel> channels;
-    private List<DrawerItem> drawerItems;
+    private TabbedContent tabbedContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
 
-        //init channels
-        channels = getChannels();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        getSupportActionBar().setTitle(ChannelsContainer.getInstance().getSelectedChannel().getChannelName());
 
         //init Drawer
-        drawerRecycler = (RecyclerView) findViewById(R.id.drawer_recycler_view);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerItems = getDrawerItems();
+        NavigationDrawerHelper.get().init(this);
 
-        initializeDrawerLayout();
-        initializeRecyclerView();
+        if(savedInstanceState != null) {
 
-        //Init tabbed content
-        pagerAdapter = new NavigationPagerAdapter(getSupportFragmentManager());
+            tabbedContent = (TabbedContent) getSupportFragmentManager().getFragment(savedInstanceState, "TabbedContentFragment");
 
-        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
+        }else {
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+            tabbedContent = new TabbedContent();
+        }
 
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeButtonEnabled(true);
-
-        pagerAdapter.getVideoListFragment().setup(channels.get(0), new VideoAsync(this, pagerAdapter.getVideoListFragment()));
-        pagerAdapter.getPlaylistListFragment().setup(channels.get(0), new PlaylistAsync(this, pagerAdapter.getPlaylistListFragment()));
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.drawer_content, tabbedContent, FragmentTags.TABBED_CONTENT_FRAGMENT)
+                .commit();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        return super.onCreateOptionsMenu(menu);
+        getSupportFragmentManager().putFragment(outState, "TabbedContentFragment", tabbedContent);
     }
 
     @Override
@@ -83,143 +64,64 @@ public class EntryActivity extends AppCompatActivity{
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if(NavigationDrawerHelper.get().getDrawerToggle().onOptionsItemSelected(item)){
+
+            return true;
+        }
+
+        if(id == android.R.id.home){
+
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(FragmentTags.PLAYLIST_VIDEO_FRAGMENT);
+
+            if(fragment != null){
+
+                if(fragment instanceof PlaylistVideoFragment){
+
+                    getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                    getSupportFragmentManager().popBackStack();
+                }
+            }
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public List<Channel> getChannels() {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
-        List<Channel> channels = new ArrayList<Channel>();
-
-        String[] channelNames = getResources().getStringArray(R.array.channel_names);
-        String[] channelIds = getResources().getStringArray(R.array.channel_ids);
-        String[] channelDisplayIcons = getResources().getStringArray(R.array.channel_display_icons);
-
-        for (int i = 0; i < channelNames.length; i++) {
-
-            Channel channel = new Channel();
-            channel.setChannelName(channelNames[i]);
-            channel.setChannelId(channelIds[i]);
-
-            int imageResource = this
-                    .getResources()
-                    .getIdentifier(channelDisplayIcons[i], "drawable", getApplicationContext().getPackageName());
-
-            Drawable displayIcon = getResources().getDrawable(imageResource);
-            channel.setDisplayIcon(displayIcon);
-
-            //Add Channel to Channels list
-            channels.add(channel);
-        }
-
-        return channels;
+        NavigationDrawerHelper.get().getDrawerToggle().syncState();
     }
 
-    private void initializeDrawerLayout(){
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-        initializeDrawerToggle();
-
-        drawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                drawerToggle.syncState();
-            }
-        });
-
-        drawerLayout.setDrawerListener(drawerToggle);
+        NavigationDrawerHelper.get().getDrawerToggle().onConfigurationChanged(newConfig);
     }
 
-    private void initializeDrawerToggle(){
+    @Override
+    public void onBackPressed() {
 
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeButtonEnabled(true);
+        if(getFragmentManager().getBackStackEntryCount() != 0){
 
-        drawerToggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                R.drawable.ic_drawer,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close) {
+            getFragmentManager().popBackStack();
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
+        }else if(NavigationDrawerHelper.get().getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
 
-                supportInvalidateOptionsMenu();
-                getSupportActionBar().setTitle(R.string.app_name);
-            }
+            NavigationDrawerHelper.get().getDrawerLayout().closeDrawer(GravityCompat.START);
 
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
+        }else{
 
-                supportInvalidateOptionsMenu();
-            }
-        };
-    }
-
-    private void initializeRecyclerView(){
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        drawerRecycler.setLayoutManager(linearLayoutManager);
-
-        DrawerRecyclerAdapter adapter = new DrawerRecyclerAdapter(drawerItems);
-        drawerRecycler.setAdapter(adapter);
-
-        drawerRecycler.addOnItemTouchListener(new RecyclerOnItemClickListener(this, onItemClickListener));
-    }
-
-    private List<DrawerItem> getDrawerItems(){
-
-        List<DrawerItem> drawerItems = new ArrayList<DrawerItem>();
-
-        DrawerHeaderItem headerItem = new DrawerHeaderItem();
-        headerItem.setTitle("Channels");
-        drawerItems.add(headerItem);
-
-        for (int i = 0; i < channels.size(); i++) {
-
-            DrawerChannelItem drawerChannel = new DrawerChannelItem();
-            drawerChannel.setChannel(channels.get(i));
-
-            drawerItems.add(drawerChannel);
-        }
-
-        return drawerItems;
-    }
-
-    private void onSelect(int position) {
-
-        DrawerItem drawerItem = drawerItems.get(position);
-
-        if (drawerItem.getType() == DrawerItem.CHANNEL) {
-
-            DrawerChannelItem channelItem = (DrawerChannelItem) drawerItem;
-            Channel channel = channelItem.getChannel();
-
-            pagerAdapter.getVideoListFragment().setup(channel, new VideoAsync(this, pagerAdapter.getVideoListFragment()));
-            pagerAdapter.getPlaylistListFragment().setup(channel, new PlaylistAsync(this, pagerAdapter.getPlaylistListFragment()));
-
-            drawerLayout.closeDrawers();
-
-            getSupportActionBar().setTitle(channel.getChannelName());
+            super.onBackPressed();
         }
     }
 
 
-    private RecyclerOnItemClickListener.OnItemClickListener onItemClickListener = new RecyclerOnItemClickListener.OnItemClickListener() {
-
-        @Override
-        public void onItemClick(View view, int position) {
-
-            onSelect(position);
-        }
-    };
 }

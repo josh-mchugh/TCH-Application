@@ -1,33 +1,54 @@
 package com.redrumming.thecreaturehub.contentItems;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.redrumming.thecreaturehub.R;
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class LoadingItem extends Fragment implements ContentItem {
+public class LoadingItem implements ContentType {
 
 
     public LoadingItem() {
-        // Required empty public constructor
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.loading_item, container, false);
     }
 
     @Override
     public int getItemType() {
-        return LOADING_ITEM;
+
+        return ContentType.LOADING_ITEM;
     }
+
+    /**
+     * Constructor used to un-flatten this object via Parcelable.
+     *
+     * @param parcel
+     */
+    public LoadingItem(Parcel parcel){
+
+    }
+
+    @Override
+    public int describeContents() {
+
+        return ContentType.LOADING_ITEM;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeInt(getItemType());
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<LoadingItem> CREATOR = new Parcelable.Creator<LoadingItem>() {
+
+        @Override
+        public LoadingItem createFromParcel(Parcel parcel) {
+
+            return new LoadingItem(parcel);
+        }
+
+        @Override
+        public LoadingItem[] newArray(int size) {
+
+            return new LoadingItem[size];
+        }
+    };
 }

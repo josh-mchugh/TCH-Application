@@ -1,0 +1,20 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/comment_header_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="25dp"
+        android:text="Comments"
+        android:textSize="18sp"
+        android:textColor="@android:color/tab_indicator_text"
+        />
+
+</RelativeLayout>

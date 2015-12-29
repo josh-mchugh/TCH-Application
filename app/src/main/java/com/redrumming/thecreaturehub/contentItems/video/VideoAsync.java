@@ -3,16 +3,14 @@ package com.redrumming.thecreaturehub.contentItems.video;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.api.client.util.Joiner;
-import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
-import com.redrumming.thecreaturehub.YouTubeApiKey;
 import com.redrumming.thecreaturehub.contentItems.ContentAsync;
 import com.redrumming.thecreaturehub.contentItems.ContentAsyncListener;
 import com.redrumming.thecreaturehub.contentItems.ContentContainer;
+import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,11 +28,13 @@ public class VideoAsync extends ContentAsync{
     @Override
     protected VideoContainer doInBackground(ContentContainer... container) {
 
+        super.checkNetworkStatus();
+
         VideoContainer updateContainer = new VideoContainer();
-        updateContainer.setChannel(container[0].getChannel());
+        updateContainer.setChannelItem(container[0].getChannelItem());
         updateContainer.setPageToken(container[0].getPageToken());
 
-        updateContainer = getVideos(updateContainer);
+        updateContainer = retrieveVideos(updateContainer);
 
         return updateContainer;
     }
@@ -43,37 +43,24 @@ public class VideoAsync extends ContentAsync{
     protected void onPostExecute(ContentContainer container) {
         super.onPostExecute(container);
 
-        String className = this.getClass().getName();
+        if(container.getItems() != null && container.getItems().size() > 0) {
 
-        for(int i = 0; i < container.getItems().size(); i++){
-
-            VideoItem video = (VideoItem) container.getItems().get(i);
-
-            Log.d(className, "Video Id: " + video.getVideoId());
-            Log.d(className, "Video Title: " + video.getVideoTitle());
-            Log.d(className, "Video Thumbnail URL: " + video.getThumbnailURL());
-            Log.d(className, "Video PushDate: " + new Date(video.getPublishedDate()));
-            Log.d(className, "Video View Count: " + video.getViewCount());
-            Log.d(className, "Video Like Count: " + video.getLikeCount());
+            logger(container);
         }
-
-        Log.d(className, "PageToken: " + container.getPageToken());
     }
 
-    private VideoContainer getVideos(VideoContainer container){
-
-        container = retrieveYouTubeData(container);
-
-        return container;
-    }
-
-    private VideoContainer retrieveYouTubeData(VideoContainer container){
+    private VideoContainer retrieveVideos(VideoContainer container){
 
         try{
 
-            List<String> videoIds = getVideoIds(super.getYoutube(), container);
+            SearchListResponse searchListResponse = new YouTubeServiceCalls(getContext()).getVideoIds(container.getChannelItem().getChannelId(), container.getPageToken());
+            List<String> videoIds = getVideoIds(searchListResponse);
 
-            container = getVideoDetails(super.getYoutube(), videoIds, container);
+            VideoListResponse videoListResponse = new YouTubeServiceCalls(getContext()).getVideoItems(videoIds);
+            List<VideoItem> videoItems = getVideos(videoListResponse);
+
+            container.setPageToken(searchListResponse.getNextPageToken());
+            container.getItems().addAll(videoItems);
 
         }catch(Exception e){
 
@@ -83,84 +70,68 @@ public class VideoAsync extends ContentAsync{
         return container;
     }
 
+    private List<String> getVideoIds(SearchListResponse response){
 
-    private List<String> getVideoIds(YouTube youTube, VideoContainer container) throws Exception{
+        List<SearchResult> searchResults = response.getItems();
 
-        YouTube.Search.List search = youTube.search().list("id,snippet");
-
-        search.setKey(YouTubeApiKey.API_KEY);
-        search.setChannelId(container.getChannel().getChannelId());
-        search.setType("video");
-        search.setFields("items(id/videoId), nextPageToken");
-        search.setMaxResults(super.getMaxResults());
-        search.setOrder("date");
-        search.setPageToken(container.getPageToken());
-
-        SearchListResponse searchResponse = search.execute();
-        List<SearchResult> searchResults = searchResponse.getItems();
         List<String> videoIds = new ArrayList<String>();
 
-        if(searchResults != null){
+        for(int i = 0; i < response.getItems().size(); i++){
 
-            for(int i = 0; i < searchResults.size(); i++){
-                videoIds.add(searchResults.get(i).getId().getVideoId());
-            }
-
-            container.setPageToken(searchResponse.getNextPageToken());
-
-        }else {
-
-            //Cancel this async if results are null
-            onCancelled();
+            videoIds.add(searchResults.get(i).getId().getVideoId());
         }
 
         return videoIds;
     }
 
+    private List<VideoItem> getVideos(VideoListResponse videoListResponse){
 
-    private VideoContainer getVideoDetails(YouTube youTube, List<String> videoIds, VideoContainer container) throws Exception {
+        List<Video> videos = videoListResponse.getItems();
 
-        Joiner videoIdJoiner = Joiner.on(',');
-        String videoId = videoIdJoiner.join(videoIds);
+        List<VideoItem> videoItems = new ArrayList<VideoItem>();
 
-        YouTube.Videos.List listVideoRequest = youTube.videos().list("id, snippet, statistics").setId(videoId);
-        listVideoRequest.setKey(YouTubeApiKey.API_KEY);
-        listVideoRequest.setFields("items(" +
-                "id," +
-                "snippet/title," +
-                "snippet/thumbnails/medium/url," +
-                "snippet/publishedAt," +
-                "statistics/viewCount," +
-                "statistics/likeCount)");
-        listVideoRequest.setMaxResults((long) videoIds.size());
+        for(int i = 0; i < videos.size(); i++){
 
-        VideoListResponse listResponse = listVideoRequest.execute();
+            Video video = videos.get(i);
+            VideoItem videoItem = new VideoItem();
 
-        List<Video> videoList = listResponse.getItems();
+            videoItem.setId(video.getId());
+            videoItem.setTitle(video.getSnippet().getTitle());
+            videoItem.setThumbnailURL(video.getSnippet().getThumbnails().getMedium().getUrl());
+            videoItem.setPublishedAt(video.getSnippet().getPublishedAt().getValue());
+            videoItem.setViewCount(video.getStatistics().getViewCount());
+            videoItem.setLikeCount(video.getStatistics().getLikeCount());
+            videoItem.setDislikeCount(video.getStatistics().getDislikeCount());
+            videoItem.setDescription(video.getSnippet().getDescription());
+            videoItem.setLicense(video.getStatus().getLicense());
+            videoItem.setCategoryId(video.getSnippet().getCategoryId());
 
-        if (videoList != null) {
-
-            for (int i = 0; i < videoList.size(); i++) {
-
-                Video video = videoList.get(i);
-                VideoItem videoWrapper = new VideoItem();
-
-                videoWrapper.setVideoId(video.getId());
-                videoWrapper.setVideoTitle(video.getSnippet().getTitle());
-                videoWrapper.setThumbnailURL(video.getSnippet().getThumbnails().getMedium().getUrl());
-                videoWrapper.setPublishedDate(video.getSnippet().getPublishedAt().getValue());
-                videoWrapper.setViewCount(video.getStatistics().getViewCount());
-                videoWrapper.setLikeCount(video.getStatistics().getLikeCount());
-
-                container.getItems().add(videoWrapper);
-            }
-
-        } else {
-
-            //Cancel if list is null.
-            onCancelled();
+            videoItems.add(videoItem);
         }
 
-        return container;
+        return videoItems;
+    }
+
+    private void logger(ContentContainer container){
+
+        String className = this.getClass().getName();
+
+        for(int i = 0; i < container.getItems().size(); i++){
+
+            VideoItem video = (VideoItem) container.getItems().get(i);
+
+            Log.d(className, "Video Id: " + video.getId());
+            Log.d(className, "Video Title: " + video.getTitle());
+            Log.d(className, "Video Thumbnail URL: " + video.getThumbnailURL());
+            Log.d(className, "Video Published At: " + new Date(video.getPublishedAt()));
+            Log.d(className, "Video View Count: " + video.getViewCount());
+            Log.d(className, "Video Like Count: " + video.getLikeCount());
+            Log.d(className, "Video Dislike Count: " + video.getDislikeCount());
+            Log.d(className, "Video Description: " + video.getDescription());
+            Log.d(className, "Video Category Id: " + video.getCategoryId());
+            Log.d(className, "Video License: " + video.getLicense());
+        }
+
+        Log.d(className, "PageToken: " + container.getPageToken());
     }
 }

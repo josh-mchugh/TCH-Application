@@ -16,7 +16,6 @@ public class ContentViewHolder extends RecyclerView.ViewHolder {
     private ImageView channelIcon;
 
     private TextView title;
-    private TextView channelName;
     private TextView publishDate;
 
     public ContentViewHolder(View itemView) {
@@ -26,27 +25,26 @@ public class ContentViewHolder extends RecyclerView.ViewHolder {
         channelIcon = (ImageView) itemView.findViewById(R.id.channel_icon);
 
         title = (TextView) itemView.findViewById(R.id.title);
-        channelName = (TextView) itemView.findViewById(R.id.channel_name);
         publishDate = (TextView) itemView.findViewById(R.id.publish_date);
     }
 
     public ImageView getThumbnail() {
+
         return thumbnail;
     }
 
     public ImageView getChannelIcon() {
+
         return channelIcon;
     }
 
     public TextView getTitle() {
+
         return title;
     }
 
-    public TextView getChannelName() {
-        return channelName;
-    }
-
     public TextView getPublishDate() {
+
         return publishDate;
     }
 }

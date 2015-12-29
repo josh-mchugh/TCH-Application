@@ -3,14 +3,24 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#FF5722</item>
-        <item name="colorPrimaryDark">#E64A19</item>
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
         <!-- Customize your theme here. -->
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <!-- Tab Layout -->
     <style name="tabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">#0000FF</item>
+        <item name="tabIndicatorColor">@color/ColorPrimary</item>
+    </style>
+
+    <!-- Details Divider -->
+    <style name="details_divider">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/details_divider_color</item>
     </style>
 
 </resources>

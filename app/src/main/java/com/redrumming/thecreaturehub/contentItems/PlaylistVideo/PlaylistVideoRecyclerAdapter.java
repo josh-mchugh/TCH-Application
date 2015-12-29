@@ -6,11 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.channel.ChannelItem;
+import com.redrumming.thecreaturehub.contentItems.ContentType;
 import com.redrumming.thecreaturehub.contentItems.ContentRecyclerAdapter;
-import com.redrumming.thecreaturehub.util.ImageLoaderUtil;
+import com.redrumming.thecreaturehub.util.NumberFormatterUtil;
 import com.redrumming.thecreaturehub.util.TimePassedUtil;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by ME on 10/18/2015.
@@ -24,10 +25,10 @@ public class PlaylistVideoRecyclerAdapter extends ContentRecyclerAdapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         
-        if(viewType == ContentItem.PLAYLIST_VIDEO_ITEM){
+        if(viewType == ContentType.PLAYLIST_VIDEO_ITEM){
 
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.playlist_video_item, parent, false);
+                    .inflate(R.layout.item_playlist_video, parent, false);
             
             super.setContext(parent.getContext());
             PlaylistVideoViewHolder viewHolder = new PlaylistVideoViewHolder(view);
@@ -42,19 +43,20 @@ public class PlaylistVideoRecyclerAdapter extends ContentRecyclerAdapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        ContentItem contentItem = super.getContainer().getItems().get(position);
+        ContentType contentType = super.getContainer().getItems().get(position);
 
-        if(contentItem.getItemType() == ContentItem.PLAYLIST_VIDEO_ITEM){
+        if(contentType.getItemType() == ContentType.PLAYLIST_VIDEO_ITEM){
 
-            PlaylistVideoItem video = (PlaylistVideoItem) contentItem;
-            Channel channel = super.getContainer().getChannel();
+            PlaylistVideoItem video = (PlaylistVideoItem) contentType;
+            ChannelItem channelItem = super.getContainer().getChannelItem();
             PlaylistVideoViewHolder viewHolder = (PlaylistVideoViewHolder) holder;
 
-            ImageLoaderUtil.get(super.getContext()).displayImage(video.getThumbnailURL(), viewHolder.getThumbnail());
-            viewHolder.getTitle().setText(video.getVideoTitle());
-            viewHolder.getChannelIcon().setImageDrawable(channel.getDisplayIcon());
-            viewHolder.getChannelName().setText(channel.getChannelName());
-            viewHolder.getPublishDate().setText(new TimePassedUtil().getTimeDifference(video.getPublishedDate()));
+            Picasso.with(super.getContext()).load(video.getThumbnailURL()).into(viewHolder.getThumbnail());
+            viewHolder.getTitle().setText(video.getTitle());
+            viewHolder.getChannelIcon().setImageBitmap(channelItem.getDisplayIcon());
+            viewHolder.getPublishDate().setText(TimePassedUtil.getTimeDifference(video.getPublishedAt()));
+            viewHolder.getViewCountSpacer().setText(" \u00B7 ");
+            viewHolder.getViewCount().setText(new NumberFormatterUtil().formatShortView(video.getViewCount()));
         }
     }
 }

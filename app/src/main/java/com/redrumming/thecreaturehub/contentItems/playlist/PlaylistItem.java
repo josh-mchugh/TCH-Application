@@ -1,69 +1,88 @@
 package com.redrumming.thecreaturehub.contentItems.playlist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentType;
 
 /**
  * Created by ME on 7/30/2015.
  */
-public class PlaylistItem implements ContentItem{
+public class PlaylistItem extends ContentItem {
 
-    private String id;
-    private String title;
-    private String thumbnailURL;
-    private long publishedDate;
     private long videoCount;
     private boolean viewable;
 
-    public String getId() {
-        return id;
-    }
+    public PlaylistItem(){
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getThumbnailURL() {
-        return thumbnailURL;
-    }
-
-    public void setThumbnailURL(String thumbnailURL) {
-        this.thumbnailURL = thumbnailURL;
-    }
-
-    public long getPublishedDate() {
-        return publishedDate;
-    }
-
-    public void setPublishedDate(long publishedDate) {
-        this.publishedDate = publishedDate;
     }
 
     public long getVideoCount() {
+
         return videoCount;
     }
 
     public void setVideoCount(long videoCount) {
+
         this.videoCount = videoCount;
     }
 
     public boolean isViewable() {
+
         return viewable;
     }
 
     public void setViewable(boolean viewable) {
+
         this.viewable = viewable;
     }
 
     @Override
     public int getItemType() {
-        return ContentItem.PLAYLIST_ITEM;
+
+        return ContentType.PLAYLIST_ITEM;
     }
+
+    /**
+     * Constructor used to un-flatten this object via Parcelable.
+     *
+     * @param parcel
+     */
+    public PlaylistItem(Parcel parcel){
+        super(parcel);
+
+        videoCount = parcel.readLong();
+        viewable = parcel.readByte() != 0;
+    }
+
+    @Override
+    public int describeContents() {
+
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+
+        dest.writeLong(videoCount);
+        dest.writeByte( (byte) (viewable ? 1 : 0));
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PlaylistItem> CREATOR = new Parcelable.Creator<PlaylistItem>() {
+
+        @Override
+        public PlaylistItem createFromParcel(Parcel parcel) {
+
+            return new PlaylistItem(parcel);
+        }
+
+        @Override
+        public PlaylistItem[] newArray(int size) {
+
+            return new PlaylistItem[size];
+        }
+    };
 }

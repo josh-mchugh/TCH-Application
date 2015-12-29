@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.RecyclerOnItemClickListener;
-import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.util.RecyclerOnItemClickListener;
+import com.redrumming.thecreaturehub.channel.ChannelItem;
 import com.redrumming.thecreaturehub.util.EndlessScrollListener;
 
 /**
@@ -32,6 +34,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 
@@ -39,11 +42,13 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.content_fragment, viewGroup, false);
+        View view = inflater.inflate(R.layout.fragment_content, viewGroup, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
 
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.content_swift_refresh);
+        swipeRefresh.setColorSchemeResources(R.color.ColorPrimary, R.color.ColorPrimaryDark);
+
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -52,6 +57,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
                 ContentFragment.this.onRefresh(getAsync());
             }
         });
+
 
         scrollListener = new EndlessScrollListener(linearLayoutManager) {
 
@@ -68,8 +74,20 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.addOnItemTouchListener(new RecyclerOnItemClickListener(getActivity(), onItemClickListener));
 
+        if(getContainer().getItems().size() == 0 &&
+                (getContainer().getPageToken() == null || getContainer().getPageToken().isEmpty())) {
+
+            setup(ChannelsContainer.getInstance().getSelectedChannel(), getAsync());
+        }
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable("layoutManagerPosition", recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     public abstract void onSelect(int position);
@@ -77,9 +95,9 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
     public abstract ContentAsync getAsync();
     public abstract ContentRecyclerAdapter getAdapter();
 
-    public void setup(Channel channel, ContentAsync contentAsync){
+    public void setup(ChannelItem channelItem, ContentAsync contentAsync){
 
-        getContainer().setChannel(channel);
+        getContainer().setChannelItem(channelItem);
         getContainer().setPageToken("");
         getContainer().getItems().clear();
 
@@ -109,6 +127,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
 
             getContainer().setPageToken("");
             getContainer().getItems().clear();
+            getAdapter().notifyDataSetChanged();
 
             checkAsyncStatus();
             executeAsync(contentAsync);
@@ -119,27 +138,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
 
     public void updateView(ContentContainer contentContainer){
 
-        if(isLoading == true){
-
-            if(swipeRefresh != null && swipeRefresh.isRefreshing()){
-
-                swipeRefresh.setRefreshing(false);
-            }
-
-            if(getContainer().getItems().size() > 0){
-
-                int lastItem = (getContainer().getItems().size() - 1);
-                ContentItem contentItem = getContainer().getItems().get(lastItem);
-
-                if(contentItem.getItemType() == ContentItem.LOADING_ITEM){
-
-                    getContainer().getItems().remove(lastItem);
-                    getAdapter().notifyDataSetChanged();
-                }
-            }
-
-            isLoading = false;
-        }
+        removeLoadingStatus();
 
         getContainer().getItems().addAll(contentContainer.getItems());
         getContainer().setPageToken(contentContainer.getPageToken());
@@ -172,10 +171,35 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
         isLoading = true;
     }
 
+    private void removeLoadingStatus(){
+
+        if(isLoading == true){
+
+            if(swipeRefresh != null && swipeRefresh.isRefreshing()){
+
+                swipeRefresh.setRefreshing(false);
+            }
+
+            if(getContainer().getItems().size() > 0){
+
+                int lastItem = (getContainer().getItems().size() - 1);
+                ContentType contentType = getContainer().getItems().get(lastItem);
+
+                if(contentType.getItemType() == ContentType.LOADING_ITEM){
+
+                    getContainer().getItems().remove(lastItem);
+                    getAdapter().notifyDataSetChanged();
+                }
+            }
+
+            isLoading = false;
+        }
+    }
+
     @Override
     public void onSuccess(ContentContainer container) {
 
-        if(container.getChannel() == null && container.getItems() != null){
+        if(container.getChannelItem() == null && container.getItems() != null){
 
             return;
         }
@@ -186,6 +210,9 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
     @Override
     public void onFailure() {
 
+        Toast.makeText(getActivity(), "Unable retrieve data. Try again.", Toast.LENGTH_SHORT).show();
+
+        removeLoadingStatus();
     }
 
     private RecyclerOnItemClickListener.OnItemClickListener onItemClickListener = new RecyclerOnItemClickListener.OnItemClickListener() {

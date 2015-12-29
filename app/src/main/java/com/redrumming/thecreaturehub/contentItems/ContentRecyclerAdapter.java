@@ -24,10 +24,9 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(viewType == ContentItem.LOADING_ITEM){
+        if(viewType == ContentType.LOADING_ITEM){
 
-            View view  = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.loading_item, parent, false);
+            View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
 
             context = parent.getContext();
             LoadingViewHolder viewHolder = new LoadingViewHolder(view);
@@ -56,14 +55,17 @@ public class ContentRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public ContentContainer getContainer() {
+
         return container;
     }
 
     public void setContext(Context context) {
+
         this.context = context;
     }
 
     public Context getContext() {
+
         return context;
     }
 }

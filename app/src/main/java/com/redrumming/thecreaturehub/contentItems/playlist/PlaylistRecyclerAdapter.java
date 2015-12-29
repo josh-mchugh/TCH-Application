@@ -1,16 +1,18 @@
 package com.redrumming.thecreaturehub.contentItems.playlist;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import com.redrumming.thecreaturehub.contentItems.ContentType;
 import com.redrumming.thecreaturehub.contentItems.ContentRecyclerAdapter;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.util.ImageLoaderUtil;
-import com.redrumming.thecreaturehub.util.TimePassedUtil;
+import com.redrumming.thecreaturehub.channel.ChannelItem;
+import com.squareup.picasso.Picasso;
+
+import java.util.Date;
 
 /**
  * Created by ME on 8/6/2015.
@@ -24,10 +26,10 @@ public class PlaylistRecyclerAdapter extends ContentRecyclerAdapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(viewType == ContentItem.PLAYLIST_ITEM){
+        if(viewType == ContentType.PLAYLIST_ITEM){
 
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.playlist_item, parent, false);
+                    .inflate(R.layout.item_playlist, parent, false);
 
             super.setContext(parent.getContext());
             PlaylistViewHolder viewHolder = new PlaylistViewHolder(view);
@@ -42,19 +44,22 @@ public class PlaylistRecyclerAdapter extends ContentRecyclerAdapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        ContentItem item = super.getContainer().getItems().get(position);
+        ContentType item = super.getContainer().getItems().get(position);
 
-        if(item.getItemType() == ContentItem.PLAYLIST_ITEM){
+        if(item.getItemType() == ContentType.PLAYLIST_ITEM){
 
             PlaylistItem playlistItem = (PlaylistItem) item;
-            Channel channel = super.getContainer().getChannel();
+            ChannelItem channelItem = super.getContainer().getChannelItem();
             PlaylistViewHolder viewHolder = (PlaylistViewHolder) holder;
 
-            ImageLoaderUtil.get(super.getContext()).displayImage(playlistItem.getThumbnailURL(), viewHolder.getThumbnail());
+            Picasso.with(super.getContext()).load(playlistItem.getThumbnailURL()).into(viewHolder.getThumbnail());
             viewHolder.getTitle().setText(playlistItem.getTitle());
-            viewHolder.getChannelIcon().setImageDrawable(channel.getDisplayIcon());
-            viewHolder.getChannelName().setText(channel.getChannelName());
-            viewHolder.getPublishDate().setText(new TimePassedUtil().getTimeDifference(playlistItem.getPublishedDate()));
+            viewHolder.getChannelIcon().setImageBitmap(channelItem.getDisplayIcon());
+
+            String numberOfVideos = playlistItem.getVideoCount() > 1 ? playlistItem.getVideoCount() + " videos" : playlistItem.getVideoCount() + " video";
+            viewHolder.getNumberOfVideos().setText(numberOfVideos);
+
+            viewHolder.getPublishDate().setText(DateUtils.getRelativeTimeSpanString(playlistItem.getPublishedAt(), new Date().getTime(), DateUtils.WEEK_IN_MILLIS));
         }
     }
 }

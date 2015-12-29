@@ -1,10 +1,10 @@
 package com.redrumming.thecreaturehub.contentItems.video;
 
-import com.redrumming.thecreaturehub.contentItems.ContentContainer;
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
-import com.redrumming.thecreaturehub.channel.Channel;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.List;
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
+import com.redrumming.thecreaturehub.contentItems.ContentContainerType;
 
 /**
  * Created by ME on 7/26/2015.
@@ -12,31 +12,45 @@ import java.util.List;
 public class VideoContainer extends ContentContainer {
 
     public VideoContainer(){
+
         super();
     }
 
     @Override
-    public Channel getChannel() {
-        return super.getChannel();
+    public int getType() {
+
+        return ContentContainer.VIDEO_CONTAINER;
+    }
+
+    /**
+     * Constructor used to un-flatten this object via Parcelable.
+     *
+     * @param parcel
+     */
+    public VideoContainer(Parcel parcel){
+
+        super(parcel);
     }
 
     @Override
-    public void setChannel(Channel channel) {
-        super.setChannel(channel);
+    public int describeContents() {
+
+        return ContentContainerType.VIDEO_CONTAINER;
     }
 
-    @Override
-    public List<ContentItem> getItems() {
-        return super.getItems();
-    }
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<VideoContainer> CREATOR = new Parcelable.Creator<VideoContainer>() {
 
-    @Override
-    public String getPageToken() {
-        return super.getPageToken();
-    }
+        @Override
+        public VideoContainer createFromParcel(Parcel parcel) {
 
-    @Override
-    public void setPageToken(String pageToken) {
-        super.setPageToken(pageToken);
-    }
+            return new VideoContainer(parcel);
+        }
+
+        @Override
+        public VideoContainer[] newArray(int size) {
+
+            return new VideoContainer[size];
+        }
+    };
 }

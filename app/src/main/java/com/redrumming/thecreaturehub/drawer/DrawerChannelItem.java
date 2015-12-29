@@ -1,20 +1,20 @@
 package com.redrumming.thecreaturehub.drawer;
 
-import com.redrumming.thecreaturehub.channel.Channel;
+import com.redrumming.thecreaturehub.channel.ChannelItem;
 
 /**
  * Created by ME on 7/22/2015.
  */
 public class DrawerChannelItem implements DrawerItem{
 
-    private Channel channel;
+    private ChannelItem channelItem;
 
-    public Channel getChannel() {
-        return channel;
+    public ChannelItem getChannelItem() {
+        return channelItem;
     }
 
-    public void setChannel(Channel channel) {
-        this.channel = channel;
+    public void setChannelItem(ChannelItem channelItem) {
+        this.channelItem = channelItem;
     }
 
     @Override

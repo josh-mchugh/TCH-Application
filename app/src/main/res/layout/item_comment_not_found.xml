@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <View
+        style="@style/details_divider"
+        android:layout_alignParentTop="true"
+        />
+
+    <TextView
+        android:id="@+id/no_comments_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="15dp"
+        android:paddingBottom="20dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/no_comments_text_color"
+        android:text="NO COMMENTS FOUND"
+        />
+
+</RelativeLayout>

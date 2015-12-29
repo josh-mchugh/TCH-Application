@@ -1,9 +1,10 @@
 package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
-import com.redrumming.thecreaturehub.contentItems.video.VideoItem;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.math.BigInteger;
+import com.redrumming.thecreaturehub.contentItems.ContentType;
+import com.redrumming.thecreaturehub.contentItems.video.VideoItem;
 
 /**
  * Created by ME on 10/18/2015.
@@ -14,92 +15,87 @@ public class PlaylistVideoItem extends VideoItem {
     private boolean isPublic;
     private String playlistId;
 
+    public PlaylistVideoItem(){
+
+    }
+
     public String getPlaylistId() {
+
         return playlistId;
     }
 
     public void setPlaylistId(String playlistId) {
+
         this.playlistId = playlistId;
     }
 
     public Long getPosition() {
+
         return position;
     }
 
     public void setPosition(Long position) {
+
         this.position = position;
     }
 
     public boolean isPublic() {
+
         return isPublic;
     }
 
     public void setIsPublic(boolean isPublic) {
+
         this.isPublic = isPublic;
     }
 
     @Override
-    public String getVideoId() {
-        return super.getVideoId();
-    }
-
-    @Override
-    public void setVideoId(String videoId) {
-        super.setVideoId(videoId);
-    }
-
-    @Override
-    public String getVideoTitle() {
-        return super.getVideoTitle();
-    }
-
-    @Override
-    public void setVideoTitle(String videoTitle) {
-        super.setVideoTitle(videoTitle);
-    }
-
-    @Override
-    public String getThumbnailURL() {
-        return super.getThumbnailURL();
-    }
-
-    @Override
-    public void setThumbnailURL(String thumbnailURL) {
-        super.setThumbnailURL(thumbnailURL);
-    }
-
-    @Override
-    public long getPublishedDate() {
-        return super.getPublishedDate();
-    }
-
-    @Override
-    public void setPublishedDate(long publishedDate) {
-        super.setPublishedDate(publishedDate);
-    }
-
-    @Override
-    public BigInteger getViewCount() {
-        return super.getViewCount();
-    }
-
-    @Override
-    public void setViewCount(BigInteger viewCount) {
-        super.setViewCount(viewCount);
-    }
-
-    @Override
-    public BigInteger getLikeCount() {
-        return super.getLikeCount();
-    }
-
-    @Override
-    public void setLikeCount(BigInteger likeCount) {
-        super.setLikeCount(likeCount);
-    }
-
-    @Override
     public int getItemType() {
-        return ContentItem.PLAYLIST_VIDEO_ITEM;
+
+        return ContentType.PLAYLIST_VIDEO_ITEM;
     }
+
+    /**
+     * Constructor used to un-flatten this object via Parcelable.
+     *
+     * @param parcel
+     */
+    public PlaylistVideoItem(Parcel parcel){
+        super(parcel);
+
+        position = parcel.readLong();
+        isPublic = parcel.readByte() != 0;
+        playlistId = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+
+        return ContentType.PLAYLIST_VIDEO_ITEM;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+
+        dest.writeLong(position);
+        dest.writeByte((byte) (isPublic ? 1 : 0));
+        dest.writeString(playlistId);
+    }
+
+    @SuppressWarnings("unused")
+    public static Parcelable.Creator<PlaylistVideoItem> CREATOR = new Parcelable.Creator<PlaylistVideoItem>() {
+
+        @Override
+        public PlaylistVideoItem createFromParcel(Parcel parcel) {
+
+            return new PlaylistVideoItem(parcel);
+        }
+
+        @Override
+        public PlaylistVideoItem[] newArray(int size) {
+
+            return new PlaylistVideoItem[size];
+        }
+    };
 }

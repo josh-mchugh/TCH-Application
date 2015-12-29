@@ -3,16 +3,14 @@ package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.api.client.util.Joiner;
-import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
-import com.redrumming.thecreaturehub.YouTubeApiKey;
 import com.redrumming.thecreaturehub.contentItems.ContentAsync;
 import com.redrumming.thecreaturehub.contentItems.ContentAsyncListener;
 import com.redrumming.thecreaturehub.contentItems.ContentContainer;
+import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +34,7 @@ public class PlaylistVideoAsync extends ContentAsync{
 
             PlaylistVideoContainer tempContainer = (PlaylistVideoContainer) container[0];
 
-            updatedContainer.setChannel(tempContainer.getChannel());
+            updatedContainer.setChannelItem(tempContainer.getChannelItem());
             updatedContainer.setPageToken(tempContainer.getPageToken());
             updatedContainer.setPlaylistId(tempContainer.getPlaylistId());
 
@@ -54,24 +52,10 @@ public class PlaylistVideoAsync extends ContentAsync{
     protected void onPostExecute(ContentContainer container) {
         super.onPostExecute(container);
 
-        String className = this.getClass().getCanonicalName();
+        if(container.getItems() != null && container.getItems().size() > 0) {
 
-        for(int i = 0; i < container.getItems().size(); i++){
-
-            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
-
-            Log.d(className, "Playlist VideoId: " + video.getVideoId());
-            Log.d(className, "Playlist Video Title: " + video.getVideoTitle());
-            Log.d(className, "Playlist Video Thumbnail URL: " + video.getThumbnailURL());
-            Log.d(className, "Playlist Video Position: " + video.getPosition());
-            Log.d(className, "Playlist Video Date: " + new Date(video.getPublishedDate()));
-            Log.d(className, "Playlist Video Public: " + video.isPublic());
-            Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
-            Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
-            Log.d(className, "Playlist Id: " + video.getPlaylistId());
+            logger(container);
         }
-
-        Log.d(className, "PageToken: " + container.getPageToken());
     }
 
     private PlaylistVideoContainer getVideos(PlaylistVideoContainer container){
@@ -79,22 +63,19 @@ public class PlaylistVideoAsync extends ContentAsync{
         container = retrieveYouTubeData(container);
 
         return container;
-
     }
 
     private PlaylistVideoContainer retrieveYouTubeData(PlaylistVideoContainer container){
 
         try{
 
-            YouTube.PlaylistItems.List search = getSearchParms(super.getYoutube(), container);
-
-            PlaylistItemListResponse response = search.execute();
+            PlaylistItemListResponse response = new YouTubeServiceCalls(getContext()).getPlaylistItems(container.getPlaylistId(), container.getPageToken());
             List<PlaylistItem> items = response.getItems();
 
             container.getItems().addAll(convertData(items));
             container.setPageToken(response.getNextPageToken());
 
-            container = getVideoDetails(super.getYoutube(), container);
+            container = getVideoDetails(container);
 
         }catch (Exception e){
 
@@ -102,33 +83,6 @@ public class PlaylistVideoAsync extends ContentAsync{
         }
 
         return container;
-    }
-
-    private YouTube.PlaylistItems.List getSearchParms(YouTube youtube, PlaylistVideoContainer container) throws Exception{
-
-        String searchCategories = "id,snippet,status";
-        YouTube.PlaylistItems.List search = youtube.playlistItems().list(searchCategories);
-
-        search.setKey(YouTubeApiKey.API_KEY);
-        search.setPlaylistId(container.getPlaylistId());
-        search.setPageToken(container.getPageToken());
-
-        String searchFields = "items( "
-                + "id, "
-                + "snippet/publishedAt, "
-                + "snippet/title, "
-                + "snippet/thumbnails/medium/url, "
-                + "snippet/playlistId, "
-                + "snippet/position, "
-                + "snippet/resourceId/videoId, "
-                + "status/privacyStatus "
-                + "), "
-                + "nextPageToken";
-        search.setFields(searchFields);
-
-        search.setMaxResults(super.getMaxResults());
-
-        return search;
     }
 
     private List<PlaylistVideoItem> convertData(List<PlaylistItem> items){
@@ -139,11 +93,8 @@ public class PlaylistVideoAsync extends ContentAsync{
 
             PlaylistVideoItem video = new PlaylistVideoItem();
 
-            video.setVideoId(items.get(i).getSnippet().getResourceId().getVideoId());
+            video.setId(items.get(i).getSnippet().getResourceId().getVideoId());
             video.setPosition(items.get(i).getSnippet().getPosition());
-            video.setVideoTitle(items.get(i).getSnippet().getTitle());
-            video.setThumbnailURL(items.get(i).getSnippet().getThumbnails().getMedium().getUrl());
-            video.setPublishedDate(items.get(i).getSnippet().getPublishedAt().getValue());
             video.setIsPublic(items.get(i).getStatus().getPrivacyStatus().equals("public"));
 
             videos.add(video);
@@ -152,30 +103,18 @@ public class PlaylistVideoAsync extends ContentAsync{
         return videos;
     }
 
-    private PlaylistVideoContainer getVideoDetails(YouTube youtube, PlaylistVideoContainer container) throws Exception {
+    private PlaylistVideoContainer getVideoDetails(PlaylistVideoContainer container) throws Exception {
 
         List<String> videoIds = new ArrayList<String>();
-
-        Joiner videoIdJoiner = Joiner.on(',');
 
         for (int i = 0; i < container.getItems().size(); i++) {
 
             PlaylistVideoItem videoWrapper = (PlaylistVideoItem) container.getItems().get(i);
 
-            videoIds.add(videoWrapper.getVideoId());
+            videoIds.add(videoWrapper.getId());
         }
 
-        String videoId = videoIdJoiner.join(videoIds);
-
-        YouTube.Videos.List listVideoRequest = youtube.videos().list("id, statistics").setId(videoId);
-        listVideoRequest.setKey(YouTubeApiKey.API_KEY);
-        listVideoRequest.setFields("items( " +
-                "id, " +
-                "statistics/viewCount, " +
-                "statistics/likeCount)");
-        listVideoRequest.setMaxResults((long) videoIds.size());
-
-        VideoListResponse listResponse = listVideoRequest.execute();
+        VideoListResponse listResponse = new YouTubeServiceCalls(getContext()).getVideoItems(videoIds);
 
         List<Video> videoList = listResponse.getItems();
 
@@ -185,16 +124,23 @@ public class PlaylistVideoAsync extends ContentAsync{
 
                 for (int j = 0; j < container.getItems().size(); j++) {
 
-                    PlaylistVideoItem videoWrapper = (PlaylistVideoItem) container.getItems().get(j);
+                    PlaylistVideoItem playlistVideoItem = (PlaylistVideoItem) container.getItems().get(j);
 
-                    if (videoWrapper.getVideoId().equals(videoList.get(i).getId())) {
+                    if (playlistVideoItem.getId().equals(videoList.get(i).getId())) {
 
-                        videoWrapper.setLikeCount(videoList.get(i).getStatistics().getLikeCount());
-                        videoWrapper.setViewCount(videoList.get(i).getStatistics().getViewCount());
-                        videoWrapper.setPlaylistId(container.getPlaylistId());
+                        playlistVideoItem.setTitle(videoList.get(i).getSnippet().getTitle());
+                        playlistVideoItem.setThumbnailURL(videoList.get(i).getSnippet().getThumbnails().getMedium().getUrl());
+                        playlistVideoItem.setPublishedAt(videoList.get(i).getSnippet().getPublishedAt().getValue());
+                        playlistVideoItem.setLikeCount(videoList.get(i).getStatistics().getLikeCount());
+                        playlistVideoItem.setViewCount(videoList.get(i).getStatistics().getViewCount());
+                        playlistVideoItem.setDescription(videoList.get(i).getSnippet().getDescription());
+                        playlistVideoItem.setCategoryId(videoList.get(i).getSnippet().getCategoryId());
+                        playlistVideoItem.setLicense(videoList.get(i).getStatus().getLicense());
+                        playlistVideoItem.setDislikeCount(videoList.get(i).getStatistics().getDislikeCount());
+                        playlistVideoItem.setPlaylistId(container.getPlaylistId());
 
                         container.getItems().remove(j);
-                        container.getItems().add(j, videoWrapper);
+                        container.getItems().add(j, playlistVideoItem);
                     }
                 }
             }
@@ -204,5 +150,31 @@ public class PlaylistVideoAsync extends ContentAsync{
         }
 
         return container;
+    }
+
+    private void logger(ContentContainer container){
+
+        String className = this.getClass().getCanonicalName();
+
+        for(int i = 0; i < container.getItems().size(); i++){
+
+            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
+
+            Log.d(className, "Playlist VideoId: " + video.getId());
+            Log.d(className, "Playlist Video Title: " + video.getTitle());
+            Log.d(className, "Playlist Video Thumbnail URL: " + video.getThumbnailURL());
+            Log.d(className, "Playlist Video Position: " + video.getPosition());
+            Log.d(className, "Playlist Video Date: " + new Date(video.getPublishedAt()));
+            Log.d(className, "Playlist Video Public: " + video.isPublic());
+            Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
+            Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
+            Log.d(className, "Playlist Video Description: " + video.getDescription());
+            Log.d(className, "Playlist Video Category Id: " + video.getCategoryId());
+            Log.d(className, "Playlist Video License: " + video.getLicense());
+            Log.d(className, "Playlist Video Dislike Count: " + video.getDislikeCount());
+            Log.d(className, "Playlist Id: " + video.getPlaylistId());
+        }
+
+        Log.d(className, "PageToken: " + container.getPageToken());
     }
 }

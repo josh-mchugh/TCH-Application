@@ -3,8 +3,7 @@ package com.redrumming.thecreaturehub.contentItems;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.google.api.services.youtube.YouTube;
-import com.redrumming.thecreaturehub.util.YouTubeUtil;
+import com.redrumming.thecreaturehub.util.NetworkUtil;
 
 /**
  * Created by ME on 10/24/2015.
@@ -12,13 +11,12 @@ import com.redrumming.thecreaturehub.util.YouTubeUtil;
 public class ContentAsync extends AsyncTask<ContentContainer, Void, ContentContainer>{
 
     private ContentAsyncListener listener;
-    private YouTube youtube;
-    private final Long MAX_RESULTS = 20l;
+    private Context context;
 
     public ContentAsync(Context context, ContentAsyncListener listener){
 
         this.listener = listener;
-        this.youtube = YouTubeUtil.get(context).getYouTube();
+        this.context = context;
     }
 
     @Override
@@ -34,7 +32,18 @@ public class ContentAsync extends AsyncTask<ContentContainer, Void, ContentConta
 
         if(isCancelled() == false){
 
-            listener.onSuccess(container);
+            if(container.getItems() != null && container.getItems().size() > 0) {
+
+                listener.onSuccess(container);
+
+            }else{
+
+                listener.onFailure();
+            }
+
+        }else{
+
+            listener.onFailure();
         }
     }
 
@@ -48,6 +57,8 @@ public class ContentAsync extends AsyncTask<ContentContainer, Void, ContentConta
     protected void onCancelled() {
 
         super.onCancelled();
+
+        listener.onFailure();
     }
 
     @Override
@@ -56,18 +67,23 @@ public class ContentAsync extends AsyncTask<ContentContainer, Void, ContentConta
         return null;
     }
 
+    public void checkNetworkStatus(){
+
+        NetworkUtil networkUtil = new NetworkUtil();
+
+        if(networkUtil.hasConnection(getContext()) == false){
+
+            this.cancel(true);
+        }
+    }
+
     public ContentAsyncListener getListener() {
 
         return listener;
     }
 
-    public YouTube getYoutube() {
+    public Context getContext() {
 
-        return youtube;
-    }
-
-    public Long getMaxResults() {
-
-        return MAX_RESULTS;
+        return context;
     }
 }

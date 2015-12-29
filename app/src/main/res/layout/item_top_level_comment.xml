@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="5dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/comment_user_profile_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="15dp"
+            />
+
+        <TextView
+            android:id="@+id/comment_user_display_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/comment_user_profile_image"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="3dp"
+            android:textSize="17sp"
+            android:textColor="@color/display_name_text_color"
+            />
+
+        <TextView
+            android:id="@+id/comment_display_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/comment_user_profile_image"
+            android:layout_below="@id/comment_user_display_name"
+            android:textSize="16sp"
+            android:textColor="@color/comment_text_color"
+            />
+
+        <TextView
+            android:id="@+id/comment_published_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/comment_user_profile_image"
+            android:layout_below="@id/comment_display_comment"
+            android:layout_marginBottom="5dp"
+            android:paddingTop="2dp"
+            android:textSize="16sp"
+            android:textColor="@color/publish_date_text_color"
+            />
+
+        <RelativeLayout
+            android:id="@+id/comment_load_more_replies"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/comment_user_profile_image"
+            android:layout_below="@+id/comment_published_date"
+            android:paddingBottom="1dp"
+            android:visibility="gone"
+            >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                >
+
+                <TextView
+                    android:id="@+id/comment_load_more_replies_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="5dp"
+                    android:text="EARLIER REPLIES"
+                    android:textSize="17dp"
+                    android:textColor="@color/load_more_text_color"
+                    />
+
+                <ImageView
+                    android:id="@+id/comment_load_more_replies_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/comment_load_more_replies_text"
+                    android:src="@drawable/expand_arrow"
+                    />
+
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/comment_load_more_replies_progress_bar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:indeterminate="true"
+                android:indeterminateDrawable="@drawable/progress"
+                android:indeterminateDuration="700"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/reply_comments_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/comment_load_more_replies"
+            android:orientation="vertical"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

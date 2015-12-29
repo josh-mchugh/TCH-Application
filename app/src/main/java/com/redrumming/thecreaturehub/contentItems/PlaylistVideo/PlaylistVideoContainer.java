@@ -1,10 +1,10 @@
 package com.redrumming.thecreaturehub.contentItems.PlaylistVideo;
 
-import com.redrumming.thecreaturehub.channel.Channel;
-import com.redrumming.thecreaturehub.contentItems.ContentContainer;
-import com.redrumming.thecreaturehub.contentItems.ContentItem;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.List;
+import com.redrumming.thecreaturehub.contentItems.ContentContainer;
+import com.redrumming.thecreaturehub.contentItems.ContentContainerType;
 
 /**
  * Created by ME on 10/18/2015.
@@ -14,39 +14,62 @@ public class PlaylistVideoContainer extends ContentContainer {
     private String playlistId;
 
     public PlaylistVideoContainer(){
-        super();
-    }
 
-    @Override
-    public Channel getChannel() {
-        return super.getChannel();
-    }
-
-    @Override
-    public void setChannel(Channel channel) {
-        super.setChannel(channel);
-    }
-
-    @Override
-    public List<ContentItem> getItems() {
-        return super.getItems();
-    }
-
-    @Override
-    public String getPageToken() {
-        return super.getPageToken();
-    }
-
-    @Override
-    public void setPageToken(String pageToken) {
-        super.setPageToken(pageToken);
     }
 
     public String getPlaylistId() {
+
         return playlistId;
     }
 
     public void setPlaylistId(String playlistId) {
+
         this.playlistId = playlistId;
     }
+
+    @Override
+    public int getType() {
+
+        return ContentContainerType.PLAYLIST_VIDEO_CONTAINER;
+    }
+
+    /**
+     * Constructor used to un-flatten this object via Parcelable.
+     *
+     * @param parcel
+     */
+    public PlaylistVideoContainer(Parcel parcel){
+        super(parcel);
+
+        playlistId = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+
+        return ContentContainerType.PLAYLIST_VIDEO_CONTAINER;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+
+        dest.writeString(playlistId);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PlaylistVideoContainer> CREATOR = new Parcelable.Creator<PlaylistVideoContainer>() {
+
+        @Override
+        public PlaylistVideoContainer createFromParcel(Parcel parcel) {
+
+            return new PlaylistVideoContainer(parcel);
+        }
+
+        @Override
+        public PlaylistVideoContainer[] newArray(int size) {
+
+            return new PlaylistVideoContainer[size];
+        }
+    };
 }
