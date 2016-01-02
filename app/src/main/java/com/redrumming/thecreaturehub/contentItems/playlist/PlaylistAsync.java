@@ -43,7 +43,7 @@ public class PlaylistAsync extends ContentAsync{
 
         if(container.getItems() != null && container.getItems().size() > 0) {
 
-            logger(container);
+            //logger(container);
         }
     }
 
@@ -86,22 +86,22 @@ public class PlaylistAsync extends ContentAsync{
         return playlistItems;
     }
 
-    private void logger(ContentContainer container){
-
-        String className = this.getClass().getName();
-
-        for(int i = 0; i < container.getItems().size(); i++){
-
-            PlaylistItem playlist = (PlaylistItem) container.getItems().get(i);
-
-            Log.d(className, "Playlist Id: " + playlist.getId());
-            Log.d(className, "Playlist Title: " + playlist.getTitle());
-            Log.d(className, "Playlist Thumbnail URL: " + playlist.getThumbnailURL());
-            Log.d(className, "Playlist Published At: " + new Date(playlist.getPublishedAt()));
-            Log.d(className, "Playlist Public: " + playlist.isViewable());
-            Log.d(className, "Playlist Item Count: " + playlist.getVideoCount());
-        }
-
-        Log.d(className, "Next Page Token: " + container.getPageToken());
-    }
+//    private void logger(ContentContainer container){
+//
+//        String className = this.getClass().getName();
+//
+//        for(int i = 0; i < container.getItems().size(); i++){
+//
+//            PlaylistItem playlist = (PlaylistItem) container.getItems().get(i);
+//
+//            Log.d(className, "Playlist Id: " + playlist.getId());
+//            Log.d(className, "Playlist Title: " + playlist.getTitle());
+//            Log.d(className, "Playlist Thumbnail URL: " + playlist.getThumbnailURL());
+//            Log.d(className, "Playlist Published At: " + new Date(playlist.getPublishedAt()));
+//            Log.d(className, "Playlist Public: " + playlist.isViewable());
+//            Log.d(className, "Playlist Item Count: " + playlist.getVideoCount());
+//        }
+//
+//        Log.d(className, "Next Page Token: " + container.getPageToken());
+//    }
 }

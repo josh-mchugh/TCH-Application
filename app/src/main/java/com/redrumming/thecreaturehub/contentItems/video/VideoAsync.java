@@ -45,7 +45,7 @@ public class VideoAsync extends ContentAsync{
 
         if(container.getItems() != null && container.getItems().size() > 0) {
 
-            logger(container);
+            //logger(container);
         }
     }
 
@@ -112,26 +112,26 @@ public class VideoAsync extends ContentAsync{
         return videoItems;
     }
 
-    private void logger(ContentContainer container){
-
-        String className = this.getClass().getName();
-
-        for(int i = 0; i < container.getItems().size(); i++){
-
-            VideoItem video = (VideoItem) container.getItems().get(i);
-
-            Log.d(className, "Video Id: " + video.getId());
-            Log.d(className, "Video Title: " + video.getTitle());
-            Log.d(className, "Video Thumbnail URL: " + video.getThumbnailURL());
-            Log.d(className, "Video Published At: " + new Date(video.getPublishedAt()));
-            Log.d(className, "Video View Count: " + video.getViewCount());
-            Log.d(className, "Video Like Count: " + video.getLikeCount());
-            Log.d(className, "Video Dislike Count: " + video.getDislikeCount());
-            Log.d(className, "Video Description: " + video.getDescription());
-            Log.d(className, "Video Category Id: " + video.getCategoryId());
-            Log.d(className, "Video License: " + video.getLicense());
-        }
-
-        Log.d(className, "PageToken: " + container.getPageToken());
-    }
+//    private void logger(ContentContainer container){
+//
+//        String className = this.getClass().getName();
+//
+//        for(int i = 0; i < container.getItems().size(); i++){
+//
+//            VideoItem video = (VideoItem) container.getItems().get(i);
+//
+//            Log.d(className, "Video Id: " + video.getId());
+//            Log.d(className, "Video Title: " + video.getTitle());
+//            Log.d(className, "Video Thumbnail URL: " + video.getThumbnailURL());
+//            Log.d(className, "Video Published At: " + new Date(video.getPublishedAt()));
+//            Log.d(className, "Video View Count: " + video.getViewCount());
+//            Log.d(className, "Video Like Count: " + video.getLikeCount());
+//            Log.d(className, "Video Dislike Count: " + video.getDislikeCount());
+//            Log.d(className, "Video Description: " + video.getDescription());
+//            Log.d(className, "Video Category Id: " + video.getCategoryId());
+//            Log.d(className, "Video License: " + video.getLicense());
+//        }
+//
+//        Log.d(className, "PageToken: " + container.getPageToken());
+//    }
 }

@@ -78,14 +78,14 @@ public class PlaylistVideoFragment extends ContentFragment{
             channelItem = getContainer().getChannelItem();
         }
 
-       Fragment fragment = getParentFragment().getFragmentManager().findFragmentByTag(FragmentTags.PLAYER_FRAGMENT);
+       Fragment fragment = getFragmentManager().findFragmentByTag(FragmentTags.PLAYER_FRAGMENT);
 
         if(fragment != null){
 
             if(fragment instanceof PlayerFragment){
 
-                getParentFragment().getFragmentManager().beginTransaction().remove(fragment);
-                getParentFragment().getFragmentManager().popBackStack();
+                getFragmentManager().beginTransaction().remove(fragment);
+                getFragmentManager().popBackStack();
             }
         }
 

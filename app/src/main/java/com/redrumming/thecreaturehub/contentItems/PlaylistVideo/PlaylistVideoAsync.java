@@ -54,7 +54,7 @@ public class PlaylistVideoAsync extends ContentAsync{
 
         if(container.getItems() != null && container.getItems().size() > 0) {
 
-            logger(container);
+            //logger(container);
         }
     }
 
@@ -152,29 +152,29 @@ public class PlaylistVideoAsync extends ContentAsync{
         return container;
     }
 
-    private void logger(ContentContainer container){
-
-        String className = this.getClass().getCanonicalName();
-
-        for(int i = 0; i < container.getItems().size(); i++){
-
-            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
-
-            Log.d(className, "Playlist VideoId: " + video.getId());
-            Log.d(className, "Playlist Video Title: " + video.getTitle());
-            Log.d(className, "Playlist Video Thumbnail URL: " + video.getThumbnailURL());
-            Log.d(className, "Playlist Video Position: " + video.getPosition());
-            Log.d(className, "Playlist Video Date: " + new Date(video.getPublishedAt()));
-            Log.d(className, "Playlist Video Public: " + video.isPublic());
-            Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
-            Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
-            Log.d(className, "Playlist Video Description: " + video.getDescription());
-            Log.d(className, "Playlist Video Category Id: " + video.getCategoryId());
-            Log.d(className, "Playlist Video License: " + video.getLicense());
-            Log.d(className, "Playlist Video Dislike Count: " + video.getDislikeCount());
-            Log.d(className, "Playlist Id: " + video.getPlaylistId());
-        }
-
-        Log.d(className, "PageToken: " + container.getPageToken());
-    }
+//    private void logger(ContentContainer container){
+//
+//        String className = this.getClass().getCanonicalName();
+//
+//        for(int i = 0; i < container.getItems().size(); i++){
+//
+//            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
+//
+//            Log.d(className, "Playlist VideoId: " + video.getId());
+//            Log.d(className, "Playlist Video Title: " + video.getTitle());
+//            Log.d(className, "Playlist Video Thumbnail URL: " + video.getThumbnailURL());
+//            Log.d(className, "Playlist Video Position: " + video.getPosition());
+//            Log.d(className, "Playlist Video Date: " + new Date(video.getPublishedAt()));
+//            Log.d(className, "Playlist Video Public: " + video.isPublic());
+//            Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
+//            Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
+//            Log.d(className, "Playlist Video Description: " + video.getDescription());
+//            Log.d(className, "Playlist Video Category Id: " + video.getCategoryId());
+//            Log.d(className, "Playlist Video License: " + video.getLicense());
+//            Log.d(className, "Playlist Video Dislike Count: " + video.getDislikeCount());
+//            Log.d(className, "Playlist Id: " + video.getPlaylistId());
+//        }
+//
+//        Log.d(className, "PageToken: " + container.getPageToken());
+//    }
 }

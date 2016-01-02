@@ -57,7 +57,7 @@ public class ReplyCommentAsync extends AsyncTask<ReplyCommentContainer, Void, Re
     protected void onPostExecute(ReplyCommentContainer container) {
         super.onPostExecute(container);
 
-        logger(container);
+        //logger(container);
         listener.onSuccess(container);
     }
 
@@ -83,28 +83,28 @@ public class ReplyCommentAsync extends AsyncTask<ReplyCommentContainer, Void, Re
         return replyCommentItems;
     }
 
-    private void logger(ReplyCommentContainer container){
-
-        String className = this.getClass().getName();
-
-        List<CommentItemType> commentItemTypes = container.getCommentItems();
-
-        for(CommentItemType comment : commentItemTypes){
-
-            if(comment.getItemType() == CommentItemType.REPLY_COMMENT){
-
-                ReplyCommentItem replyCommentItem = (ReplyCommentItem) comment;
-
-                Log.d(className, "Reply Comment Id: " + replyCommentItem.getId());
-                Log.d(className, "Reply Comment Parent Id: " + replyCommentItem.getParentId());
-                Log.d(className, "Reply Comment ChannelItem Id: " + replyCommentItem.getChannelId());
-                Log.d(className, "Reply Comment Profile Name: " + replyCommentItem.getDisplayName());
-                Log.d(className, "Reply Comment Profile Image URL: " + replyCommentItem.getProfileImageURL());
-                Log.d(className, "Reply Comment Comment: " + replyCommentItem.getTextDisplay());
-                Log.d(className, "Reply Comment Published At: " + new Date(replyCommentItem.getPublishedAt()));
-            }
-        }
-
-        Log.d(className,"Reply Container Next Page Token: " + container.getPageToken());
-    }
+//    private void logger(ReplyCommentContainer container){
+//
+//        String className = this.getClass().getName();
+//
+//        List<CommentItemType> commentItemTypes = container.getCommentItems();
+//
+//        for(CommentItemType comment : commentItemTypes){
+//
+//            if(comment.getItemType() == CommentItemType.REPLY_COMMENT){
+//
+//                ReplyCommentItem replyCommentItem = (ReplyCommentItem) comment;
+//
+//                Log.d(className, "Reply Comment Id: " + replyCommentItem.getId());
+//                Log.d(className, "Reply Comment Parent Id: " + replyCommentItem.getParentId());
+//                Log.d(className, "Reply Comment ChannelItem Id: " + replyCommentItem.getChannelId());
+//                Log.d(className, "Reply Comment Profile Name: " + replyCommentItem.getDisplayName());
+//                Log.d(className, "Reply Comment Profile Image URL: " + replyCommentItem.getProfileImageURL());
+//                Log.d(className, "Reply Comment Comment: " + replyCommentItem.getTextDisplay());
+//                Log.d(className, "Reply Comment Published At: " + new Date(replyCommentItem.getPublishedAt()));
+//            }
+//        }
+//
+//        Log.d(className,"Reply Container Next Page Token: " + container.getPageToken());
+//    }
 }
