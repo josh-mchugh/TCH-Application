@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub;
+package com.redrumming.thecreaturehub.util;
 
 /**
  * Created by ME on 11/25/2015.

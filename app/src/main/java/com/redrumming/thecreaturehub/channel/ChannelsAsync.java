@@ -77,7 +77,7 @@ public class ChannelsAsync extends AsyncTask<String[], Void, List<ChannelItem>> 
 
         if(channelItems != null) {
 
-           // logger(channelItems);
+            logger(channelItems);
             listener.onSuccess(channelItems);
 
         }else {
@@ -135,16 +135,16 @@ public class ChannelsAsync extends AsyncTask<String[], Void, List<ChannelItem>> 
         return sortedList;
     }
 
-//    private void logger(List<ChannelItem> items){
-//
-//        String className = this.getClass().getName();
-//
-//        for(int i = 0; i < items.size(); i++){
-//
-//            Log.d(className, "Channel Name: " + items.get(i).getChannelName());
-//            Log.d(className, "Channel Id: " + items.get(i).getChannelId());
-//            Log.d(className, "Channel Subscriber Count: " + items.get(i).getSubscriberCount());
-//            Log.d(className, "Channel Drawable: " + items.get(i).getDisplayIcon() != null ? "true" : "false");
-//        }
-//    }
+    private void logger(List<ChannelItem> items){
+
+        String className = this.getClass().getName();
+
+        for(int i = 0; i < items.size(); i++){
+
+            Log.d(className, "Channel Name: " + items.get(i).getChannelName());
+            Log.d(className, "Channel Id: " + items.get(i).getChannelId());
+            Log.d(className, "Channel Subscriber Count: " + items.get(i).getSubscriberCount());
+            Log.d(className, "Channel Drawable: " + items.get(i).getDisplayIcon() != null ? "true" : "false");
+        }
+    }
 }

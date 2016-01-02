@@ -9,7 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.redrumming.thecreaturehub.FragmentTags;
+import com.redrumming.thecreaturehub.util.FragmentTags;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.ChannelItem;
 import com.redrumming.thecreaturehub.channel.ChannelsContainer;

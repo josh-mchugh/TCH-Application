@@ -8,4 +8,10 @@
 
     <string name="action_settings">Settings</string>
 
+    <!-- SplashScreen AlertDialog -->
+    <string name="splash_screen_alert_title">Unable to retrieve data.</string>
+    <string name="splash_screen_alert_message">Please check your internet connection and retry.</string>
+    <string name="splash_screen_alert_positive">Retry</string>
+    <string name="splash_screen_alert_negative">Close</string>
+
 </resources>

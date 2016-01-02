@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub;
+package com.redrumming.thecreaturehub.activities.main;
 
 import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.redrumming.thecreaturehub.util.FragmentTags;
+import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.channel.ChannelsContainer;
 import com.redrumming.thecreaturehub.contentItems.PlaylistVideo.PlaylistVideoFragment;
 import com.redrumming.thecreaturehub.navigation.NavigationDrawerHelper;

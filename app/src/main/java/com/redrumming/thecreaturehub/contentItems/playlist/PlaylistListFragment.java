@@ -7,8 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.FragmentTags;
-import com.redrumming.thecreaturehub.channel.ChannelItem;
+import com.redrumming.thecreaturehub.util.FragmentTags;
 import com.redrumming.thecreaturehub.contentItems.ContentAsync;
 import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 import com.redrumming.thecreaturehub.contentItems.ContentFragment;
