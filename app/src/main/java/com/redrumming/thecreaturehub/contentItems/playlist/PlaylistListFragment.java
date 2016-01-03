@@ -65,7 +65,7 @@ public class PlaylistListFragment extends ContentFragment{
             playlist = (PlaylistItem) getContainer().getItems().get(position);
         }
 
-        Fragment fragment = getFragmentManager().findFragmentByTag(FragmentTags.PLAYLIST_VIDEO_FRAGMENT);
+        Fragment fragment = getFragmentManager().findFragmentByTag(PlaylistVideoFragment.TAG);
 
         if(fragment instanceof PlaylistVideoFragment) {
 
@@ -89,7 +89,7 @@ public class PlaylistListFragment extends ContentFragment{
             getParentFragment()
                    .getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.drawer_layout, playlistVideoFragment, FragmentTags.PLAYLIST_VIDEO_FRAGMENT)
+                    .add(R.id.drawer_layout, playlistVideoFragment, PlaylistVideoFragment.TAG)
                     .addToBackStack(FragmentTags.TABBED_FRAGMENT)
                     .commit();
 

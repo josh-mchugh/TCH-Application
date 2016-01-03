@@ -24,6 +24,8 @@ import com.redrumming.thecreaturehub.player.PlaylistPlayerFragment;
  */
 public class PlaylistVideoFragment extends ContentFragment{
 
+    public static final String TAG = "PlaylistVideoFragment";
+
     private PlaylistVideoContainer container;
     private PlaylistVideoRecyclerAdapter adapter;
 

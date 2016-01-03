@@ -7,25 +7,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.redrumming.thecreaturehub.util.FragmentTags;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.channel.ChannelItem;
-import com.redrumming.thecreaturehub.channel.ChannelsContainer;
-import com.redrumming.thecreaturehub.drawer.DrawerChannelItem;
-import com.redrumming.thecreaturehub.drawer.DrawerHeaderItem;
-import com.redrumming.thecreaturehub.drawer.DrawerItem;
 import com.redrumming.thecreaturehub.drawer.DrawerRecyclerAdapter;
 import com.redrumming.thecreaturehub.util.RecyclerOnItemClickListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ME on 12/10/2015.
  */
-public class NavigationDrawerHelper {
+public class NavigationDrawerHelper implements NavigationDrawerHelperView{
 
     private static NavigationDrawerHelper INSTANCE = null;
 
@@ -33,11 +27,11 @@ public class NavigationDrawerHelper {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-    private List<DrawerItem> drawerItems;
-
     private RecyclerView recyclerView;
 
-    protected NavigationDrawerHelper(){
+    private NavigationDrawerHelperPresenter presenter;
+
+    private NavigationDrawerHelper(){
 
     }
 
@@ -54,34 +48,16 @@ public class NavigationDrawerHelper {
     public void init(Activity activity){
 
         this.activity = activity;
+        presenter = new NavigationDrawerHelperPresenterImpl(this);
 
         recyclerView = (RecyclerView) activity.findViewById(R.id.drawer_recycler_view);
         drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
 
-        drawerItems = initDrawerItems();
-
         initializeDrawerLayout();
-        initializeRecyclerView(itemClickListener);
+        initializeRecyclerView();
     }
 
-    private List<DrawerItem> initDrawerItems(){
 
-        List<DrawerItem> drawerItems = new ArrayList<DrawerItem>();
-
-        DrawerHeaderItem headerItem = new DrawerHeaderItem();
-        headerItem.setTitle("Channels");
-        drawerItems.add(headerItem);
-
-        for (int i = 0; i < ChannelsContainer.getInstance().getChannels().size(); i++) {
-
-            DrawerChannelItem drawerChannel = new DrawerChannelItem();
-            drawerChannel.setChannelItem(ChannelsContainer.getInstance().getChannels().get(i));
-
-            drawerItems.add(drawerChannel);
-        }
-
-        return drawerItems;
-    }
 
     private void initializeDrawerLayout(){
 
@@ -90,8 +66,10 @@ public class NavigationDrawerHelper {
         initializeDrawerToggle();
 
         drawerLayout.post(new Runnable() {
+
             @Override
             public void run() {
+
                 drawerToggle.syncState();
             }
         });
@@ -113,7 +91,7 @@ public class NavigationDrawerHelper {
 
                 ((AppCompatActivity) activity).supportInvalidateOptionsMenu();
 
-                ((AppCompatActivity) activity).getSupportActionBar().setTitle(ChannelsContainer.getInstance().getSelectedChannel().getChannelName());
+                ((AppCompatActivity) activity).getSupportActionBar().setTitle(presenter.getTitle());
             }
 
             @Override
@@ -127,20 +105,15 @@ public class NavigationDrawerHelper {
         };
     }
 
-    private void initializeRecyclerView(RecyclerOnItemClickListener.OnItemClickListener onItemClickListener){
+    private void initializeRecyclerView(){
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        DrawerRecyclerAdapter adapter = new DrawerRecyclerAdapter(drawerItems);
+        DrawerRecyclerAdapter adapter = new DrawerRecyclerAdapter(presenter.getDrawerItems());
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnItemTouchListener(new RecyclerOnItemClickListener(activity, onItemClickListener));
-    }
-
-    public DrawerLayout getDrawerLayout() {
-
-        return drawerLayout;
+        recyclerView.addOnItemTouchListener(new RecyclerOnItemClickListener(activity, itemClickListener));
     }
 
     public ActionBarDrawerToggle getDrawerToggle() {
@@ -148,34 +121,50 @@ public class NavigationDrawerHelper {
         return drawerToggle;
     }
 
+    public boolean isDrawerOpen(){
+
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void closeDrawer(){
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    public boolean onDrawerOptionsItemSelected(MenuItem item){
+
+        return drawerToggle.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick() {
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        updateViewPagerFragments();
+    }
+
+    private void updateViewPagerFragments(){
+
+        TabbedContent tabbedContent  = (TabbedContent) ((AppCompatActivity) activity).getSupportFragmentManager().findFragmentByTag(TabbedContent.TAG);
+
+        if(tabbedContent != null){
+
+            tabbedContent.updateTabbedContent();
+        }
+    }
+
     private RecyclerOnItemClickListener.OnItemClickListener itemClickListener = new RecyclerOnItemClickListener.OnItemClickListener() {
 
         @Override
         public void onItemClick(View view, int position) {
 
-            DrawerItem drawerItem = drawerItems.get(position);
-
-            if (drawerItem.getType() == DrawerItem.CHANNEL) {
-
-                DrawerChannelItem channelItem = (DrawerChannelItem) drawerItem;
-                ChannelItem channel = channelItem.getChannelItem();
-
-                ChannelsContainer.getInstance().setSelectedChannel(channel);
-
-                drawerLayout.closeDrawer(GravityCompat.START);
-
-                updateViewPagerFragments();
-            }
+            presenter.onClick(position);
         }
     };
-
-    private void updateViewPagerFragments(){
-
-        TabbedContent tabbedContent  = (TabbedContent) ((AppCompatActivity) activity).getSupportFragmentManager().findFragmentByTag(FragmentTags.TABBED_CONTENT_FRAGMENT);
-
-        if(tabbedContent != null){
-
-           tabbedContent.updateTabbedContent();
-        }
-    }
 }

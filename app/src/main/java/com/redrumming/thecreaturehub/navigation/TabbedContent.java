@@ -15,6 +15,8 @@ import com.redrumming.thecreaturehub.R;
  */
 public class TabbedContent extends Fragment {
 
+    public static final String TAG = "TabbedContentFragment";
+
     private NavigationPagerAdapter pagerAdapter;
     private ViewPager viewPager;
 
