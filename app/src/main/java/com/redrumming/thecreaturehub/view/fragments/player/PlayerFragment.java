@@ -23,6 +23,8 @@ import com.redrumming.thecreaturehub.youtube.YouTubeApiKey;
  */
 public abstract class PlayerFragment extends Fragment implements YouTubePlayer.OnInitializedListener, YouTubePlayer.PlaylistEventListener{
 
+    public static final String TAG = "PlayerFragment";
+
     private DraggablePanel draggablePanel;
     private YouTubePlayerSupportFragment youtubePlayerFragment;
     private YouTubePlayer youTubePlayer;

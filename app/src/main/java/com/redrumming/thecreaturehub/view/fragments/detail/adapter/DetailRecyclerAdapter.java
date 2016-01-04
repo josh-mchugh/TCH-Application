@@ -173,7 +173,7 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         viewHolder.getTitle().setText(descriptionItem.getVideoItem().getTitle());
 
-        String viewCount = new NumberFormatterUtil().formatViewCount(descriptionItem.getVideoItem().getViewCount());
+        String viewCount = NumberFormatterUtil.formatViewCount(descriptionItem.getVideoItem().getViewCount());
         viewHolder.getViewCount().setText(viewCount);
 
         String date = "Published on " + new SimpleDateFormat("LLL d, yyyy", Locale.getDefault()).format(new Date(descriptionItem.getVideoItem().getPublishedAt()));
@@ -183,13 +183,13 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         String categoryValue = CategoryFormatter.formatCategory(descriptionItem.getVideoItem().getCategoryId());
         viewHolder.getCategoryValue().setText(categoryValue);
 
-        String licenseValueText = new LicenseFormatter().formatLicense(descriptionItem.getVideoItem().getLicense());
+        String licenseValueText = LicenseFormatter.formatLicense(descriptionItem.getVideoItem().getLicense());
         viewHolder.getLicenseValue().setText(licenseValueText);
 
-        String likeCount = new NumberFormatterUtil().formatLikeCount(descriptionItem.getVideoItem().getLikeCount());
+        String likeCount = NumberFormatterUtil.formatLikeCount(descriptionItem.getVideoItem().getLikeCount());
         viewHolder.getLikeCount().setText(likeCount);
 
-        String dislikeCount = new NumberFormatterUtil().formatLikeCount(descriptionItem.getVideoItem().getDislikeCount());
+        String dislikeCount = NumberFormatterUtil.formatLikeCount(descriptionItem.getVideoItem().getDislikeCount());
         viewHolder.getDislikeCount().setText(dislikeCount);
     }
 
@@ -198,7 +198,7 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolder.getChannelIcon().setImageBitmap(channelSectionItem.getChannelItem().getDisplayIcon());
         viewHolder.getChannelName().setText(channelSectionItem.getChannelItem().getChannelName());
 
-        String subscriberCount = new NumberFormatterUtil().formatSubscriberCount(channelSectionItem.getChannelItem().getSubscriberCount());
+        String subscriberCount = NumberFormatterUtil.formatSubscriberCount(channelSectionItem.getChannelItem().getSubscriberCount());
         viewHolder.getSubscriberCount().setText(subscriberCount);
     }
 

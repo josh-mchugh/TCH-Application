@@ -8,14 +8,14 @@ import java.text.NumberFormat;
  */
 public class NumberFormatterUtil {
 
-    private final int THOUSAND = 1000;
-    private final int MILLION = 1000000;
-    private final int BILLION = 1000000000;
+    private static final int THOUSAND = 1000;
+    private static final int MILLION = 1000000;
+    private static final int BILLION = 1000000000;
 
-    private final String PLURAL_VIEWS = " views";
-    String SINGULAR_VIEW = " view";
+    private static final String PLURAL_VIEWS = " views";
+    private static final String SINGULAR_VIEW = " view";
 
-    public String formatViewCount(BigInteger value){
+    public static String formatViewCount(BigInteger value){
 
         if(value.intValue() > 1){
 
@@ -27,7 +27,7 @@ public class NumberFormatterUtil {
         }
     }
 
-    public String formatSubscriberCount(BigInteger value){
+    public static String formatSubscriberCount(BigInteger value){
 
         String plural = " subscribers";
         String singular = " subscriber";
@@ -42,7 +42,7 @@ public class NumberFormatterUtil {
         }
     }
 
-    public String formatLikeCount(BigInteger value){
+    public static String formatLikeCount(BigInteger value){
 
         // thousand
         if(value.intValue() > THOUSAND - 1){
@@ -64,7 +64,7 @@ public class NumberFormatterUtil {
         return String.valueOf(value.intValue());
     }
 
-    public String formatShortView(BigInteger value){
+    public static String formatShortView(BigInteger value){
 
         if(value.intValue() > 1){
 
@@ -76,7 +76,7 @@ public class NumberFormatterUtil {
         }
     }
 
-    private String prettyNumber(BigInteger value) {
+    private static String prettyNumber(BigInteger value) {
 
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(true);

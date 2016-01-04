@@ -70,9 +70,7 @@ public class ContentAsync extends AsyncTask<ContentContainer, Void, ContentConta
 
     public void checkNetworkStatus(){
 
-        NetworkUtil networkUtil = new NetworkUtil();
-
-        if(networkUtil.hasConnection(getContext()) == false){
+        if(NetworkUtil.hasConnection(getContext()) == false){
 
             this.cancel(true);
         }

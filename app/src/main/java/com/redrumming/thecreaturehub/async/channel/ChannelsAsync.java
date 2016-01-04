@@ -37,9 +37,7 @@ public class ChannelsAsync extends AsyncTask<String[], Void, List<ChannelItem>> 
 
         try{
 
-            NetworkUtil networkUtil = new NetworkUtil();
-
-            if(networkUtil.hasConnection(context) == false){
+            if(NetworkUtil.hasConnection(context) == false){
 
                 this.cancel(true);
             }

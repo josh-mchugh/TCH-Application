@@ -10,7 +10,6 @@ import com.redrumming.thecreaturehub.async.content.video.VideoAsync;
 import com.redrumming.thecreaturehub.view.viewholders.content.video.VideoRecyclerAdapter;
 import com.redrumming.thecreaturehub.models.content.video.VideoContainer;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
-import com.redrumming.thecreaturehub.util.FragmentTags;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.models.channel.ChannelItem;
 import com.redrumming.thecreaturehub.async.content.ContentAsync;
@@ -71,7 +70,7 @@ public class VideoListFragment extends ContentFragment {
             channelItem = getContainer().getChannelItem();
         }
 
-        Fragment fragment = getParentFragment().getFragmentManager().findFragmentByTag(FragmentTags.PLAYER_FRAGMENT);
+        Fragment fragment = getParentFragment().getFragmentManager().findFragmentByTag(PlayerFragment.TAG);
 
         if(fragment != null){
 
@@ -92,8 +91,8 @@ public class VideoListFragment extends ContentFragment {
             getParentFragment()
                     .getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.activity_layout, videoPlayerFragment, FragmentTags.PLAYER_FRAGMENT)
-                    .addToBackStack(FragmentTags.CONTENT_ACTIVITY)
+                    .add(R.id.activity_layout, videoPlayerFragment, PlayerFragment.TAG)
+                    .addToBackStack(null)
                     .commit();
         }
     }

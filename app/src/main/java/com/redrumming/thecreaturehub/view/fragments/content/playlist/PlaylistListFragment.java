@@ -11,7 +11,6 @@ import com.redrumming.thecreaturehub.async.content.playlist.PlaylistAsync;
 import com.redrumming.thecreaturehub.view.viewholders.content.playlist.PlaylistRecyclerAdapter;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistContainer;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem;
-import com.redrumming.thecreaturehub.util.FragmentTags;
 import com.redrumming.thecreaturehub.async.content.ContentAsync;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.ContentType;
@@ -94,7 +93,7 @@ public class PlaylistListFragment extends ContentFragment {
                    .getFragmentManager()
                     .beginTransaction()
                     .add(R.id.drawer_layout, playlistVideoFragment, PlaylistVideoFragment.TAG)
-                    .addToBackStack(FragmentTags.TABBED_FRAGMENT)
+                    .addToBackStack(null)
                     .commit();
 
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(playlist.getTitle());
