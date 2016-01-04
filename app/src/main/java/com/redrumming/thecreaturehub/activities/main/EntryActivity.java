@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.contentItems.PlaylistVideo.PlaylistVideoFragment;
 import com.redrumming.thecreaturehub.navigation.TabbedContent;
+import com.redrumming.thecreaturehub.navigation.drawer.NavigationDrawerHelper;
 
 public class EntryActivity extends AppCompatActivity implements EntryActivityView {
 
@@ -29,7 +30,7 @@ public class EntryActivity extends AppCompatActivity implements EntryActivityVie
         initToolBar();
 
         //init Drawer
-        presenter.initDrawer(this);
+        NavigationDrawerHelper.get().init(this);
 
         initSavedInstance(savedInstanceState);
     }
@@ -77,7 +78,7 @@ public class EntryActivity extends AppCompatActivity implements EntryActivityVie
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(presenter.onDrawerOptionsItemSelected(item)){
+        if(NavigationDrawerHelper.get().onDrawerOptionsItemSelected(item)){
 
             return true;
         }
@@ -109,14 +110,14 @@ public class EntryActivity extends AppCompatActivity implements EntryActivityVie
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        presenter.drawerSyncState();
+        NavigationDrawerHelper.get().syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        presenter.drawerConfigurationChanged(newConfig);
+        NavigationDrawerHelper.get().onConfigurationChange(newConfig);
     }
 
     @Override
@@ -126,9 +127,9 @@ public class EntryActivity extends AppCompatActivity implements EntryActivityVie
 
             getFragmentManager().popBackStack();
 
-        }else if(presenter.isDrawerOpen()) {
+        }else if(NavigationDrawerHelper.get().isDrawerOpen()) {
 
-            presenter.closeDrawer();
+            NavigationDrawerHelper.get().closeDrawer();
 
         }else{
 

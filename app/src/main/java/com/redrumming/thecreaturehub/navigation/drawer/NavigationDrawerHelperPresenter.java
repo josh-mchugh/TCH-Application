@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.navigation;
+package com.redrumming.thecreaturehub.navigation.drawer;
 
 import com.redrumming.thecreaturehub.drawer.DrawerItem;
 

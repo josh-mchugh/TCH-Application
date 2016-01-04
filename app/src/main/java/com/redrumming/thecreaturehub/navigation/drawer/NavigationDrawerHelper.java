@@ -1,17 +1,17 @@
-package com.redrumming.thecreaturehub.navigation;
+package com.redrumming.thecreaturehub.navigation.drawer;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.redrumming.thecreaturehub.util.FragmentTags;
+import com.redrumming.thecreaturehub.navigation.TabbedContent;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.drawer.DrawerRecyclerAdapter;
 import com.redrumming.thecreaturehub.util.RecyclerOnItemClickListener;
@@ -139,6 +139,16 @@ public class NavigationDrawerHelper implements NavigationDrawerHelperView{
     public boolean onDrawerOptionsItemSelected(MenuItem item){
 
         return drawerToggle.onOptionsItemSelected(item);
+    }
+
+    public void syncState(){
+
+        drawerToggle.syncState();
+    }
+
+    public void onConfigurationChange(Configuration newConfig){
+
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override

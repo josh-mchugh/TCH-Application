@@ -15,7 +15,7 @@ import com.redrumming.thecreaturehub.contentItems.ContentContainer;
 import com.redrumming.thecreaturehub.contentItems.ContentFragment;
 import com.redrumming.thecreaturehub.contentItems.ContentType;
 import com.redrumming.thecreaturehub.contentItems.ContentRecyclerAdapter;
-import com.redrumming.thecreaturehub.navigation.NavigationDrawerHelper;
+import com.redrumming.thecreaturehub.navigation.drawer.NavigationDrawerHelper;
 import com.redrumming.thecreaturehub.player.PlayerFragment;
 import com.redrumming.thecreaturehub.player.PlaylistPlayerFragment;
 
