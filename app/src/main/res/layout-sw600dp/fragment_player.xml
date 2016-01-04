@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.redrumming.thecreaturehub.draggable.DraggablePanel
+    <com.redrumming.thecreaturehub.view.draggable.DraggablePanel
         android:id="@+id/draggable_panel"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

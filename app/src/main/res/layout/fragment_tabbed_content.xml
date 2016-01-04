@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.redrumming.thecreaturehub.navigation.SlidingTabLayout
+    <com.redrumming.thecreaturehub.view.tablayout.slidding.SlidingTabLayout
         android:id="@+id/sliding_tabs"
         style="@style/tabLayout"
         android:layout_width="match_parent"

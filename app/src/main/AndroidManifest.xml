@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".activities.splash.SplashScreenActivity"
+            android:name=".view.activity.splash.SplashScreenActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             >
@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".activities.main.EntryActivity"
+            android:name=".view.activity.main.EntryActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             >
