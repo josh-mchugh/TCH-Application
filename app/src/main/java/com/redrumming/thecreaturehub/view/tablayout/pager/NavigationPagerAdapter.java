@@ -7,9 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
-import com.redrumming.thecreaturehub.async.content.playlist.PlaylistAsync;
 import com.redrumming.thecreaturehub.view.fragments.content.playlist.PlaylistListFragment;
-import com.redrumming.thecreaturehub.async.content.video.VideoAsync;
 import com.redrumming.thecreaturehub.view.fragments.content.video.VideoListFragment;
 
 /**
@@ -87,12 +85,12 @@ public class NavigationPagerAdapter extends FragmentPagerAdapter {
 
         if(videoListFragment != null){
 
-            videoListFragment.setup(ChannelsContainer.getInstance().getSelectedChannel(), new VideoAsync(context, videoListFragment));
+            videoListFragment.setup(ChannelsContainer.getInstance().getSelectedChannel());
         }
 
         if(playlistListFragment != null){
 
-            playlistListFragment.setup(ChannelsContainer.getInstance().getSelectedChannel(), new PlaylistAsync(context, playlistListFragment));
+            playlistListFragment.setup(ChannelsContainer.getInstance().getSelectedChannel());
         }
     }
 }

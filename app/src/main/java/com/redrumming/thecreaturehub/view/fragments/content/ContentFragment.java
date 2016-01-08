@@ -1,6 +1,6 @@
 package com.redrumming.thecreaturehub.view.fragments.content;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,30 +13,24 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
-import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
-import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
-import com.redrumming.thecreaturehub.models.content.ContentContainer;
-import com.redrumming.thecreaturehub.models.content.ContentType;
-import com.redrumming.thecreaturehub.models.content.loading.LoadingItem;
-import com.redrumming.thecreaturehub.util.RecyclerOnItemClickListener;
 import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
+import com.redrumming.thecreaturehub.util.RecyclerOnItemClickListener;
 import com.redrumming.thecreaturehub.util.EndlessScrollListener;
 
 /**
  * Created by ME on 10/24/2015.
  */
-public abstract class ContentFragment extends Fragment implements ContentAsyncListener {
+public abstract class ContentFragment extends Fragment implements ContentFragmentView {
 
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerView;
-
     private EndlessScrollListener scrollListener;
 
-    private ContentAsync async;
+    private ContentFragmentPresenter presenter;
 
-    private boolean isLoading = false;
+    public abstract ContentRecyclerAdapter getAdapter();
+    public abstract ContentFragmentPresenter getPresenter();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +54,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
             @Override
             public void onRefresh() {
 
-                ContentFragment.this.onRefresh(getAsync());
+                presenter.onRefresh();
             }
         });
 
@@ -70,7 +64,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
             @Override
             public void onLoadMore() {
 
-                ContentFragment.this.onLoadMore(getAsync());
+                presenter.onLoadMore();
             }
         };
 
@@ -80,13 +74,15 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.addOnItemTouchListener(new RecyclerOnItemClickListener(getActivity(), onItemClickListener));
 
-        if(getContainer().getItems().size() == 0 &&
-                (getContainer().getPageToken() == null || getContainer().getPageToken().isEmpty())) {
-
-            setup(ChannelsContainer.getInstance().getSelectedChannel(), getAsync());
-        }
+        presenter = getPresenter();
+        presenter.onCreate(savedInstanceState);
 
         return view;
+    }
+
+    public void setup(ChannelItem channelItem){
+
+        presenter.setup(channelItem);
     }
 
     @Override
@@ -96,129 +92,31 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
         outState.putParcelable("layoutManagerPosition", recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
-    public abstract void onSelect(int position);
-    public abstract ContentContainer getContainer();
-    public abstract ContentAsync getAsync();
-    public abstract ContentRecyclerAdapter getAdapter();
+    @Override
+    public void disableSwipeRefreshLoading() {
 
-    public void setup(ChannelItem channelItem, ContentAsync contentAsync){
+        if(swipeRefresh != null && swipeRefresh.isRefreshing()){
 
-        getContainer().setChannelItem(channelItem);
-        getContainer().setPageToken("");
-        getContainer().getItems().clear();
-
-        checkAsyncStatus();
-        executeAsync(contentAsync);
-
-        setLoading();
-    }
-
-    private void onLoadMore(ContentAsync contentAsync){
-
-        if(getContainer().getPageToken() != null) {
-
-            if (isLoading == false) {
-
-                checkAsyncStatus();
-                executeAsync(contentAsync);
-
-                setLoading();
-            }
-        }
-    }
-
-    private void onRefresh(ContentAsync contentAsync){
-
-        if(isLoading == false){
-
-            getContainer().setPageToken("");
-            getContainer().getItems().clear();
-            getAdapter().notifyDataSetChanged();
-
-            checkAsyncStatus();
-            executeAsync(contentAsync);
-
-            isLoading = true;
-        }
-    }
-
-    public void updateView(ContentContainer contentContainer){
-
-        removeLoadingStatus();
-
-        getContainer().getItems().addAll(contentContainer.getItems());
-        getContainer().setPageToken(contentContainer.getPageToken());
-        getAdapter().notifyDataSetChanged();
-    }
-
-    private void checkAsyncStatus(){
-
-        if(async != null){
-
-            if(async.getStatus() == AsyncTask.Status.RUNNING){
-
-                async.cancel(true);
-            }
-
-            async = null;
-        }
-    }
-
-    private void executeAsync(ContentAsync contentAsync){
-
-        async = contentAsync;
-        async.execute(getContainer());
-    }
-
-    private void setLoading(){
-
-        getContainer().getItems().add(new LoadingItem());
-        getAdapter().notifyDataSetChanged();
-        isLoading = true;
-    }
-
-    private void removeLoadingStatus(){
-
-        if(isLoading == true){
-
-            if(swipeRefresh != null && swipeRefresh.isRefreshing()){
-
-                swipeRefresh.setRefreshing(false);
-            }
-
-            if(getContainer().getItems().size() > 0){
-
-                int lastItem = (getContainer().getItems().size() - 1);
-                ContentType contentType = getContainer().getItems().get(lastItem);
-
-                if(contentType.getItemType() == ContentType.LOADING_ITEM){
-
-                    getContainer().getItems().remove(lastItem);
-                    getAdapter().notifyDataSetChanged();
-                }
-            }
-
-            isLoading = false;
+            swipeRefresh.setRefreshing(false);
         }
     }
 
     @Override
-    public void onSuccess(ContentContainer container) {
+    public void notifyAdapterChange() {
 
-        if(container.getChannelItem() == null && container.getItems() != null){
-
-            return;
-        }
-
-        updateView(container);
+        getAdapter().notifyDataSetChanged();
     }
 
     @Override
-    public void onFailure() {
+    public Context getContext(){
+
+        return getActivity();
+    }
+
+    @Override
+    public void displayErrorMsg() {
 
         Toast.makeText(getActivity(), "Unable retrieve data. Try again.", Toast.LENGTH_SHORT).show();
-
-        removeLoadingStatus();
     }
 
     private RecyclerOnItemClickListener.OnItemClickListener onItemClickListener = new RecyclerOnItemClickListener.OnItemClickListener() {
@@ -226,7 +124,7 @@ public abstract class ContentFragment extends Fragment implements ContentAsyncLi
         @Override
         public void onItemClick(View view, int position) {
 
-            onSelect(position);
+            presenter.onSelect(position);
         }
     };
 }

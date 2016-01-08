@@ -1,22 +1,18 @@
 package com.redrumming.thecreaturehub.view.fragments.content.playlistvideo;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.async.content.playlistvideo.PlaylistVideoAsync;
+import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentPresenter;
 import com.redrumming.thecreaturehub.view.viewholders.content.playlistvideo.PlaylistVideoRecyclerAdapter;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
-import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItem;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.view.fragments.content.ContentFragment;
-import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
 import com.redrumming.thecreaturehub.view.drawer.NavigationDrawerHelper;
 import com.redrumming.thecreaturehub.view.fragments.player.PlayerFragment;
@@ -25,11 +21,12 @@ import com.redrumming.thecreaturehub.view.fragments.player.playlist.PlaylistPlay
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlaylistVideoFragment extends ContentFragment{
+public class PlaylistVideoFragment extends ContentFragment implements PlaylistVideoFragmentView{
 
     public static final String TAG = "PlaylistVideoFragment";
 
-    private PlaylistVideoContainer container;
+    private PlaylistVideoFragmentPresenter presenter;
+
     private PlaylistVideoRecyclerAdapter adapter;
 
     @Override
@@ -38,20 +35,10 @@ public class PlaylistVideoFragment extends ContentFragment{
 
         if(getArguments() != null){
 
-            container = getArguments().getParcelable("container");
+            ((PlaylistVideoFragmentPresenter) getPresenter()).setContainer((PlaylistVideoContainer) getArguments().getParcelable("container"));
         }
 
-        if(savedInstanceState != null){
-
-            container = savedInstanceState.getParcelable("container");
-        }
-
-        if(savedInstanceState == null && getArguments() == null) {
-
-            container = new PlaylistVideoContainer();
-        }
-
-        adapter = new PlaylistVideoRecyclerAdapter(container);
+        adapter = new PlaylistVideoRecyclerAdapter((PlaylistVideoContainer) getPresenter().getContainer());
     }
 
     @Override
@@ -68,57 +55,37 @@ public class PlaylistVideoFragment extends ContentFragment{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable("container", container);
+        outState.putParcelable("container", presenter.getContainer());
     }
 
     @Override
-    public void onSelect(int position){
+    public void removePlayerFragment(){
 
-        PlaylistVideoItem playlistVideo = null;
-        ChannelItem channelItem = null;
-
-        if(getContainer().getItems().get(position).getItemType() == ContentType.PLAYLIST_VIDEO_ITEM){
-
-            playlistVideo = (PlaylistVideoItem) getContainer().getItems().get(position);
-            channelItem = getContainer().getChannelItem();
-        }
-
-       Fragment fragment = getFragmentManager().findFragmentByTag(PlayerFragment.TAG);
+        Fragment fragment = getFragmentManager().findFragmentByTag(PlayerFragment.TAG);
 
         if(fragment != null){
 
             if(fragment instanceof PlayerFragment){
 
-                getFragmentManager().beginTransaction().remove(fragment);
+                getFragmentManager().beginTransaction().remove(fragment).commit();
                 getFragmentManager().popBackStack();
             }
         }
-
-        if(playlistVideo != null && channelItem != null){
-
-            PlaylistPlayerFragment playlistPlayerFragment = new PlaylistPlayerFragment();
-            playlistPlayerFragment.setArguments(new Bundle());
-            playlistPlayerFragment.getArguments().putParcelable("container", container);
-            playlistPlayerFragment.getArguments().putInt("position", position);
-
-            getFragmentManager()
-                   .beginTransaction()
-                    .add(R.id.activity_layout, playlistPlayerFragment, PlayerFragment.TAG)
-                    .addToBackStack(null)
-                    .commit();
-        }
     }
 
     @Override
-    public ContentContainer getContainer() {
+    public void addPlayerFragment(Parcelable container, int position){
 
-        return container;
-    }
+        PlaylistPlayerFragment playlistPlayerFragment = new PlaylistPlayerFragment();
+        playlistPlayerFragment.setArguments(new Bundle());
+        playlistPlayerFragment.getArguments().putParcelable("container", container);
+        playlistPlayerFragment.getArguments().putInt("position", position);
 
-    @Override
-    public ContentAsync getAsync() {
-
-        return new PlaylistVideoAsync(getActivity(), this);
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.activity_layout, playlistPlayerFragment, PlayerFragment.TAG)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -128,10 +95,23 @@ public class PlaylistVideoFragment extends ContentFragment{
     }
 
     @Override
+    public ContentFragmentPresenter getPresenter() {
+
+        if(presenter == null){
+
+            presenter = new PlaylistVideoFragmentPresenterImpl(this);
+
+            return presenter;
+        }
+
+        return presenter;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(container.getChannelItem().getChannelName());
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getPresenter().getContainer().getChannelItem().getChannelName());
         NavigationDrawerHelper.get().getDrawerToggle().setDrawerIndicatorEnabled(true);
     }
 }

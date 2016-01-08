@@ -1,21 +1,17 @@
 package com.redrumming.thecreaturehub.view.fragments.content.playlist;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.async.content.playlist.PlaylistAsync;
+import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentPresenter;
 import com.redrumming.thecreaturehub.view.viewholders.content.playlist.PlaylistRecyclerAdapter;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistContainer;
-import com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem;
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.models.content.ContentContainer;
-import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
-import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
 import com.redrumming.thecreaturehub.view.fragments.content.playlistvideo.PlaylistVideoFragment;
 import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.view.fragments.content.ContentFragment;
@@ -23,9 +19,10 @@ import com.redrumming.thecreaturehub.view.fragments.content.ContentFragment;
 /**
  *
  */
-public class PlaylistListFragment extends ContentFragment {
+public class PlaylistListFragment extends ContentFragment implements PlaylistListFragmentView {
 
-    private PlaylistContainer container;
+    private PlaylistListFragmentPresenter presenter;
+
     private PlaylistRecyclerAdapter adapter;
 
     @Override
@@ -33,16 +30,7 @@ public class PlaylistListFragment extends ContentFragment {
 
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null){
-
-            container = savedInstanceState.getParcelable("container");
-
-        }else {
-
-            container = new PlaylistContainer();
-        }
-
-        adapter = new PlaylistRecyclerAdapter(container);
+        adapter = new PlaylistRecyclerAdapter((PlaylistContainer) getPresenter().getContainer());
     }
 
     @Override
@@ -55,18 +43,10 @@ public class PlaylistListFragment extends ContentFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable("container", container);
+        outState.putParcelable("container", getPresenter().getContainer());
     }
 
-    @Override
-    public void onSelect(int position){
-
-        PlaylistItem playlist = null;
-
-        if(getContainer().getItems().get(position).getItemType() == ContentType.PLAYLIST_ITEM){
-
-            playlist = (PlaylistItem) getContainer().getItems().get(position);
-        }
+    public void removePlaylistVideoFragment(){
 
         Fragment fragment = getFragmentManager().findFragmentByTag(PlaylistVideoFragment.TAG);
 
@@ -77,44 +57,41 @@ public class PlaylistListFragment extends ContentFragment {
                 getFragmentManager().beginTransaction().remove(fragment);
             }
         }
-
-        if(playlist != null){
-
-            PlaylistVideoContainer playlistVideoContainer = new PlaylistVideoContainer();
-            playlistVideoContainer.setPageToken("");
-            playlistVideoContainer.setPlaylistId(playlist.getId());
-            playlistVideoContainer.setChannelItem(container.getChannelItem());
-
-            PlaylistVideoFragment playlistVideoFragment = new PlaylistVideoFragment();
-            playlistVideoFragment.setArguments(new Bundle());
-            playlistVideoFragment.getArguments().putParcelable("container", playlistVideoContainer);
-
-            getParentFragment()
-                   .getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.drawer_layout, playlistVideoFragment, PlaylistVideoFragment.TAG)
-                    .addToBackStack(null)
-                    .commit();
-
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(playlist.getTitle());
-        }
     }
 
     @Override
-    public ContentContainer getContainer() {
+    public void addPlaylistVideoFragment(Parcelable playlistVideoContainer, String title){
 
-        return container;
-    }
+        PlaylistVideoFragment playlistVideoFragment = new PlaylistVideoFragment();
+        playlistVideoFragment.setArguments(new Bundle());
+        playlistVideoFragment.getArguments().putParcelable("container", playlistVideoContainer);
 
-    @Override
-    public ContentAsync getAsync() {
+        getParentFragment()
+                .getFragmentManager()
+                .beginTransaction()
+                .add(R.id.drawer_layout, playlistVideoFragment, PlaylistVideoFragment.TAG)
+                .addToBackStack(null)
+                .commit();
 
-        return new PlaylistAsync(getActivity(), this);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
     }
 
     @Override
     public ContentRecyclerAdapter getAdapter() {
 
         return adapter;
+    }
+
+    @Override
+    public ContentFragmentPresenter getPresenter() {
+
+        if(presenter == null){
+
+            presenter = new PlaylistListFragmentPresenterImpl(this);
+
+            return presenter;
+        }
+
+        return presenter;
     }
 }
