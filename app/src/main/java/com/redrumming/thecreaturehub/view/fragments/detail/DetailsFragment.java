@@ -1,5 +1,6 @@
 package com.redrumming.thecreaturehub.view.fragments.detail;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,57 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.content.video.VideoItem;
-import com.redrumming.thecreaturehub.models.detail.DetailItem;
-import com.redrumming.thecreaturehub.models.detail.channel.ChannelSectionItem;
-import com.redrumming.thecreaturehub.async.comments.CommentAsyncListener;
-import com.redrumming.thecreaturehub.models.detail.comments.CommentContainer;
-import com.redrumming.thecreaturehub.models.detail.comments.CommentItemType;
-import com.redrumming.thecreaturehub.models.detail.comments.CommentsHeaderItem;
-import com.redrumming.thecreaturehub.models.detail.comments.NoCommentsItem;
-import com.redrumming.thecreaturehub.models.detail.comments.top.TopLevelCommentItem;
-import com.redrumming.thecreaturehub.async.comments.top.TopLevelCommentAsync;
-import com.redrumming.thecreaturehub.models.detail.comments.top.TopLevelCommentLoadMoreItem;
-import com.redrumming.thecreaturehub.models.detail.comments.top.TopLevelCommentLoadingItem;
-import com.redrumming.thecreaturehub.models.detail.description.DescriptionItem;
-import com.redrumming.thecreaturehub.view.fragments.detail.adapter.DetailRecyclerAdapter;
-import com.redrumming.thecreaturehub.view.fragments.detail.adapter.DetailRecyclerAdapterListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.redrumming.thecreaturehub.view.viewholders.detail.DetailRecyclerAdapter;
 
 /**
  * Created by ME on 12/5/2015.
  */
-public class DetailsFragment extends Fragment implements CommentAsyncListener, DetailRecyclerAdapterListener {
+public class DetailsFragment extends Fragment implements DetailsFragmentView {
+
+    private DetailsFragmentPresenter presenter;
 
     private RecyclerView recyclerView;
-    private List<DetailItem> items;
     private DetailRecyclerAdapter adapter;
-
-    private VideoItem videoItem;
-    private ChannelItem channelItem;
-
-    private CommentContainer commentContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null){
-
-            videoItem = savedInstanceState.getParcelable("video");
-            channelItem = savedInstanceState.getParcelable("channel");
-
-            commentContainer = savedInstanceState.getParcelable("comments");
-        }
-
-        if(getArguments() != null){
-
-            videoItem = getArguments().getParcelable("video");
-            channelItem = getArguments().getParcelable("channel");
-        }
+        presenter = new DetailsFragmentPresenterImpl(this);
+        presenter.onCreate(savedInstanceState, getArguments());
     }
 
     @Nullable
@@ -71,50 +39,12 @@ public class DetailsFragment extends Fragment implements CommentAsyncListener, D
 
         recyclerView = (RecyclerView) view.findViewById(R.id.details_recycler_view);
 
-        items = new ArrayList<DetailItem>();
+        presenter.onCreateView();
 
-        DescriptionItem descriptionItem = new DescriptionItem();
-        descriptionItem.setVideoItem(videoItem);
-        items.add(descriptionItem);
-
-        ChannelSectionItem channelSectionItem = new ChannelSectionItem();
-        channelSectionItem.setChannelItem(channelItem);
-        items.add(channelSectionItem);
-
-        if(commentContainer == null) {
-
-            if (videoItem.getId() != null || videoItem.getId().isEmpty() == false) {
-
-                commentContainer = new CommentContainer(videoItem.getId());
-                items.add(new TopLevelCommentLoadingItem());
-            }
-
-        }else {
-
-            //Add Comment Header as we already have comments to display.
-            addCommentHeaderItem();
-
-            if(commentContainer.getCommentItems().size() > 0) {
-
-                addCommentsItems(commentContainer);
-                addLoadMoreItem(commentContainer);
-
-            }else {
-
-                addNoCommentsFound();
-            }
-        }
-
-        adapter = new DetailRecyclerAdapter(items, this);
+        adapter = new DetailRecyclerAdapter(presenter.getItems(), presenter.getDetailRecyclerAdapterListener());
         recyclerView.setAdapter(adapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        if(commentContainer.getCommentItems().size() == 0 && commentContainer.getPageToken() != null){
-
-            TopLevelCommentAsync async = new TopLevelCommentAsync(getActivity(), this);
-            async.execute(commentContainer);
-        }
 
         return view;
     }
@@ -123,106 +53,25 @@ public class DetailsFragment extends Fragment implements CommentAsyncListener, D
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable("video", videoItem);
-        outState.putParcelable("channel", channelItem);
+        outState.putParcelable("video", presenter.getVideoItem());
+        outState.putParcelable("channel", presenter.getChannelItem());
 
-        outState.putParcelable("comments", commentContainer);
-    }
-
-    public void updateView(CommentContainer container){
-
-        removeTopLevelCommentLoadMoreItem();
-        addCommentsItems(container);
-        addLoadMoreItem(container);
-
-        adapter.notifyDataSetChanged();
+        outState.putParcelable("comments", presenter.getCommentContainer());
     }
 
     public void setLoading(boolean isLoading){
 
     }
 
-    private void addCommentHeaderItem(){
+    @Override
+    public void notifyAdapterChange() {
 
-        CommentsHeaderItem commentsHeaderItem = new CommentsHeaderItem();
-        items.add(commentsHeaderItem);
-    }
-
-    private void addCommentsItems(CommentContainer container){
-
-        for(int i = 0; i < container.getCommentItems().size(); i++){
-
-            CommentItemType comment = container.getCommentItems().get(i);
-
-            if(comment.getItemType() == CommentItemType.TOP_LEVEL_COMMENT){
-
-                items.add((TopLevelCommentItem) comment);
-            }
-        }
-    }
-
-    private void addLoadMoreItem(CommentContainer commentContainer){
-
-        if(commentContainer.getPageToken() != null && commentContainer.getPageToken().isEmpty() == false) {
-
-            items.add(new TopLevelCommentLoadMoreItem());
-        }
-    }
-
-    private void addNoCommentsFound(){
-
-        items.add(new NoCommentsItem());
-    }
-
-    private void removeTopLevelCommentLoadMoreItem(){
-
-        int lastItem = items.size() - 1;
-        if(items.get(lastItem).getType() == DetailItem.COMMENT_TOP_LEVEL_LOAD_MORE_ITEM){
-
-            items.remove(lastItem);
-        }
-    }
-
-    private void removeTopLevelCommentLoadingItem(){
-
-        int lastItem = items.size() - 1;
-        if(items.get(lastItem).getType() == DetailItem.COMMENT_TOP_LEVEL_LOADING){
-
-            items.remove(lastItem);
-        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onSuccess(CommentContainer container) {
+    public Context getContext() {
 
-        if(commentContainer.getCommentItems().size() == 0){
-
-            removeTopLevelCommentLoadingItem();
-            addCommentHeaderItem();
-        }
-
-        if (container.getCommentItems() != null && container.getCommentItems().size() > 0){
-
-            commentContainer.setPageToken(container.getPageToken());
-            commentContainer.getCommentItems().addAll(container.getCommentItems());
-
-            updateView(container);
-
-        }else {
-
-            removeTopLevelCommentLoadMoreItem();
-            addNoCommentsFound();
-
-            commentContainer.setPageToken(null);
-
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onLoadMoreCommentsClick() {
-
-        TopLevelCommentAsync async = new TopLevelCommentAsync(getActivity(), this);
-        async.execute(commentContainer);
+        return getActivity();
     }
 }

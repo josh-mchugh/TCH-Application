@@ -63,6 +63,6 @@ public class TabbedContent extends Fragment {
 
     public void updateTabbedContent(){
 
-        pagerAdapter.updateFragments(getActivity());
+        pagerAdapter.updateFragments();
     }
 }

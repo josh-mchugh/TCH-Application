@@ -81,7 +81,7 @@ public class NavigationPagerAdapter extends FragmentPagerAdapter {
         return tabTitles[position];
     }
 
-    public void updateFragments(Context context){
+    public void updateFragments(){
 
         if(videoListFragment != null){
 

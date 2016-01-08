@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.view.fragments.detail.adapter;
+package com.redrumming.thecreaturehub.view.viewholders.detail;
 
 /**
  * Created by ME on 12/7/2015.

@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.view.fragments.detail.adapter;
+package com.redrumming.thecreaturehub.view.viewholders.detail;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
