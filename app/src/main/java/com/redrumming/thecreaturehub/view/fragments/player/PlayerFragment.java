@@ -1,18 +1,15 @@
 package com.redrumming.thecreaturehub.view.fragments.player;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 import com.redrumming.thecreaturehub.view.draggable.DraggableListener;
 import com.redrumming.thecreaturehub.view.draggable.DraggablePanel;
 import com.redrumming.thecreaturehub.view.fragments.detail.DetailsFragment;
@@ -21,26 +18,24 @@ import com.redrumming.thecreaturehub.youtube.YouTubeApiKey;
 /**
  * Created by ME on 11/25/2015.
  */
-public abstract class PlayerFragment extends Fragment implements YouTubePlayer.OnInitializedListener, YouTubePlayer.PlaylistEventListener{
+public abstract class PlayerFragment extends Fragment implements PlayerFragmentView{
 
     public static final String TAG = "PlayerFragment";
 
+    private PlayerFragmentPresenter presenter;
+
     private DraggablePanel draggablePanel;
     private YouTubePlayerSupportFragment youtubePlayerFragment;
-    private YouTubePlayer youTubePlayer;
-
     private DetailsFragment detailsFragment;
 
-    private int playTime = 0;
+    public abstract PlayerFragmentPresenter getPresenter();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null){
-
-            playTime = savedInstanceState.getInt("playTime");
-        }
+        presenter = getPresenter();
+        presenter.onCreate(savedInstanceState, getArguments());
     }
 
     @Nullable
@@ -64,22 +59,32 @@ public abstract class PlayerFragment extends Fragment implements YouTubePlayer.O
     public void onStop() {
         super.onStop();
 
-        if(youTubePlayer != null){
-
-            playTime = youTubePlayer.getCurrentTimeMillis();
-        }
+        presenter.onStop();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("playTime", playTime);
+        outState.putInt("playTime", presenter.getPlayTime());
     }
 
-    public abstract void loadVideo(int playTime);
-    public abstract VideoItem getVideoItem();
-    public abstract ChannelItem getChannelItem();
+    @Override
+    public void updateBottomFragment(Parcelable videoItem, Parcelable channelItem){
+
+        detailsFragment = new DetailsFragment();
+        detailsFragment.setArguments(new Bundle());
+        detailsFragment.getArguments().putParcelable("video", videoItem);
+        detailsFragment.getArguments().putParcelable("channel", channelItem);
+
+        getChildFragmentManager().beginTransaction().replace(R.id.second_view, detailsFragment).commit();
+    }
+
+    @Override
+    public void setLoading(boolean isLoading) {
+
+        detailsFragment.setLoading(isLoading);
+    }
 
     private void initializeYouTubeFragment(){
 
@@ -90,7 +95,7 @@ public abstract class PlayerFragment extends Fragment implements YouTubePlayer.O
             youtubePlayerFragment = new YouTubePlayerSupportFragment();
         }
 
-        youtubePlayerFragment.initialize(YouTubeApiKey.API_KEY, this);
+        youtubePlayerFragment.initialize(YouTubeApiKey.API_KEY, presenter.getOnInitializedListener());
     }
 
     private void initializeDetailsFragment(){
@@ -101,8 +106,8 @@ public abstract class PlayerFragment extends Fragment implements YouTubePlayer.O
 
             detailsFragment = new DetailsFragment();
             detailsFragment.setArguments(new Bundle());
-            detailsFragment.getArguments().putParcelable("video", getVideoItem());
-            detailsFragment.getArguments().putParcelable("channel", getChannelItem());
+            detailsFragment.getArguments().putParcelable("video", presenter.getVideoItem());
+            detailsFragment.getArguments().putParcelable("channel", presenter.getChannelItem());
 
         }
     }
@@ -126,7 +131,7 @@ public abstract class PlayerFragment extends Fragment implements YouTubePlayer.O
             @Override
             public void onMaximized() {
 
-                PlayerFragment.this.loadVideo(playTime);
+                presenter.loadVideo();
             }
 
             @Override
@@ -137,88 +142,16 @@ public abstract class PlayerFragment extends Fragment implements YouTubePlayer.O
             @Override
             public void onClosedToLeft() {
 
-                releaseYouTubePlayerResources();
+                presenter.releaseYouTubePlayerResources();
                 getFragmentManager().popBackStack();
             }
 
             @Override
             public void onClosedToRight() {
 
-                releaseYouTubePlayerResources();
+                presenter.releaseYouTubePlayerResources();
                 getFragmentManager().popBackStack();
             }
         });
-    }
-
-    private void releaseYouTubePlayerResources(){
-
-        if(youTubePlayer != null) {
-
-            youTubePlayer.release();
-            youTubePlayer = null;
-        }
-    }
-
-    public YouTubePlayer getYouTubePlayer(){
-
-        return youTubePlayer;
-    }
-
-    public DetailsFragment getVideoDetailsFragment(){
-
-        return detailsFragment;
-    }
-
-    //Update Bottom Fragment
-    public void updateBottomFragment(VideoItem videoItem, ChannelItem channelItem){
-
-        detailsFragment = new DetailsFragment();
-        detailsFragment.setArguments(new Bundle());
-        detailsFragment.getArguments().putParcelable("video", videoItem);
-        detailsFragment.getArguments().putParcelable("channel", channelItem);
-
-        getChildFragmentManager().beginTransaction().replace(R.id.second_view, detailsFragment).commit();
-    }
-
-    @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-
-        this.youTubePlayer = youTubePlayer;
-        this.youTubePlayer.setShowFullscreenButton(true);
-        this.youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-
-        this.youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION
-                | YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE
-                | YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
-
-        this.youTubePlayer.setPlaylistEventListener(this);
-
-        if(!wasRestored){
-
-            if(youTubePlayer != null) {
-
-                loadVideo(playTime);
-            }
-        }
-    }
-
-    @Override
-    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-    }
-
-    @Override
-    public void onPrevious() {
-
-    }
-
-    @Override
-    public void onNext() {
-
-    }
-
-    @Override
-    public void onPlaylistEnded() {
-
     }
 }

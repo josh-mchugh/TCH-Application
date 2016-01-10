@@ -6,33 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 import com.redrumming.thecreaturehub.view.fragments.player.PlayerFragment;
+import com.redrumming.thecreaturehub.view.fragments.player.PlayerFragmentPresenter;
 
 /**
  * Created by ME on 11/25/2015.
  */
-public class VideoPlayerFragment extends PlayerFragment {
+public class VideoPlayerFragment extends PlayerFragment implements VideoPlayerFragmentView {
 
-    private VideoItem videoItem;
-    private ChannelItem channelItem;
+    private VideoPlayerPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(savedInstanceState != null){
-
-            videoItem = savedInstanceState.getParcelable("video");
-            channelItem = savedInstanceState.getParcelable("channel");
-        }
-
-        if(getArguments() != null){
-
-            videoItem = getArguments().getParcelable("video");
-            channelItem = getArguments().getParcelable("channel");
-        }
     }
 
     @Nullable
@@ -46,33 +32,20 @@ public class VideoPlayerFragment extends PlayerFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable("video", videoItem);
-        outState.putParcelable("channel", channelItem);
+        outState.putParcelable("video", presenter.getVideoItem());
+        outState.putParcelable("channel", presenter.getChannelItem());
     }
 
     @Override
-    public void loadVideo(int playTime) {
+    public PlayerFragmentPresenter getPresenter() {
 
-        if (getYouTubePlayer() != null) {
+        if(presenter == null){
 
-            if (getYouTubePlayer().isPlaying() == false) {
+            presenter = new VideoPlayerFragmentPresenterImpl(this);
 
-                getYouTubePlayer().loadVideo(videoItem.getId(), playTime);
-
-                getYouTubePlayer().play();
-            }
+            return presenter;
         }
-    }
 
-    @Override
-    public VideoItem getVideoItem() {
-
-        return videoItem;
-    }
-
-    @Override
-    public ChannelItem getChannelItem() {
-
-        return channelItem;
+        return presenter;
     }
 }
