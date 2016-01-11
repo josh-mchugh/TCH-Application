@@ -6,16 +6,14 @@ import android.os.Parcelable;
 import com.redrumming.thecreaturehub.models.content.ContentItem;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 
-import java.math.BigInteger;
-
 /**
  * Created by ME on 7/26/2015.
  */
 public class VideoItem extends ContentItem {
 
-    private BigInteger viewCount;
-    private BigInteger likeCount;
-    private BigInteger dislikeCount;
+    private String viewCount;
+    private String likeCount;
+    private String dislikeCount;
     private String license;
     private String categoryId;
     private String description;
@@ -24,32 +22,32 @@ public class VideoItem extends ContentItem {
 
     }
 
-    public BigInteger getViewCount() {
+    public String getViewCount() {
 
         return viewCount;
     }
 
-    public void setViewCount(BigInteger viewCount) {
+    public void setViewCount(String viewCount) {
 
         this.viewCount = viewCount;
     }
 
-    public BigInteger getLikeCount() {
+    public String getLikeCount() {
 
         return likeCount;
     }
 
-    public void setLikeCount(BigInteger likeCount) {
+    public void setLikeCount(String likeCount) {
 
         this.likeCount = likeCount;
     }
 
-    public BigInteger getDislikeCount() {
+    public String getDislikeCount() {
 
         return dislikeCount;
     }
 
-    public void setDislikeCount(BigInteger dislikeCount) {
+    public void setDislikeCount(String dislikeCount) {
 
         this.dislikeCount = dislikeCount;
     }
@@ -98,9 +96,9 @@ public class VideoItem extends ContentItem {
     public VideoItem(Parcel parcel){
         super(parcel);
 
-        viewCount = (BigInteger) parcel.readValue(BigInteger.class.getClassLoader());
-        likeCount = (BigInteger) parcel.readValue(BigInteger.class.getClassLoader());
-        dislikeCount = (BigInteger) parcel.readValue(BigInteger.class.getClassLoader());
+        viewCount = parcel.readString();
+        likeCount = parcel.readString();
+        dislikeCount = parcel.readString();
         license = parcel.readString();
         categoryId = parcel.readString();
         description = parcel.readString();
@@ -117,9 +115,9 @@ public class VideoItem extends ContentItem {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
 
-        dest.writeValue(viewCount);
-        dest.writeValue(likeCount);
-        dest.writeValue(dislikeCount);
+        dest.writeString(viewCount);
+        dest.writeString(likeCount);
+        dest.writeString(dislikeCount);
         dest.writeString(license);
         dest.writeString(categoryId);
         dest.writeString(description);

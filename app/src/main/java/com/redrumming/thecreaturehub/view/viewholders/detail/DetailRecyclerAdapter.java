@@ -173,25 +173,16 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         });
 
         viewHolder.getTitle().setText(descriptionItem.getVideoItem().getTitle());
-
-        String viewCount = NumberFormatterUtil.formatViewCount(descriptionItem.getVideoItem().getViewCount());
-        viewHolder.getViewCount().setText(viewCount);
+        viewHolder.getViewCount().setText(descriptionItem.getVideoItem().getViewCount());
 
         String date = "Published on " + new SimpleDateFormat("LLL d, yyyy", Locale.getDefault()).format(new Date(descriptionItem.getVideoItem().getPublishedAt()));
         viewHolder.getPublishedAt().setText(date);
         viewHolder.getDescription().setText(descriptionItem.getVideoItem().getDescription());
 
-        String categoryValue = CategoryFormatter.formatCategory(descriptionItem.getVideoItem().getCategoryId());
-        viewHolder.getCategoryValue().setText(categoryValue);
-
-        String licenseValueText = LicenseFormatter.formatLicense(descriptionItem.getVideoItem().getLicense());
-        viewHolder.getLicenseValue().setText(licenseValueText);
-
-        String likeCount = NumberFormatterUtil.formatLikeCount(descriptionItem.getVideoItem().getLikeCount());
-        viewHolder.getLikeCount().setText(likeCount);
-
-        String dislikeCount = NumberFormatterUtil.formatLikeCount(descriptionItem.getVideoItem().getDislikeCount());
-        viewHolder.getDislikeCount().setText(dislikeCount);
+        viewHolder.getCategoryValue().setText(descriptionItem.getVideoItem().getCategoryId());
+        viewHolder.getLicenseValue().setText(descriptionItem.getVideoItem().getLicense());
+        viewHolder.getLikeCount().setText(descriptionItem.getVideoItem().getLikeCount());
+        viewHolder.getDislikeCount().setText(descriptionItem.getVideoItem().getDislikeCount());
     }
 
     private void bindChannelSectionItem(ChannelSectionItem channelSectionItem, ChannelSectionViewHolder viewHolder){

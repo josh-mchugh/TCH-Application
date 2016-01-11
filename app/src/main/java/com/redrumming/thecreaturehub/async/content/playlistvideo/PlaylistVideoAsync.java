@@ -12,9 +12,11 @@ import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItem;
+import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItemFactory;
 import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,7 +57,7 @@ public class PlaylistVideoAsync extends ContentAsync{
 
         if(container.getItems() != null && container.getItems().size() > 0) {
 
-            //logger(container);
+            logger(container);
         }
     }
 
@@ -104,7 +106,7 @@ public class PlaylistVideoAsync extends ContentAsync{
         return videos;
     }
 
-    private PlaylistVideoContainer getVideoDetails(PlaylistVideoContainer container) throws Exception {
+    private List<String> getVideoList(PlaylistVideoContainer container){
 
         List<String> videoIds = new ArrayList<String>();
 
@@ -115,36 +117,19 @@ public class PlaylistVideoAsync extends ContentAsync{
             videoIds.add(videoWrapper.getId());
         }
 
-        VideoListResponse listResponse = new YouTubeServiceCalls(getContext()).getVideoItems(videoIds);
+        return videoIds;
+    }
+
+    private PlaylistVideoContainer getVideoDetails(PlaylistVideoContainer container) throws Exception {
+
+        VideoListResponse listResponse = new YouTubeServiceCalls(getContext()).getVideoItems(getVideoList(container));
 
         List<Video> videoList = listResponse.getItems();
 
         if (videoList != null && container.getItems() != null) {
 
-            for (int i = 0; i < videoList.size(); i++) {
+            container = PlaylistVideoItemFactory.createPlaylistVideoItems(listResponse, container);
 
-                for (int j = 0; j < container.getItems().size(); j++) {
-
-                    PlaylistVideoItem playlistVideoItem = (PlaylistVideoItem) container.getItems().get(j);
-
-                    if (playlistVideoItem.getId().equals(videoList.get(i).getId())) {
-
-                        playlistVideoItem.setTitle(videoList.get(i).getSnippet().getTitle());
-                        playlistVideoItem.setThumbnailURL(videoList.get(i).getSnippet().getThumbnails().getMedium().getUrl());
-                        playlistVideoItem.setPublishedAt(videoList.get(i).getSnippet().getPublishedAt().getValue());
-                        playlistVideoItem.setLikeCount(videoList.get(i).getStatistics().getLikeCount());
-                        playlistVideoItem.setViewCount(videoList.get(i).getStatistics().getViewCount());
-                        playlistVideoItem.setDescription(videoList.get(i).getSnippet().getDescription());
-                        playlistVideoItem.setCategoryId(videoList.get(i).getSnippet().getCategoryId());
-                        playlistVideoItem.setLicense(videoList.get(i).getStatus().getLicense());
-                        playlistVideoItem.setDislikeCount(videoList.get(i).getStatistics().getDislikeCount());
-                        playlistVideoItem.setPlaylistId(container.getPlaylistId());
-
-                        container.getItems().remove(j);
-                        container.getItems().add(j, playlistVideoItem);
-                    }
-                }
-            }
         } else {
 
             onCancelled();
@@ -153,29 +138,29 @@ public class PlaylistVideoAsync extends ContentAsync{
         return container;
     }
 
-//    private void logger(ContentContainer container){
-//
-//        String className = this.getClass().getCanonicalName();
-//
-//        for(int i = 0; i < container.getItems().size(); i++){
-//
-//            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
-//
-//            Log.d(className, "Playlist VideoId: " + video.getId());
-//            Log.d(className, "Playlist Video Title: " + video.getTitle());
-//            Log.d(className, "Playlist Video Thumbnail URL: " + video.getThumbnailURL());
-//            Log.d(className, "Playlist Video Position: " + video.getPosition());
-//            Log.d(className, "Playlist Video Date: " + new Date(video.getPublishedAt()));
-//            Log.d(className, "Playlist Video Public: " + video.isPublic());
-//            Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
-//            Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
-//            Log.d(className, "Playlist Video Description: " + video.getDescription());
-//            Log.d(className, "Playlist Video Category Id: " + video.getCategoryId());
-//            Log.d(className, "Playlist Video License: " + video.getLicense());
-//            Log.d(className, "Playlist Video Dislike Count: " + video.getDislikeCount());
-//            Log.d(className, "Playlist Id: " + video.getPlaylistId());
-//        }
-//
-//        Log.d(className, "PageToken: " + container.getPageToken());
-//    }
+    private void logger(ContentContainer container){
+
+        String className = this.getClass().getCanonicalName();
+
+        for(int i = 0; i < container.getItems().size(); i++){
+
+            PlaylistVideoItem video = (PlaylistVideoItem) container.getItems().get(i);
+
+            Log.d(className, "Playlist VideoId: " + video.getId());
+            Log.d(className, "Playlist Video Title: " + video.getTitle());
+            Log.d(className, "Playlist Video Thumbnail URL: " + video.getThumbnailURL());
+            Log.d(className, "Playlist Video Position: " + video.getPosition());
+            Log.d(className, "Playlist Video Date: " + new Date(video.getPublishedAt()));
+            Log.d(className, "Playlist Video Public: " + video.isPublic());
+            Log.d(className, "Playlist Video LikeCount: " + video.getLikeCount());
+            Log.d(className, "Playlist Video ViewCount: " + video.getViewCount());
+            Log.d(className, "Playlist Video Description: " + video.getDescription());
+            Log.d(className, "Playlist Video Category Id: " + video.getCategoryId());
+            Log.d(className, "Playlist Video License: " + video.getLicense());
+            Log.d(className, "Playlist Video Dislike Count: " + video.getDislikeCount());
+            Log.d(className, "Playlist Id: " + video.getPlaylistId());
+        }
+
+        Log.d(className, "PageToken: " + container.getPageToken());
+    }
 }

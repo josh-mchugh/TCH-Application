@@ -65,7 +65,7 @@ public class VideoRecyclerAdapter extends ContentRecyclerAdapter{
 
             viewHolder.getPublishDate().setText(TimePassedUtil.getTimeDifference(videoItem.getPublishedAt()));
             viewHolder.getViewCountSpacer().setText(" \u00B7 ");
-            viewHolder.getViewCount().setText(NumberFormatterUtil.formatShortView(videoItem.getViewCount()));
+            viewHolder.getViewCount().setText(videoItem.getViewCount());
         }
     }
 }
