@@ -8,10 +8,12 @@ import com.google.api.services.youtube.model.Playlist;
 import com.redrumming.thecreaturehub.async.content.ContentAsync;
 import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
-import com.redrumming.thecreaturehub.models.content.playlist.PlaylistContainer;
+import com.redrumming.thecreaturehub.models.content.playlist.*;
+import com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem;
 import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,7 +45,7 @@ public class PlaylistAsync extends ContentAsync{
 
         if(container.getItems() != null && container.getItems().size() > 0) {
 
-            //logger(container);
+            logger(container);
         }
     }
 
@@ -53,7 +55,7 @@ public class PlaylistAsync extends ContentAsync{
 
             PlaylistListResponse searchResponse = new YouTubeServiceCalls(getContext()).getPlaylists(container.getChannelItem().getChannelId(), container.getPageToken());
 
-            container.getItems().addAll(getPlaylistItems(searchResponse.getItems()));
+            container.getItems().addAll(PlaylistItemFactory.createPlaylistItems(searchResponse));
             container.setPageToken(searchResponse.getNextPageToken());
 
         }catch(Exception e){
@@ -64,44 +66,22 @@ public class PlaylistAsync extends ContentAsync{
         return container;
     }
 
-    private List<com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem> getPlaylistItems (List<Playlist> searchResults){
+    private void logger(ContentContainer container){
 
-        List<com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem> playlistItems = new ArrayList<com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem>();
+        String className = this.getClass().getName();
 
-        for(int i = 0; i < searchResults.size(); i++){
+        for(int i = 0; i < container.getItems().size(); i++){
 
-            Playlist playlist = searchResults.get(i);
-            com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem playlistItem = new com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem();
+            PlaylistItem playlist = (PlaylistItem) container.getItems().get(i);
 
-            playlistItem.setId(playlist.getId());
-            playlistItem.setTitle(playlist.getSnippet().getTitle());
-            playlistItem.setThumbnailURL(playlist.getSnippet().getThumbnails().getMedium().getUrl());
-            playlistItem.setPublishedAt(playlist.getSnippet().getPublishedAt().getValue());
-            playlistItem.setVideoCount(playlist.getContentDetails().getItemCount());
-            playlistItem.setViewable(playlist.getStatus().getPrivacyStatus().equalsIgnoreCase("public"));
-
-            playlistItems.add(playlistItem);
+            Log.d(className, "Playlist Id: " + playlist.getId());
+            Log.d(className, "Playlist Title: " + playlist.getTitle());
+            Log.d(className, "Playlist Thumbnail URL: " + playlist.getThumbnailURL());
+            Log.d(className, "Playlist Published At: " + new Date(playlist.getPublishedAt()));
+            Log.d(className, "Playlist Public: " + playlist.isViewable());
+            Log.d(className, "Playlist Item Count: " + playlist.getVideoCount());
         }
 
-        return playlistItems;
+        Log.d(className, "Next Page Token: " + container.getPageToken());
     }
-
-//    private void logger(ContentContainer container){
-//
-//        String className = this.getClass().getName();
-//
-//        for(int i = 0; i < container.getItems().size(); i++){
-//
-//            PlaylistItem playlist = (PlaylistItem) container.getItems().get(i);
-//
-//            Log.d(className, "Playlist Id: " + playlist.getId());
-//            Log.d(className, "Playlist Title: " + playlist.getTitle());
-//            Log.d(className, "Playlist Thumbnail URL: " + playlist.getThumbnailURL());
-//            Log.d(className, "Playlist Published At: " + new Date(playlist.getPublishedAt()));
-//            Log.d(className, "Playlist Public: " + playlist.isViewable());
-//            Log.d(className, "Playlist Item Count: " + playlist.getVideoCount());
-//        }
-//
-//        Log.d(className, "Next Page Token: " + container.getPageToken());
-//    }
 }
