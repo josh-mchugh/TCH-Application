@@ -13,8 +13,8 @@ public class ChannelItem implements Parcelable {
 
     private String channelName;
     private String channelId;
-    private BigInteger subscriberCount;
-    private Bitmap displayIcon;
+    private String subscriberCount;
+    private String displayIconURL;
 
     public ChannelItem(){
 
@@ -40,24 +40,24 @@ public class ChannelItem implements Parcelable {
         this.channelId = channelId;
     }
 
-    public BigInteger getSubscriberCount() {
+    public String getSubscriberCount() {
 
         return subscriberCount;
     }
 
-    public void setSubscriberCount(BigInteger subscriberCount) {
+    public void setSubscriberCount(String subscriberCount) {
 
         this.subscriberCount = subscriberCount;
     }
 
-    public Bitmap getDisplayIcon() {
+    public String getDisplayIconURL() {
 
-        return displayIcon;
+        return displayIconURL;
     }
 
-    public void setDisplayIcon(Bitmap displayIcon){
+    public void setDisplayIconURL(String displayIconURL) {
 
-        this.displayIcon = displayIcon;
+        this.displayIconURL = displayIconURL;
     }
 
     /**
@@ -69,8 +69,8 @@ public class ChannelItem implements Parcelable {
 
         channelName = parcel.readString();
         channelId = parcel.readString();
-        subscriberCount = (BigInteger) parcel.readValue(BigInteger.class.getClassLoader());
-        displayIcon = (Bitmap) parcel.readValue(Bitmap.class.getClassLoader());
+        subscriberCount = parcel.readString();
+        displayIconURL = parcel.readString();
     }
 
     @Override
@@ -84,8 +84,8 @@ public class ChannelItem implements Parcelable {
 
         dest.writeString(channelName);
         dest.writeString(channelId);
-        dest.writeValue(subscriberCount);
-        dest.writeValue(displayIcon);
+        dest.writeString(subscriberCount);
+        dest.writeString(displayIconURL);
     }
 
     @SuppressWarnings("unused")

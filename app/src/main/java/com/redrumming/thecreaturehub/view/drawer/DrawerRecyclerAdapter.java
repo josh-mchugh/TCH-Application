@@ -1,5 +1,6 @@
 package com.redrumming.thecreaturehub.view.drawer;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import com.redrumming.thecreaturehub.R;
 import com.redrumming.thecreaturehub.models.drawer.DrawerChannelItem;
 import com.redrumming.thecreaturehub.models.drawer.DrawerHeaderItem;
 import com.redrumming.thecreaturehub.models.drawer.DrawerItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<DrawerItem> items;
+    private Context context;
 
     public DrawerRecyclerAdapter(List<DrawerItem> items){
         this.items = items;
@@ -39,6 +42,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_drawer_channel, parent, false);
+            context = parent.getContext();
 
             DrawerChannelViewHolder viewHolder = new DrawerChannelViewHolder(view);
 
@@ -66,7 +70,12 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             DrawerChannelViewHolder viewHolder = (DrawerChannelViewHolder) holder;
 
             viewHolder.getTitle().setText(channelItem.getChannelItem().getChannelName());
-            viewHolder.getDisplayIcon().setImageBitmap(channelItem.getChannelItem().getDisplayIcon());
+
+            Picasso.with(context)
+                    .load(channelItem.getChannelItem().getDisplayIconURL())
+                    .error(R.drawable.display_user_profile_image_default)
+                    .noFade()
+                    .into(viewHolder.getDisplayIcon());
         }
     }
 

@@ -64,6 +64,7 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }else if(viewType == DetailItem.CHANNEL_SECTION_ITEM){
 
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_section, parent, false);
+            context = parent.getContext();
             ChannelSectionViewHolder viewHolder = new ChannelSectionViewHolder(view);
 
             return viewHolder;
@@ -195,11 +196,14 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private void bindChannelSectionItem(ChannelSectionItem channelSectionItem, ChannelSectionViewHolder viewHolder){
 
-        viewHolder.getChannelIcon().setImageBitmap(channelSectionItem.getChannelItem().getDisplayIcon());
-        viewHolder.getChannelName().setText(channelSectionItem.getChannelItem().getChannelName());
+        Picasso.with(context)
+                .load(channelSectionItem.getChannelItem().getDisplayIconURL())
+                .error(R.drawable.display_user_profile_image_default)
+                .noFade()
+                .into(viewHolder.getChannelIcon());
 
-        String subscriberCount = NumberFormatterUtil.formatSubscriberCount(channelSectionItem.getChannelItem().getSubscriberCount());
-        viewHolder.getSubscriberCount().setText(subscriberCount);
+        viewHolder.getChannelName().setText(channelSectionItem.getChannelItem().getChannelName());
+        viewHolder.getSubscriberCount().setText(channelSectionItem.getChannelItem().getSubscriberCount());
     }
 
     private void bindTopLevelCommentItem(final TopLevelCommentItem topLevelCommentItem, final TopLevelCommentViewHolder viewHolder){

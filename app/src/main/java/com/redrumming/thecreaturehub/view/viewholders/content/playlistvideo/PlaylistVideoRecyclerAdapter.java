@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 public class PlaylistVideoRecyclerAdapter extends ContentRecyclerAdapter{
 
     public PlaylistVideoRecyclerAdapter(PlaylistVideoContainer container){
+
         super(container);
     }
 
@@ -55,7 +56,13 @@ public class PlaylistVideoRecyclerAdapter extends ContentRecyclerAdapter{
 
             Picasso.with(super.getContext()).load(video.getThumbnailURL()).into(viewHolder.getThumbnail());
             viewHolder.getTitle().setText(video.getTitle());
-            viewHolder.getChannelIcon().setImageBitmap(channelItem.getDisplayIcon());
+
+            Picasso.with(super.getContext())
+                    .load(channelItem.getDisplayIconURL())
+                    .error(R.drawable.display_user_profile_image_default)
+                    .noFade()
+                    .into(viewHolder.getChannelIcon());
+
             viewHolder.getPublishDate().setText(TimePassedUtil.getTimeDifference(video.getPublishedAt()));
             viewHolder.getViewCountSpacer().setText(" \u00B7 ");
             viewHolder.getViewCount().setText(NumberFormatterUtil.formatShortView(video.getViewCount()));

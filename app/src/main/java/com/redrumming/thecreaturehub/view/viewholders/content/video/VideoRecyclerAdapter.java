@@ -56,7 +56,13 @@ public class VideoRecyclerAdapter extends ContentRecyclerAdapter{
 
             Picasso.with(super.getContext()).load(videoItem.getThumbnailURL()).into(viewHolder.getThumbnail());
             viewHolder.getTitle().setText(videoItem.getTitle());
-            viewHolder.getChannelIcon().setImageBitmap(channelItem.getDisplayIcon());
+
+            Picasso.with(super.getContext())
+                    .load(channelItem.getDisplayIconURL())
+                    .error(R.drawable.display_user_profile_image_default)
+                    .noFade()
+                    .into(viewHolder.getChannelIcon());
+
             viewHolder.getPublishDate().setText(TimePassedUtil.getTimeDifference(videoItem.getPublishedAt()));
             viewHolder.getViewCountSpacer().setText(" \u00B7 ");
             viewHolder.getViewCount().setText(NumberFormatterUtil.formatShortView(videoItem.getViewCount()));

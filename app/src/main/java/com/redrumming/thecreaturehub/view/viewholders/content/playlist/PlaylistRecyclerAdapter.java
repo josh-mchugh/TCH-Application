@@ -56,7 +56,12 @@ public class PlaylistRecyclerAdapter extends ContentRecyclerAdapter{
 
             Picasso.with(super.getContext()).load(playlistItem.getThumbnailURL()).into(viewHolder.getThumbnail());
             viewHolder.getTitle().setText(playlistItem.getTitle());
-            viewHolder.getChannelIcon().setImageBitmap(channelItem.getDisplayIcon());
+
+            Picasso.with(super.getContext())
+                    .load(channelItem.getDisplayIconURL())
+                    .error(R.drawable.display_user_profile_image_default)
+                    .noFade()
+                    .into(viewHolder.getChannelIcon());
 
             String numberOfVideos = playlistItem.getVideoCount() > 1 ? playlistItem.getVideoCount() + " videos" : playlistItem.getVideoCount() + " video";
             viewHolder.getNumberOfVideos().setText(numberOfVideos);

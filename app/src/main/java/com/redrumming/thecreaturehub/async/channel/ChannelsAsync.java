@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.api.services.youtube.model.Channel;
 import com.google.api.services.youtube.model.ChannelListResponse;
 import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.models.channel.ChannelItemFactory;
 import com.redrumming.thecreaturehub.util.NetworkUtil;
 import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
@@ -46,7 +47,7 @@ public class ChannelsAsync extends AsyncTask<String[], Void, List<ChannelItem>> 
 
             ChannelListResponse channelListResponse = new YouTubeServiceCalls(context).getChannels(Arrays.asList(params[0]));
 
-            channelItems = createChannelsList(channelListResponse.getItems());
+            channelItems = ChannelItemFactory.createChannelItems(channelListResponse.getItems());
 
             channelItems = sortList(channelItems, params[0]);
 
@@ -89,30 +90,6 @@ public class ChannelsAsync extends AsyncTask<String[], Void, List<ChannelItem>> 
         listener.onFailure();
     }
 
-    private List<ChannelItem> createChannelsList(List<Channel> channels) throws Exception{
-
-        List<ChannelItem> channelItems = new ArrayList<ChannelItem>();
-
-        for(int i = 0; i < channels.size(); i++){
-
-            ChannelItem channel = new ChannelItem();
-
-            channel.setChannelId(channels.get(i).getId());
-            channel.setChannelName(channels.get(i).getSnippet().getTitle());
-            channel.setSubscriberCount(channels.get(i).getStatistics().getSubscriberCount());
-
-            URL url = new URL(channels.get(i).getSnippet().getThumbnails().getMedium().getUrl());
-            URLConnection urlConnection = url.openConnection();
-            InputStream inputStream = urlConnection.getInputStream();
-
-            channel.setDisplayIcon(BitmapFactory.decodeStream(inputStream));
-
-            channelItems.add(channel);
-        }
-
-        return channelItems;
-    }
-
     private List<ChannelItem> sortList(List<ChannelItem> channelItems, String[] channelIds){
 
         List<ChannelItem> sortedList = new ArrayList<ChannelItem>();
@@ -140,7 +117,7 @@ public class ChannelsAsync extends AsyncTask<String[], Void, List<ChannelItem>> 
             Log.d(className, "Channel Name: " + items.get(i).getChannelName());
             Log.d(className, "Channel Id: " + items.get(i).getChannelId());
             Log.d(className, "Channel Subscriber Count: " + items.get(i).getSubscriberCount());
-            Log.d(className, "Channel Drawable: " + items.get(i).getDisplayIcon() != null ? "true" : "false");
+            Log.d(className, "Channel Display Icon URL: " + items.get(i).getDisplayIconURL());
         }
     }
 }
