@@ -167,7 +167,8 @@ public class YouTubeServiceCalls {
                         + "snippet/authorProfileImageUrl, "
                         + "snippet/authorChannelId/value, "
                         + "snippet/textDisplay, "
-                        + "snippet/publishedAt "
+                        + "snippet/publishedAt, "
+                        + "snippet/parentId "
                         + "), nextPageToken")
                 .setParentId(parentId)
                 .setTextFormat(COMMENT_FORMAT)
