@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.async.content.video;
+package com.redrumming.thecreaturehub.models.content.video;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,12 +6,7 @@ import android.util.Log;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.VideoListResponse;
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
-import com.redrumming.thecreaturehub.models.content.video.VideoContainer;
-import com.redrumming.thecreaturehub.models.content.video.VideoItem;
-import com.redrumming.thecreaturehub.models.content.video.VideoItemFactory;
 import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
 import java.util.ArrayList;
@@ -19,46 +14,31 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by RedRumming on 7/20/2015.
+ * Created by ME on 3/19/2016.
  */
-public class VideoAsync extends ContentAsync{
+public class VideoContainerFactory {
 
-    public VideoAsync(Context context, ContentAsyncListener listener){
-        super(context, listener);
+    public static VideoContainer createVideoContainer(Context context, VideoContainer container) throws Exception{
+
+        VideoContainer updatedContainer = new VideoContainer();
+        updatedContainer.setChannelItem(container.getChannelItem());
+        updatedContainer.setPageToken(container.getPageToken());
+
+        updatedContainer = retrieveVideos(context, updatedContainer);
+
+        logger(updatedContainer);
+
+        return updatedContainer;
     }
 
-    @Override
-    protected VideoContainer doInBackground(ContentContainer... container) {
-
-        super.checkNetworkStatus();
-
-        VideoContainer updateContainer = new VideoContainer();
-        updateContainer.setChannelItem(container[0].getChannelItem());
-        updateContainer.setPageToken(container[0].getPageToken());
-
-        updateContainer = retrieveVideos(updateContainer);
-
-        return updateContainer;
-    }
-
-    @Override
-    protected void onPostExecute(ContentContainer container) {
-        super.onPostExecute(container);
-
-        if(container.getItems() != null && container.getItems().size() > 0) {
-
-            logger(container);
-        }
-    }
-
-    private VideoContainer retrieveVideos(VideoContainer container){
+    private static VideoContainer retrieveVideos(Context context, VideoContainer container){
 
         try{
 
-            SearchListResponse searchListResponse = new YouTubeServiceCalls(getContext()).getVideoIds(container.getChannelItem().getChannelId(), container.getPageToken());
+            SearchListResponse searchListResponse = new YouTubeServiceCalls(context).getVideoIds(container.getChannelItem().getChannelId(), container.getPageToken());
             List<String> videoIds = getVideoIds(searchListResponse);
 
-            VideoListResponse videoListResponse = new YouTubeServiceCalls(getContext()).getVideoItems(videoIds);
+            VideoListResponse videoListResponse = new YouTubeServiceCalls(context).getVideoItems(videoIds);
             List<VideoItem> videoItems = VideoItemFactory.createVideoItems(videoListResponse);
 
             container.setPageToken(searchListResponse.getNextPageToken());
@@ -66,13 +46,13 @@ public class VideoAsync extends ContentAsync{
 
         }catch(Exception e){
 
-            Log.e(this.getClass().getName(), "Error Retrieving Search Results: " + e);
+            Log.e(VideoContainerFactory.class.getName(), "Error Retrieving Search Results: " + e);
         }
 
         return container;
     }
 
-    private List<String> getVideoIds(SearchListResponse response){
+    private static List<String> getVideoIds(SearchListResponse response){
 
         List<SearchResult> searchResults = response.getItems();
 
@@ -86,9 +66,9 @@ public class VideoAsync extends ContentAsync{
         return videoIds;
     }
 
-    private void logger(ContentContainer container){
+    private static void logger(ContentContainer container){
 
-        String className = this.getClass().getName();
+        String className = VideoContainerFactory.class.getName();
 
         for(int i = 0; i < container.getItems().size(); i++){
 

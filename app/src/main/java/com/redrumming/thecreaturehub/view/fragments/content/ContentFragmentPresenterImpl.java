@@ -1,26 +1,31 @@
 package com.redrumming.thecreaturehub.view.fragments.content;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
 import com.redrumming.thecreaturehub.models.channel.ChannelItem;
 import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.models.content.loading.LoadingItem;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by ME on 1/8/2016.
  */
-public abstract class ContentFragmentPresenterImpl implements ContentFragmentPresenter, ContentAsyncListener {
+public abstract class ContentFragmentPresenterImpl implements ContentFragmentPresenter {
 
     private ContentFragmentView view;
 
-    private ContentAsync async;
     private boolean isLoading = false;
+
+    private Subscription subscription;
 
     public ContentFragmentPresenterImpl(ContentFragmentView view){
 
@@ -42,16 +47,13 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
         }
     }
 
-    private void checkAsyncStatus(){
+    @Override
+    public void onDestroy() {
 
-        if(async != null){
+        if(subscription != null && !subscription.isUnsubscribed()){
 
-            if(async.getStatus() == AsyncTask.Status.RUNNING){
-
-                async.cancel(true);
-            }
-
-            async = null;
+            subscription.isUnsubscribed();
+            subscription = null;
         }
     }
 
@@ -84,7 +86,7 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
         getContainer().setPageToken("");
         getContainer().getItems().clear();
 
-        executeAsync();
+        getContent();
 
         setLoading();
     }
@@ -96,18 +98,27 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
 
             if (isLoading == false) {
 
-                executeAsync();
+                getContent();
 
                 setLoading();
             }
         }
     }
 
-    private void executeAsync(){
+    private void getContent(){
 
-        checkAsyncStatus();
-        this.async = getAsync();
-        this.async.execute(getContainer());
+        subscription = Observable.just(getContainer())
+                .map(new Func1<ContentContainer, ContentContainer>() {
+
+                    @Override
+                    public ContentContainer call(ContentContainer contentContainer) {
+
+                        return onCall(contentContainer);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getObserver());
     }
 
     private void setLoading(){
@@ -135,7 +146,7 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
             getContainer().getItems().clear();
             view.notifyAdapterChange();
 
-            executeAsync();
+            getContent();
 
             isLoading = true;
         }
@@ -144,29 +155,11 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
     public abstract void onSelect(int position);
     public abstract void setContainer(Parcelable container);
     public abstract ContentContainer getContainer();
-    public abstract ContentAsync getAsync();
+    public abstract Observer<ContentContainer> getObserver();
+    public abstract ContentContainer onCall(ContentContainer contentContainer);
 
     public ContentFragmentView getView(){
 
         return view;
-    }
-
-    @Override
-    public void onSuccess(ContentContainer container) {
-
-        if(container.getChannelItem() == null && container.getItems() != null){
-
-            return;
-        }
-
-        updateView(container);
-    }
-
-    @Override
-    public void onFailure() {
-
-        view.displayErrorMsg();
-
-        removeLoadingStatus();
     }
 }

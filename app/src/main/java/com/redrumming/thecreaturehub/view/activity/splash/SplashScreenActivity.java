@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import com.redrumming.thecreaturehub.view.activity.main.EntryActivity;
 import com.redrumming.thecreaturehub.R;
 
+
 /**
  * Created by ME on 11/13/2015.
  */
@@ -68,5 +69,12 @@ public class SplashScreenActivity extends Activity implements SplashScreenView {
     public Context getContext() {
 
         return this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        presenter.onDestroy();
     }
 }

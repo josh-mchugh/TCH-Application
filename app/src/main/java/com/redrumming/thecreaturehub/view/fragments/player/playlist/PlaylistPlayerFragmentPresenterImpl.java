@@ -2,20 +2,25 @@ package com.redrumming.thecreaturehub.view.fragments.player.playlist;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 
-import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
-import com.redrumming.thecreaturehub.async.content.playlistvideo.PlaylistVideoAsync;
 import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
+import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainerFactory;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItem;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 import com.redrumming.thecreaturehub.view.fragments.player.PlayerFragmentPresenterImpl;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by ME on 1/9/2016.
  */
-public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenterImpl implements PlaylistPlayerFragmentPresenter, ContentAsyncListener {
+public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenterImpl implements PlaylistPlayerFragmentPresenter {
 
     private PlaylistVideoContainer playlistVideoContainer;
     private int position;
@@ -70,8 +75,51 @@ public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenter
 
         if(position == lastVideo){
 
-            PlaylistVideoAsync async = new PlaylistVideoAsync(((PlaylistPlayerFragmentView) getView()).getContext(), this);
-            async.execute(playlistVideoContainer);
+            Observable.just(playlistVideoContainer)
+                    .map(new Func1<PlaylistVideoContainer, PlaylistVideoContainer>() {
+
+                        @Override
+                        public PlaylistVideoContainer call(PlaylistVideoContainer container) {
+
+                            PlaylistVideoContainer updatedContainer = null;
+
+                            try{
+
+                                updatedContainer = PlaylistVideoContainerFactory.createPlaylistVideoContainer(((PlaylistPlayerFragmentView)getView()).getContext(), container);
+
+                            }catch (Exception e){
+
+                                Log.e(this.getClass().getName(), "Error updating PlaylistVideoContainer with new videos within player fragment.", e);
+                            }
+
+                            return updatedContainer;
+                        }
+                    }).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<PlaylistVideoContainer>() {
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(PlaylistVideoContainer container) {
+
+                            if(container != null) {
+
+                                playlistVideoContainer.getItems().addAll(container.getItems());
+                                playlistVideoContainer.setPageToken(container.getPageToken());
+
+                                PlaylistPlayerFragmentPresenterImpl.this.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
+                            }
+                        }
+                    });
 
             super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
 
@@ -117,19 +165,5 @@ public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenter
     public int getPosition() {
 
         return position;
-    }
-
-    @Override
-    public void onSuccess(ContentContainer container) {
-
-        playlistVideoContainer.getItems().addAll(container.getItems());
-        playlistVideoContainer.setPageToken(container.getPageToken());
-
-        super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
-    }
-
-    @Override
-    public void onFailure() {
-
     }
 }

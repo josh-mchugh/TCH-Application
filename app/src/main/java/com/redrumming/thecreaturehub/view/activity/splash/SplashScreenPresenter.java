@@ -6,4 +6,5 @@ package com.redrumming.thecreaturehub.view.activity.splash;
 public interface SplashScreenPresenter {
 
     void fetchChannelData(String[] channelIds);
+    void onDestroy();
 }

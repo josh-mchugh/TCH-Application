@@ -1,15 +1,17 @@
 package com.redrumming.thecreaturehub.view.fragments.content.playlist;
 
 import android.os.Parcelable;
+import android.util.Log;
 
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.async.content.playlist.PlaylistAsync;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistContainer;
+import com.redrumming.thecreaturehub.models.content.playlist.PlaylistContainerFactory;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
 import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentPresenterImpl;
+
+import rx.Observer;
 
 /**
  * Created by ME on 1/8/2016.
@@ -64,8 +66,49 @@ public class PlaylistListFragmentPresenterImpl extends ContentFragmentPresenterI
     }
 
     @Override
-    public ContentAsync getAsync() {
+    public Observer<ContentContainer> getObserver() {
 
-        return new PlaylistAsync(getView().getContext(), this);
+        return new Observer<ContentContainer>() {
+
+
+
+            @Override
+            public void onCompleted() {
+
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                Log.e(this.getClass().getName(), "Error occurred trying to fetch videos of a playlist.", e);
+            }
+
+            @Override
+            public void onNext(ContentContainer contentContainer) {
+
+                PlaylistListFragmentPresenterImpl.this.updateView(contentContainer);
+                Log.i(this.getClass().getName(), "Recieved Playlist information for channel id: " + contentContainer.getChannelItem().getChannelName() + " with page token: " + contentContainer.getPageToken());
+            }
+        };
     }
+
+    @Override
+    public ContentContainer onCall(ContentContainer contentContainer) {
+
+        PlaylistContainer updatedContainer = null;
+
+        try{
+
+            updatedContainer = PlaylistContainerFactory.createPlaylistContainer(super.getView().getContext(), (PlaylistContainer) contentContainer);
+
+        }catch(Exception e){
+
+            Log.e(this.getClass().getName(), "Error trying to retrieve playlist information for the playlist fragment.", e);
+        }
+
+        return updatedContainer;
+    }
+
+
 }

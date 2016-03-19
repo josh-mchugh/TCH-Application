@@ -1,4 +1,4 @@
-package com.redrumming.thecreaturehub.async.content.playlistvideo;
+package com.redrumming.thecreaturehub.models.content.playlistvideo;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,12 +7,7 @@ import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
-import com.redrumming.thecreaturehub.async.content.ContentAsync;
-import com.redrumming.thecreaturehub.async.content.ContentAsyncListener;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
-import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
-import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItem;
-import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItemFactory;
 import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
 
 import java.util.ArrayList;
@@ -20,75 +15,51 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by ME on 10/18/2015.
+ * Created by ME on 3/19/2016.
  */
-public class PlaylistVideoAsync extends ContentAsync{
+public class PlaylistVideoContainerFactory {
 
-    public PlaylistVideoAsync(Context context, ContentAsyncListener listener){
-        super(context, listener);
-    }
-
-    @Override
-    protected PlaylistVideoContainer doInBackground(ContentContainer... container) {
+    public static PlaylistVideoContainer createPlaylistVideoContainer(Context context, PlaylistVideoContainer container) throws Exception{
 
         PlaylistVideoContainer updatedContainer = new PlaylistVideoContainer();
 
-        if(container[0] instanceof PlaylistVideoContainer){
+        if(container instanceof PlaylistVideoContainer){
 
-            PlaylistVideoContainer tempContainer = (PlaylistVideoContainer) container[0];
+            PlaylistVideoContainer tempContainer = (PlaylistVideoContainer) container;
 
             updatedContainer.setChannelItem(tempContainer.getChannelItem());
             updatedContainer.setPageToken(tempContainer.getPageToken());
             updatedContainer.setPlaylistId(tempContainer.getPlaylistId());
 
-            updatedContainer = getVideos(updatedContainer);
+            updatedContainer = getVideos(context, updatedContainer);
 
-        }else{
-
-            super.cancel(true);
+            logger(updatedContainer);
         }
 
         return updatedContainer;
     }
 
-    @Override
-    protected void onPostExecute(ContentContainer container) {
-        super.onPostExecute(container);
+    private static PlaylistVideoContainer getVideos(Context context, PlaylistVideoContainer container) throws Exception{
 
-        if(container.getItems() != null && container.getItems().size() > 0) {
-
-            logger(container);
-        }
-    }
-
-    private PlaylistVideoContainer getVideos(PlaylistVideoContainer container){
-
-        container = retrieveYouTubeData(container);
+        container = retrieveYouTubeData(context, container);
 
         return container;
     }
 
-    private PlaylistVideoContainer retrieveYouTubeData(PlaylistVideoContainer container){
+    private static PlaylistVideoContainer retrieveYouTubeData(Context context, PlaylistVideoContainer container) throws Exception{
 
-        try{
+        PlaylistItemListResponse response = new YouTubeServiceCalls(context).getPlaylistItems(container.getPlaylistId(), container.getPageToken());
+        List<PlaylistItem> items = response.getItems();
 
-            PlaylistItemListResponse response = new YouTubeServiceCalls(getContext()).getPlaylistItems(container.getPlaylistId(), container.getPageToken());
-            List<PlaylistItem> items = response.getItems();
+        container.getItems().addAll(convertData(items));
+        container.setPageToken(response.getNextPageToken());
 
-            container.getItems().addAll(convertData(items));
-            container.setPageToken(response.getNextPageToken());
-
-            container = getVideoDetails(container);
-
-        }catch (Exception e){
-
-            Log.e(this.getClass().getCanonicalName(), "Error retrieving YouTube Playlist Videos results.", e);
-        }
+        container = getVideoDetails(context, container);
 
         return container;
     }
 
-    private List<PlaylistVideoItem> convertData(List<PlaylistItem> items){
+    private static List<PlaylistVideoItem> convertData(List<PlaylistItem> items){
 
         List<PlaylistVideoItem> videos = new ArrayList<PlaylistVideoItem>();
 
@@ -106,7 +77,7 @@ public class PlaylistVideoAsync extends ContentAsync{
         return videos;
     }
 
-    private List<String> getVideoList(PlaylistVideoContainer container){
+    private static List<String> getVideoList(PlaylistVideoContainer container){
 
         List<String> videoIds = new ArrayList<String>();
 
@@ -120,9 +91,9 @@ public class PlaylistVideoAsync extends ContentAsync{
         return videoIds;
     }
 
-    private PlaylistVideoContainer getVideoDetails(PlaylistVideoContainer container) throws Exception {
+    private static PlaylistVideoContainer getVideoDetails(Context context, PlaylistVideoContainer container) throws Exception {
 
-        VideoListResponse listResponse = new YouTubeServiceCalls(getContext()).getVideoItems(getVideoList(container));
+        VideoListResponse listResponse = new YouTubeServiceCalls(context).getVideoItems(getVideoList(container));
 
         List<Video> videoList = listResponse.getItems();
 
@@ -130,17 +101,14 @@ public class PlaylistVideoAsync extends ContentAsync{
 
             container = PlaylistVideoItemFactory.createPlaylistVideoItems(listResponse, container);
 
-        } else {
-
-            onCancelled();
         }
 
         return container;
     }
 
-    private void logger(ContentContainer container){
+    private static void logger(ContentContainer container){
 
-        String className = this.getClass().getCanonicalName();
+        String className = PlaylistVideoContainerFactory.class.getCanonicalName();
 
         for(int i = 0; i < container.getItems().size(); i++){
 

@@ -6,4 +6,5 @@ package com.redrumming.thecreaturehub.youtube;
 public class YouTubeApiKey {
 
     public static final String API_KEY = "ADD-API-KEY";
+    public static final String OAUTH_KEY = "ADD-OAUTH-KEY";
 }

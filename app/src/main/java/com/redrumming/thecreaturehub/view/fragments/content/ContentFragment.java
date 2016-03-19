@@ -80,6 +80,13 @@ public abstract class ContentFragment extends Fragment implements ContentFragmen
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        presenter.onDestroy();
+    }
+
     public void setup(ChannelItem channelItem){
 
         presenter.setup(channelItem);
