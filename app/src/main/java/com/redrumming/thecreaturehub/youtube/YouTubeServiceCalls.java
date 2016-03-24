@@ -79,6 +79,7 @@ public class YouTubeServiceCalls {
         return response;
     }
 
+    //retrofitted
     public PlaylistListResponse getPlaylists(String channelId, String pageToken) throws Exception {
 
         PlaylistListResponse response = youtube.playlists().list("id, snippet, contentDetails, status")
@@ -98,6 +99,7 @@ public class YouTubeServiceCalls {
         return response;
     }
 
+    //retrofitted
     public PlaylistItemListResponse getPlaylistItems(String playlistId, String pageToken) throws Exception {
 
         PlaylistItemListResponse response = youtube.playlistItems().list("id,snippet,status")
@@ -137,6 +139,7 @@ public class YouTubeServiceCalls {
         return response;
     }
 
+    //Retrofitted and bug fixed
     public CommentThreadListResponse getTopLevelComments(String videoId, String pageToken)throws Exception {
 
         CommentThreadListResponse response = youtube.commentThreads().list("id, snippet")
@@ -146,7 +149,6 @@ public class YouTubeServiceCalls {
                         + "snippet/topLevelComment/id, "
                         + "snippet/topLevelComment/snippet/authorDisplayName, "
                         + "snippet/topLevelComment/snippet/authorProfileImageUrl, "
-                        + "snippet/topLevelComment/snippet/authorChannelId/value, "
                         + "snippet/topLevelComment/snippet/textDisplay, "
                         + "snippet/topLevelComment/snippet/publishedAt"
                         + "), nextPageToken")
@@ -168,7 +170,6 @@ public class YouTubeServiceCalls {
                         + "id, "
                         + "snippet/authorDisplayName, "
                         + "snippet/authorProfileImageUrl, "
-                        + "snippet/authorChannelId/value, "
                         + "snippet/textDisplay, "
                         + "snippet/publishedAt, "
                         + "snippet/parentId "

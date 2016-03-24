@@ -1,12 +1,12 @@
 
-package com.redrumming.thecreaturehub.api.youtube.search.model;
+package com.redrumming.thecreaturehub.api.youtube.platlistItems.model;
 
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("org.jsonschema2pojo")
-public class Id {
+public class ResourceId {
 
     @SerializedName("videoId")
     @Expose

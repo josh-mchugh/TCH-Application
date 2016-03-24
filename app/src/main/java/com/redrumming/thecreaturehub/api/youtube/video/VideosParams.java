@@ -11,6 +11,7 @@ public class VideosParams extends YouTubeParams {
 
     public static final String VALUE_PART = "snippet, statistics, status";
     public static final String VALUE_FIELDS = "items(" +
+            "id, " +
             "snippet/title," +
             " snippet/thumbnails/medium/url," +
             " snippet/description," +

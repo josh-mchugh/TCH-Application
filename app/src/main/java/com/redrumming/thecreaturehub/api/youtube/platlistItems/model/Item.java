@@ -1,5 +1,5 @@
 
-package com.redrumming.thecreaturehub.api.youtube.video.model;
+package com.redrumming.thecreaturehub.api.youtube.platlistItems.model;
 
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
@@ -17,9 +17,6 @@ public class Item {
     @SerializedName("status")
     @Expose
     private Status status;
-    @SerializedName("statistics")
-    @Expose
-    private Statistics statistics;
 
     /**
      * 
@@ -73,24 +70,6 @@ public class Item {
      */
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    /**
-     * 
-     * @return
-     *     The statistics
-     */
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    /**
-     * 
-     * @param statistics
-     *     The statistics
-     */
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
     }
 
 }

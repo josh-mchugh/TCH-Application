@@ -1,5 +1,5 @@
 
-package com.redrumming.thecreaturehub.api.youtube.video.model;
+package com.redrumming.thecreaturehub.api.youtube.comment.top.model;
 
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
@@ -14,12 +14,6 @@ public class Item {
     @SerializedName("snippet")
     @Expose
     private Snippet snippet;
-    @SerializedName("status")
-    @Expose
-    private Status status;
-    @SerializedName("statistics")
-    @Expose
-    private Statistics statistics;
 
     /**
      * 
@@ -55,42 +49,6 @@ public class Item {
      */
     public void setSnippet(Snippet snippet) {
         this.snippet = snippet;
-    }
-
-    /**
-     * 
-     * @return
-     *     The status
-     */
-    public Status getStatus() {
-        return status;
-    }
-
-    /**
-     * 
-     * @param status
-     *     The status
-     */
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    /**
-     * 
-     * @return
-     *     The statistics
-     */
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    /**
-     * 
-     * @param statistics
-     *     The statistics
-     */
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
     }
 
 }
