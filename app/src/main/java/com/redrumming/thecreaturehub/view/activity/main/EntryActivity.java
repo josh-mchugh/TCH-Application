@@ -5,12 +5,32 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.redrumming.thecreaturehub.R;
+import com.redrumming.thecreaturehub.api.youtube.YouTubeParams;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelParams;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsAPI;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
+import com.redrumming.thecreaturehub.api.youtube.video.VideosAPI;
+import com.redrumming.thecreaturehub.api.youtube.video.VideosParams;
+import com.redrumming.thecreaturehub.api.youtube.video.model.Videos;
+import com.redrumming.thecreaturehub.retrofit.YouTubeRetrofit;
 import com.redrumming.thecreaturehub.view.fragments.content.playlistvideo.PlaylistVideoFragment;
 import com.redrumming.thecreaturehub.view.tablayout.TabbedContent;
 import com.redrumming.thecreaturehub.view.drawer.NavigationDrawerHelper;
+import com.redrumming.thecreaturehub.youtube.YouTubeApiKey;
+import com.redrumming.thecreaturehub.api.youtube.search.model.Search;
+import com.redrumming.thecreaturehub.api.youtube.search.SearchParameters;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class EntryActivity extends AppCompatActivity implements EntryActivityView {
 
@@ -33,6 +53,37 @@ public class EntryActivity extends AppCompatActivity implements EntryActivityVie
         NavigationDrawerHelper.get().init(this);
 
         initSavedInstance(savedInstanceState);
+
+        Retrofit retrofit = YouTubeRetrofit.build();
+
+        VideosAPI videosAPI = retrofit.create(VideosAPI.class);
+
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(VideosParams.PARAM_PART, VideosParams.VALUE_PART);
+        parameters.put(VideosParams.PARAM_FIELDS, VideosParams.VALUE_FIELDS);
+        parameters.put(VideosParams.PARAM_MAX_RESULTS, VideosParams.VALUE_MAX_RESULTS);
+        parameters.put(VideosParams.PARAM_ID, "M1OlSuMlXMo, vrYhhGaa5mU");
+        parameters.put(VideosParams.PARAM_API_KEY, VideosParams.VALUE_API_KEY);
+
+        final Call<Videos> respos = videosAPI.getVideos(parameters);
+        respos.enqueue(new Callback<Videos>() {
+
+            @Override
+            public void onResponse(Call<Videos> call, Response<Videos> response) {
+
+                String tag = this.getClass().getName();
+
+                Log.d(tag, "Response code: " + response.code());
+                Log.d(tag, "Body: " + response.raw().body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<Videos> call, Throwable t) {
+
+                Log.e(this.getClass().getName(), "Error in Retrofit test: ", t);
+
+            }
+        });
     }
 
     private void initToolBar(){

@@ -12,6 +12,7 @@ import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoC
 import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentPresenterImpl;
 
 import rx.Observer;
+import rx.functions.Func1;
 
 /**
  * Created by ME on 1/8/2016.
@@ -94,20 +95,27 @@ public class PlaylistListFragmentPresenterImpl extends ContentFragmentPresenterI
     }
 
     @Override
-    public ContentContainer onCall(ContentContainer contentContainer) {
+    public Func1<ContentContainer, ContentContainer> onCall(ContentContainer contentContainer) {
 
-        PlaylistContainer updatedContainer = null;
+        return new Func1<ContentContainer, ContentContainer>() {
 
-        try{
+            @Override
+            public ContentContainer call(ContentContainer contentContainer) {
 
-            updatedContainer = PlaylistContainerFactory.createPlaylistContainer(super.getView().getContext(), (PlaylistContainer) contentContainer);
+                PlaylistContainer updatedContainer = null;
 
-        }catch(Exception e){
+                try{
 
-            Log.e(this.getClass().getName(), "Error trying to retrieve playlist information for the playlist fragment.", e);
-        }
+                    updatedContainer = PlaylistContainerFactory.createPlaylistContainer(PlaylistListFragmentPresenterImpl.this.getView().getContext(), (PlaylistContainer) contentContainer);
 
-        return updatedContainer;
+                }catch(Exception e){
+
+                    Log.e(this.getClass().getName(), "Error trying to retrieve playlist information for the playlist fragment.", e);
+                }
+
+                return updatedContainer;
+            }
+        };
     }
 
 

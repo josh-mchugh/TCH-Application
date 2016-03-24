@@ -46,7 +46,7 @@ public class VideoContainerFactory {
 
         }catch(Exception e){
 
-            Log.e(VideoContainerFactory.class.getName(), "Error Retrieving Search Results: " + e);
+            Log.e(VideoContainerFactory.class.getName(), "Error Retrieving SearchAPI Results: " + e);
         }
 
         return container;

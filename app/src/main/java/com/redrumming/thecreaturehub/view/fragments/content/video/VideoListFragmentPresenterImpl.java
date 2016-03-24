@@ -13,6 +13,7 @@ import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentPrese
 import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentView;
 
 import rx.Observer;
+import rx.functions.Func1;
 
 /**
  * Created by ME on 1/8/2016.
@@ -99,19 +100,26 @@ public class VideoListFragmentPresenterImpl extends ContentFragmentPresenterImpl
      * @return
      */
     @Override
-    public ContentContainer onCall(ContentContainer contentContainer) {
+    public Func1<ContentContainer, ContentContainer> onCall(ContentContainer contentContainer) {
 
-        VideoContainer updatedContainer = null;
+        return new Func1<ContentContainer, ContentContainer>() {
 
-        try {
+            @Override
+            public ContentContainer call(ContentContainer contentContainer) {
 
-            updatedContainer = VideoContainerFactory.createVideoContainer(super.getView().getContext(), (VideoContainer) contentContainer);
+                VideoContainer updatedContainer = null;
 
-        }catch(Exception e){
+                try {
 
-            Log.e(this.getClass().getName(), "Error trying trying to call server for video information within video fragment.", e);
-        }
+                    updatedContainer = VideoContainerFactory.createVideoContainer(VideoListFragmentPresenterImpl.this.getView().getContext(), (VideoContainer) contentContainer);
 
-        return updatedContainer;
+                }catch(Exception e){
+
+                    Log.e(this.getClass().getName(), "Error trying trying to call server for video information within video fragment.", e);
+                }
+
+                return updatedContainer;
+            }
+        };
     }
 }

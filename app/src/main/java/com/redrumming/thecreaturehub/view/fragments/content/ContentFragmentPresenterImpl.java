@@ -108,14 +108,7 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
     private void getContent(){
 
         subscription = Observable.just(getContainer())
-                .map(new Func1<ContentContainer, ContentContainer>() {
-
-                    @Override
-                    public ContentContainer call(ContentContainer contentContainer) {
-
-                        return onCall(contentContainer);
-                    }
-                })
+                .map(onCall(getContainer()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getObserver());
@@ -156,7 +149,7 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
     public abstract void setContainer(Parcelable container);
     public abstract ContentContainer getContainer();
     public abstract Observer<ContentContainer> getObserver();
-    public abstract ContentContainer onCall(ContentContainer contentContainer);
+    public abstract Func1<ContentContainer, ContentContainer> onCall(ContentContainer contentContainer);
 
     public ContentFragmentView getView(){
 

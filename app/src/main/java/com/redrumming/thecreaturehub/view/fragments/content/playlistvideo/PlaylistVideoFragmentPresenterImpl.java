@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import rx.Observer;
+import rx.functions.Func1;
 
 /**
  * Created by ME on 1/8/2016.
@@ -107,19 +108,26 @@ public class PlaylistVideoFragmentPresenterImpl extends ContentFragmentPresenter
     }
 
     @Override
-    public ContentContainer onCall(ContentContainer contentContainer) {
+    public Func1<ContentContainer, ContentContainer> onCall(ContentContainer contentContainer) {
 
-        PlaylistVideoContainer updatedContainer = null;
+        return new Func1<ContentContainer, ContentContainer>() {
 
-        try{
+            @Override
+            public ContentContainer call(ContentContainer contentContainer) {
 
-            updatedContainer = PlaylistVideoContainerFactory.createPlaylistVideoContainer(super.getView().getContext(), (PlaylistVideoContainer) contentContainer);
+                PlaylistVideoContainer updatedContainer = null;
 
-        }catch(Exception e){
+                try{
 
-            Log.e(this.getClass().getName(), "Error trying to retrieve playlist videos within playlist video fragment.", e);
-        }
+                    updatedContainer = PlaylistVideoContainerFactory.createPlaylistVideoContainer(PlaylistVideoFragmentPresenterImpl.this.getView().getContext(), (PlaylistVideoContainer) contentContainer);
 
-        return updatedContainer;
+                }catch(Exception e){
+
+                    Log.e(this.getClass().getName(), "Error trying to retrieve playlist videos within playlist video fragment.", e);
+                }
+
+                return updatedContainer;
+            }
+        };
     }
 }

@@ -36,6 +36,7 @@ public class YouTubeServiceCalls {
         youtube = YouTubeInstance.get(context).getYouTube();
     }
 
+    //Converted to Retro
     public SearchListResponse getVideoIds(String channelId, String pageToken) throws Exception {
 
         SearchListResponse response = youtube.search().list("id")
@@ -53,6 +54,7 @@ public class YouTubeServiceCalls {
         return response;
     }
 
+    //Retrofitted ;)
     public VideoListResponse getVideoItems(List<String> videoIds) throws Exception {
 
         String ids = joinIds(videoIds);
@@ -116,6 +118,7 @@ public class YouTubeServiceCalls {
         return response;
     }
 
+    //Converted to Retro
     public ChannelListResponse getChannels(List<String> ids) throws Exception {
 
         String channelIds = joinIds(ids);
