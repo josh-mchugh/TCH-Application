@@ -3,8 +3,10 @@ package com.redrumming.thecreaturehub.retrofit;
 import com.redrumming.thecreaturehub.retrofit.utils.LoggingInterceptor;
 
 import okhttp3.OkHttpClient;
-import retrofit2.GsonConverterFactory;
+
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by ME on 3/23/2016.
@@ -22,6 +24,7 @@ public class YouTubeRetrofit {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(BASE_URL)
                 .build();
 

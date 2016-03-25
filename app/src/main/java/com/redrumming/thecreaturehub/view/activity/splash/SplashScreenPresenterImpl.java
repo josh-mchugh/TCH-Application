@@ -2,17 +2,17 @@ package com.redrumming.thecreaturehub.view.activity.splash;
 
 import android.util.Log;
 
-import com.google.api.services.youtube.model.ChannelListResponse;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsParams;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsAPI;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channels;
 import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.channel.ChannelItemFactory;
-import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
-import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
+import com.redrumming.thecreaturehub.retrofit.YouTubeRetrofit;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import rx.Observable;
+import retrofit2.Retrofit;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,66 +36,45 @@ public class SplashScreenPresenterImpl implements SplashScreenPresenter {
     @Override
     public void fetchChannelData(final String[] channelIds) {
 
-       subscription = Observable.just(channelIds)
-               .map(new Func1<String[], List<ChannelItem>>() {
+        Retrofit retrofit = YouTubeRetrofit.build();
 
-                   @Override
-                   public List<ChannelItem> call(String[] strings) {
+        ChannelsAPI channelsAPI = retrofit.create(ChannelsAPI.class);
 
-                       List<ChannelItem> channelItems = new ArrayList<ChannelItem>();
+        subscription = channelsAPI.getChannels(ChannelsParams.createParams(channelIds))
+                .map(new Func1<Channels, Channels>() {
 
-                       try {
+                    @Override
+                    public Channels call(Channels channels) {
 
-                           ChannelListResponse channelListResponse = new YouTubeServiceCalls(view.getContext()).getChannels(Arrays.asList(strings));
+                        return sortList(channels, channelIds);
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Channels>() {
 
-                           channelItems = ChannelItemFactory.createChannelItems(channelListResponse.getItems());
+                    @Override
+                    public void onCompleted() {
 
-                           channelItems = sortList(channelItems, strings);
+                        Log.d(getClass().getName(), "DONE`````````````````````````````````````````````!");
+                    }
 
-                           if (channelItems.size() != strings.length) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                               return null;
-                           }
+                        Log.e(getClass().getName(), " Error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", e);
+                    }
 
-                           logger(channelItems);
+                    @Override
+                    public void onNext(Channels channels) {
 
-                       } catch (Exception e) {
+                        for(Channel c: channels.getChannels()){
 
-                           Log.e(this.getClass().getName(), "Error getting channel information", e);
-                       }
+                            Log.d(getClass().getName(), "Channel Name: " + c.getSnippet().getTitle());
+                        }
 
-                       return channelItems;
-                   }
-               })
-          .subscribeOn(Schedulers.newThread())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Observer<List<ChannelItem>>() {
-
-              @Override
-              public void onCompleted() {
-
-                  view.displayNextActivity();
-              }
-
-              @Override
-              public void onError(Throwable e) {
-
-                  Log.e(this.getClass().getName(), "Error getting channel information.", e);
-
-                  view.displayFailureAlert();
-              }
-
-              @Override
-              public void onNext(List<ChannelItem> channelItems) {
-
-                  if(channelItems == null){
-
-                      onError(new Throwable("Returned channel items were null."));
-                  }
-
-                  ChannelsContainer.getInstance().setChannels(channelItems);
-              }
-          });
+                    }
+                });
     }
 
     @Override
@@ -108,22 +87,22 @@ public class SplashScreenPresenterImpl implements SplashScreenPresenter {
         }
     }
 
-    private final List<ChannelItem> sortList(List<ChannelItem> channelItems, String[] channelIds){
+    private final Channels sortList(Channels channels, String[] channelIds){
 
-        List<ChannelItem> sortedList = new ArrayList<ChannelItem>();
+        Channels sorted = new Channels();
 
         for(int i = 0; i < channelIds.length; i++){
 
-            for(int j = 0; j < channelItems.size(); j++){
+            for(int j = 0; j < channels.getChannels().size(); j++){
 
-                if(channelIds[i].equals(channelItems.get(j).getChannelId())){
+                if(channelIds[i].equals(channels.getChannels().get(j).getId())){
 
-                    sortedList.add(channelItems.get(j));
+                    sorted.getChannels().add(channels.getChannels().get(j));
                 }
             }
         }
 
-        return sortedList;
+        return sorted;
     }
 
     private void logger(List<ChannelItem> items){

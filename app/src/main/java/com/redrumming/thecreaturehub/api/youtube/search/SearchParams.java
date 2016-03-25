@@ -5,7 +5,7 @@ import com.redrumming.thecreaturehub.api.youtube.YouTubeParams;
 /**
  * Created by ME on 3/23/2016.
  */
-public class SearchParameters extends YouTubeParams {
+public class SearchParams extends YouTubeParams {
 
     public static final String PARAM_CHANNEL_ID = "channelId";
     public static final String PARAM_ORDER = "order";
