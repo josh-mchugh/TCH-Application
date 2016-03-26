@@ -2,15 +2,11 @@ package com.redrumming.thecreaturehub.view.activity.splash;
 
 import android.util.Log;
 
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsContainer;
 import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsParams;
 import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsAPI;
-import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.api.youtube.channel.model.Channels;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
 import com.redrumming.thecreaturehub.retrofit.YouTubeRetrofit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Retrofit;
 import rx.Observer;
@@ -46,6 +42,7 @@ public class SplashScreenPresenterImpl implements SplashScreenPresenter {
                     @Override
                     public Channels call(Channels channels) {
 
+                        logger(channels);
                         return sortList(channels, channelIds);
                     }
                 })
@@ -56,23 +53,21 @@ public class SplashScreenPresenterImpl implements SplashScreenPresenter {
                     @Override
                     public void onCompleted() {
 
-                        Log.d(getClass().getName(), "DONE`````````````````````````````````````````````!");
+                        Log.d(getClass().getName(), "Completed attempting to relieving channel information.");
+                        view.displayNextActivity();
                     }
 
                     @Override
                     public void onError(Throwable e) {
 
-                        Log.e(getClass().getName(), " Error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", e);
+                        Log.e(getClass().getName(), "An error has occurred trying to retrieve channel information.", e);
+                        view.displayFailureAlert();
                     }
 
                     @Override
                     public void onNext(Channels channels) {
 
-                        for(Channel c: channels.getChannels()){
-
-                            Log.d(getClass().getName(), "Channel Name: " + c.getSnippet().getTitle());
-                        }
-
+                        ChannelsContainer.getInstance().setChannels(channels.getChannels());
                     }
                 });
     }
@@ -105,16 +100,16 @@ public class SplashScreenPresenterImpl implements SplashScreenPresenter {
         return sorted;
     }
 
-    private void logger(List<ChannelItem> items){
+    private void logger(Channels channels){
 
         String className = this.getClass().getName();
 
-        for(int i = 0; i < items.size(); i++){
+        for(int i = 0; i < channels.getChannels().size(); i++){
 
-            Log.d(className, "Channel Name: " + items.get(i).getChannelName());
-            Log.d(className, "Channel Id: " + items.get(i).getChannelId());
-            Log.d(className, "Channel Subscriber Count: " + items.get(i).getSubscriberCount());
-            Log.d(className, "Channel Display Icon URL: " + items.get(i).getDisplayIconURL());
+            Log.d(className, "Channel Name: " + channels.getChannels().get(i).getSnippet().getTitle());
+            Log.d(className, "Channel Id: " + channels.getChannels().get(i).getId());
+            Log.d(className, "Channel Subscriber Count: " + channels.getChannels().get(i).getStatistics().getSubscriberCount());
+            Log.d(className, "Channel Display Icon URL: " + channels.getChannels().get(i).getSnippet().getThumbnails().getMedium().getUrl());
         }
     }
 }

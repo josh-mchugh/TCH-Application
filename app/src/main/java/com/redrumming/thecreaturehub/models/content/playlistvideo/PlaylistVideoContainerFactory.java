@@ -27,7 +27,7 @@ public class PlaylistVideoContainerFactory {
 
             PlaylistVideoContainer tempContainer = (PlaylistVideoContainer) container;
 
-            updatedContainer.setChannelItem(tempContainer.getChannelItem());
+            updatedContainer.setChannel(tempContainer.getChannel());
             updatedContainer.setPageToken(tempContainer.getPageToken());
             updatedContainer.setPlaylistId(tempContainer.getPlaylistId());
 

@@ -3,7 +3,8 @@ package com.redrumming.thecreaturehub.models.content;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * Created by ME on 10/23/2015.
  */public class ContentContainer implements ContentContainerType {
 
-    private ChannelItem channelItem;
+    private Channel channel;
     private List<ContentType> items;
     private String pageToken;
 
@@ -22,14 +23,14 @@ import java.util.List;
         pageToken = "";
     }
 
-    public ChannelItem getChannelItem() {
+    public Channel getChannel() {
 
-        return channelItem;
+        return channel;
     }
 
-    public void setChannelItem(ChannelItem channelItem) {
+    public void setChannel(Channel channel) {
 
-        this.channelItem = channelItem;
+        this.channel = channel;
     }
 
     public List<ContentType> getItems() {
@@ -63,7 +64,7 @@ import java.util.List;
 
         parcel.readInt();
 
-        channelItem = parcel.readParcelable(ChannelItem.class.getClassLoader());
+        channel = parcel.readParcelable(Channel.class.getClassLoader());
         parcel.readTypedList(items, ContentType.CREATOR);
         pageToken = parcel.readString();
     }
@@ -79,7 +80,7 @@ import java.util.List;
 
         dest.writeInt(describeContents());
 
-        dest.writeParcelable(channelItem, flags);
+        dest.writeParcelable(channel, flags);
         dest.writeTypedList(items);
         dest.writeString(pageToken);
     }

@@ -1,5 +1,5 @@
 
-package com.redrumming.thecreaturehub.api.youtube.comment.top.model;
+package com.redrumming.thecreaturehub.api.youtube.comment.top.model.topLevelComment;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("org.jsonschema2pojo")
-public class Item implements Parcelable{
+public class TopLevelComment implements Parcelable{
 
     @SerializedName("id")
     @Expose
@@ -40,7 +40,6 @@ public class Item implements Parcelable{
         this.snippet = snippet;
     }
 
-
     /**
      *
      *
@@ -49,7 +48,7 @@ public class Item implements Parcelable{
      *
      */
 
-    protected Item(Parcel parcel){
+    protected TopLevelComment(Parcel parcel){
 
         id = parcel.readString();
         snippet = parcel.readParcelable(Snippet.class.getClassLoader());
@@ -68,18 +67,18 @@ public class Item implements Parcelable{
         dest.writeParcelable(snippet, flags);
     }
 
-    public static Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>(){
+    public static Parcelable.Creator<TopLevelComment> CREATOR = new Parcelable.Creator<TopLevelComment>(){
 
         @Override
-        public Item createFromParcel(Parcel parcel) {
+        public TopLevelComment createFromParcel(Parcel parcel) {
 
-            return new Item(parcel);
+            return new TopLevelComment(parcel);
         }
 
         @Override
-        public Item[] newArray(int size) {
+        public TopLevelComment[] newArray(int size) {
 
-            return new Item[size];
+            return new TopLevelComment[size];
         }
     };
 }

@@ -2,7 +2,7 @@ package com.redrumming.thecreaturehub.view.fragments.player.video;
 
 import android.os.Bundle;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 import com.redrumming.thecreaturehub.view.fragments.player.PlayerFragmentPresenterImpl;
 
@@ -12,7 +12,7 @@ import com.redrumming.thecreaturehub.view.fragments.player.PlayerFragmentPresent
 public class VideoPlayerFragmentPresenterImpl extends PlayerFragmentPresenterImpl implements VideoPlayerPresenter {
 
     private VideoItem videoItem;
-    private ChannelItem channelItem;
+    private Channel channelItem;
 
     public VideoPlayerFragmentPresenterImpl(VideoPlayerFragmentView view){
 
@@ -57,7 +57,7 @@ public class VideoPlayerFragmentPresenterImpl extends PlayerFragmentPresenterImp
     }
 
     @Override
-    public ChannelItem getChannelItem() {
+    public Channel getChannelItem() {
 
         return channelItem;
     }

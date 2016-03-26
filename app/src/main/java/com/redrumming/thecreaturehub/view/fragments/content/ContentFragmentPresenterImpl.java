@@ -3,8 +3,8 @@ package com.redrumming.thecreaturehub.view.fragments.content;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.models.content.loading.LoadingItem;
@@ -80,9 +80,9 @@ public abstract class ContentFragmentPresenterImpl implements ContentFragmentPre
     }
 
     @Override
-    public void setup(ChannelItem channelItem){
+    public void setup(Channel channel){
 
-        getContainer().setChannelItem(channelItem);
+        getContainer().setChannel(channel);
         getContainer().setPageToken("");
         getContainer().getItems().clear();
 

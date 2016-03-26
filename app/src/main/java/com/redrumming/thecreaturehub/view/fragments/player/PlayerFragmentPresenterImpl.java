@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 
 /**
@@ -19,7 +19,7 @@ public abstract class PlayerFragmentPresenterImpl implements PlayerFragmentPrese
 
     public abstract void loadVideo();
     public abstract VideoItem getVideoItem();
-    public abstract ChannelItem getChannelItem();
+    public abstract Channel getChannelItem();
 
     public PlayerFragmentPresenterImpl(PlayerFragmentView view){
 

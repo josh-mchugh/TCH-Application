@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistContainer;
 import com.redrumming.thecreaturehub.models.content.playlist.PlaylistItem;
 import com.squareup.picasso.Picasso;
@@ -51,14 +51,14 @@ public class PlaylistRecyclerAdapter extends ContentRecyclerAdapter{
         if(item.getItemType() == ContentType.PLAYLIST_ITEM){
 
             PlaylistItem playlistItem = (PlaylistItem) item;
-            ChannelItem channelItem = super.getContainer().getChannelItem();
+            Channel channel = super.getContainer().getChannel();
             PlaylistViewHolder viewHolder = (PlaylistViewHolder) holder;
 
             Picasso.with(super.getContext()).load(playlistItem.getThumbnailURL()).into(viewHolder.getThumbnail());
             viewHolder.getTitle().setText(playlistItem.getTitle());
 
             Picasso.with(super.getContext())
-                    .load(channelItem.getDisplayIconURL())
+                    .load(channel.getSnippet().getThumbnails().getMedium().getUrl())
                     .error(R.drawable.display_user_profile_image_default)
                     .noFade()
                     .into(viewHolder.getChannelIcon());

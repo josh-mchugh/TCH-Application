@@ -1,24 +1,28 @@
 package com.redrumming.thecreaturehub.models.drawer;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 
 /**
  * Created by ME on 7/22/2015.
  */
 public class DrawerChannelItem implements DrawerItem{
 
-    private ChannelItem channelItem;
+    private Channel channel;
 
-    public ChannelItem getChannelItem() {
-        return channelItem;
+    public Channel getChannelItem() {
+
+        return channel;
     }
 
-    public void setChannelItem(ChannelItem channelItem) {
-        this.channelItem = channelItem;
+    public void setChannelItem(Channel channel) {
+
+        this.channel = channel;
     }
 
     @Override
     public int getType() {
-        return CHANNEL;
+
+        return DrawerItem.CHANNEL;
     }
 }

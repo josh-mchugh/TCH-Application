@@ -3,7 +3,7 @@ package com.redrumming.thecreaturehub.view.fragments.content.video;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.models.content.video.VideoContainer;
@@ -31,19 +31,19 @@ public class VideoListFragmentPresenterImpl extends ContentFragmentPresenterImpl
     public void onSelect(int position) {
 
         VideoItem video = null;
-        ChannelItem channelItem = null;
+        Channel channel = null;
 
         if(getContainer().getItems().get(position).getItemType() == ContentType.VIDEO_ITEM){
 
             video = (VideoItem) getContainer().getItems().get(position);
-            channelItem = getContainer().getChannelItem();
+            channel = getContainer().getChannel();
         }
 
         ((VideoListFragmentView) getView()).removePlayerFragment();
 
-        if(video != null && channelItem != null) {
+        if(video != null && channel != null) {
 
-            ((VideoListFragmentView) getView()).addPlayerFragment(video, channelItem);
+            ((VideoListFragmentView) getView()).addPlayerFragment(video, channel);
         }
     }
 
@@ -87,7 +87,7 @@ public class VideoListFragmentPresenterImpl extends ContentFragmentPresenterImpl
             public void onNext(ContentContainer contentContainer) {
 
                 VideoListFragmentPresenterImpl.this.updateView(contentContainer);
-                Log.i(getClass().getName(), "Retreieved video informnation for channel: " + contentContainer.getChannelItem().getChannelName() + " with page token: " + contentContainer.getPageToken());
+                Log.i(getClass().getName(), "Retreieved video informnation for channel: " + contentContainer.getChannel().getSnippet().getTitle() + " with page token: " + contentContainer.getPageToken());
             }
         };
     }

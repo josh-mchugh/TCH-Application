@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
 import com.redrumming.thecreaturehub.util.RecyclerOnItemClickListener;
 import com.redrumming.thecreaturehub.util.EndlessScrollListener;
@@ -87,9 +87,9 @@ public abstract class ContentFragment extends Fragment implements ContentFragmen
         presenter.onDestroy();
     }
 
-    public void setup(ChannelItem channelItem){
+    public void setup(Channel channel){
 
-        presenter.setup(channelItem);
+        presenter.setup(channel);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class DetailsFragment extends Fragment implements DetailsFragmentView {
         super.onSaveInstanceState(outState);
 
         outState.putParcelable("video", presenter.getVideoItem());
-        outState.putParcelable("channel", presenter.getChannelItem());
+        outState.putParcelable("channel", presenter.getChannel());
 
         outState.putParcelable("comments", presenter.getCommentContainer());
     }

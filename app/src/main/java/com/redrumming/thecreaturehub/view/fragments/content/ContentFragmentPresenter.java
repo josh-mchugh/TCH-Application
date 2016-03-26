@@ -2,7 +2,7 @@ package com.redrumming.thecreaturehub.view.fragments.content;
 
 import android.os.Bundle;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 
 import rx.Observer;
@@ -14,7 +14,7 @@ public interface ContentFragmentPresenter {
 
     void onCreate(Bundle savedInstanceState);
 
-    void setup(ChannelItem channelItem);
+    void setup(Channel channel);
 
     void onSelect(int position);
 

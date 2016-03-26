@@ -69,10 +69,10 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             DrawerChannelItem channelItem = (DrawerChannelItem) item;
             DrawerChannelViewHolder viewHolder = (DrawerChannelViewHolder) holder;
 
-            viewHolder.getTitle().setText(channelItem.getChannelItem().getChannelName());
+            viewHolder.getTitle().setText(channelItem.getChannelItem().getSnippet().getTitle());
 
             Picasso.with(context)
-                    .load(channelItem.getChannelItem().getDisplayIconURL())
+                    .load(channelItem.getChannelItem().getSnippet().getThumbnails().getMedium().getUrl())
                     .error(R.drawable.display_user_profile_image_default)
                     .noFade()
                     .into(viewHolder.getDisplayIcon());

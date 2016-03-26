@@ -2,9 +2,9 @@ package com.redrumming.thecreaturehub.view.fragments.detail;
 
 import android.os.Bundle;
 
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.async.comments.CommentAsyncListener;
 import com.redrumming.thecreaturehub.async.comments.top.TopLevelCommentAsync;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 import com.redrumming.thecreaturehub.models.detail.DetailItem;
 import com.redrumming.thecreaturehub.models.detail.channel.ChannelSectionItem;
@@ -29,7 +29,7 @@ public class DetailsFragmentPresenterImpl implements DetailsFragmentPresenter, C
     private DetailsFragmentView view;
 
     private VideoItem videoItem;
-    private ChannelItem channelItem;
+    private Channel channel;
     private CommentContainer commentContainer;
     private List<DetailItem> items;
 
@@ -44,7 +44,7 @@ public class DetailsFragmentPresenterImpl implements DetailsFragmentPresenter, C
         if(savedInstanceState != null){
 
             videoItem = savedInstanceState.getParcelable("video");
-            channelItem = savedInstanceState.getParcelable("channel");
+            channel = savedInstanceState.getParcelable("channel");
 
             commentContainer = savedInstanceState.getParcelable("comments");
         }
@@ -52,7 +52,7 @@ public class DetailsFragmentPresenterImpl implements DetailsFragmentPresenter, C
         if(arguments != null){
 
             videoItem = arguments.getParcelable("video");
-            channelItem = arguments.getParcelable("channel");
+            channel = arguments.getParcelable("channel");
         }
     }
 
@@ -66,7 +66,7 @@ public class DetailsFragmentPresenterImpl implements DetailsFragmentPresenter, C
         items.add(descriptionItem);
 
         ChannelSectionItem channelSectionItem = new ChannelSectionItem();
-        channelSectionItem.setChannelItem(channelItem);
+        channelSectionItem.setChannel(channel);
         items.add(channelSectionItem);
 
         if(commentContainer == null) {
@@ -166,9 +166,9 @@ public class DetailsFragmentPresenterImpl implements DetailsFragmentPresenter, C
     }
 
     @Override
-    public ChannelItem getChannelItem() {
+    public Channel getChannel() {
 
-        return channelItem;
+        return channel;
     }
 
     @Override

@@ -25,9 +25,6 @@ import com.redrumming.thecreaturehub.view.viewholders.detail.comments.TopLevelCo
 import com.redrumming.thecreaturehub.view.viewholders.detail.comments.top.TopLevelCommentViewHolder;
 import com.redrumming.thecreaturehub.models.detail.description.DescriptionItem;
 import com.redrumming.thecreaturehub.view.viewholders.detail.description.DescriptionViewHolder;
-import com.redrumming.thecreaturehub.util.CategoryFormatter;
-import com.redrumming.thecreaturehub.util.LicenseFormatter;
-import com.redrumming.thecreaturehub.util.NumberFormatterUtil;
 import com.redrumming.thecreaturehub.util.TimePassedUtil;
 import com.squareup.picasso.Picasso;
 
@@ -188,13 +185,13 @@ public class DetailRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private void bindChannelSectionItem(ChannelSectionItem channelSectionItem, ChannelSectionViewHolder viewHolder){
 
         Picasso.with(context)
-                .load(channelSectionItem.getChannelItem().getDisplayIconURL())
+                .load(channelSectionItem.getChannel().getSnippet().getThumbnails().getMedium().getUrl())
                 .error(R.drawable.display_user_profile_image_default)
                 .noFade()
                 .into(viewHolder.getChannelIcon());
 
-        viewHolder.getChannelName().setText(channelSectionItem.getChannelItem().getChannelName());
-        viewHolder.getSubscriberCount().setText(channelSectionItem.getChannelItem().getSubscriberCount());
+        viewHolder.getChannelName().setText(channelSectionItem.getChannel().getSnippet().getTitle());
+        viewHolder.getSubscriberCount().setText(channelSectionItem.getChannel().getStatistics().getSubscriberCount());
     }
 
     private void bindTopLevelCommentItem(final TopLevelCommentItem topLevelCommentItem, final TopLevelCommentViewHolder viewHolder){

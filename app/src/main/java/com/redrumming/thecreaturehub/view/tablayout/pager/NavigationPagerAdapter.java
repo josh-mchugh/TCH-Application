@@ -1,12 +1,11 @@
 package com.redrumming.thecreaturehub.view.tablayout.pager;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsContainer;
 import com.redrumming.thecreaturehub.view.fragments.content.playlist.PlaylistListFragment;
 import com.redrumming.thecreaturehub.view.fragments.content.video.VideoListFragment;
 

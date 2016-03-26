@@ -1,6 +1,6 @@
 package com.redrumming.thecreaturehub.models.detail.channel;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.detail.DetailItem;
 
 /**
@@ -8,16 +8,16 @@ import com.redrumming.thecreaturehub.models.detail.DetailItem;
  */
 public class ChannelSectionItem implements DetailItem {
 
-    private ChannelItem channelItem;
+    private Channel channel;
 
-    public ChannelItem getChannelItem() {
+    public Channel getChannel() {
 
-        return channelItem;
+        return channel;
     }
 
-    public void setChannelItem(ChannelItem channelItem) {
+    public void setChannel(Channel channel) {
 
-        this.channelItem = channelItem;
+        this.channel = channel;
     }
 
     @Override

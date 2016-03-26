@@ -5,13 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.view.viewholders.content.ContentRecyclerAdapter;
 import com.redrumming.thecreaturehub.R;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
 import com.redrumming.thecreaturehub.models.content.video.VideoContainer;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
-import com.redrumming.thecreaturehub.util.NumberFormatterUtil;
 import com.redrumming.thecreaturehub.util.TimePassedUtil;
 import com.squareup.picasso.Picasso;
 
@@ -51,14 +50,14 @@ public class VideoRecyclerAdapter extends ContentRecyclerAdapter{
         if(item.getItemType() == ContentType.VIDEO_ITEM){
 
             VideoItem videoItem = (VideoItem) item;
-            ChannelItem channelItem = super.getContainer().getChannelItem();
+            Channel channel = super.getContainer().getChannel();
             VideoViewHolder viewHolder = (VideoViewHolder) holder;
 
             Picasso.with(super.getContext()).load(videoItem.getThumbnailURL()).into(viewHolder.getThumbnail());
             viewHolder.getTitle().setText(videoItem.getTitle());
 
             Picasso.with(super.getContext())
-                    .load(channelItem.getDisplayIconURL())
+                    .load(channel.getSnippet().getThumbnails().getMedium().getUrl())
                     .error(R.drawable.display_user_profile_image_default)
                     .noFade()
                     .into(viewHolder.getChannelIcon());

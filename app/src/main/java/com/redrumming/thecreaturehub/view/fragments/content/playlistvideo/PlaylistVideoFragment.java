@@ -111,7 +111,7 @@ public class PlaylistVideoFragment extends ContentFragment implements PlaylistVi
     public void onDestroyView() {
         super.onDestroyView();
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getPresenter().getContainer().getChannelItem().getChannelName());
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getPresenter().getContainer().getChannel().getSnippet().getTitle());
         NavigationDrawerHelper.get().getDrawerToggle().setDrawerIndicatorEnabled(true);
     }
 }

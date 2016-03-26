@@ -21,7 +21,7 @@ public class VideoContainerFactory {
     public static VideoContainer createVideoContainer(Context context, VideoContainer container) throws Exception{
 
         VideoContainer updatedContainer = new VideoContainer();
-        updatedContainer.setChannelItem(container.getChannelItem());
+        updatedContainer.setChannel(container.getChannel());
         updatedContainer.setPageToken(container.getPageToken());
 
         updatedContainer = retrieveVideos(context, updatedContainer);
@@ -35,7 +35,7 @@ public class VideoContainerFactory {
 
         try{
 
-            SearchListResponse searchListResponse = new YouTubeServiceCalls(context).getVideoIds(container.getChannelItem().getChannelId(), container.getPageToken());
+            SearchListResponse searchListResponse = new YouTubeServiceCalls(context).getVideoIds(container.getChannel().getId(), container.getPageToken());
             List<String> videoIds = getVideoIds(searchListResponse);
 
             VideoListResponse videoListResponse = new YouTubeServiceCalls(context).getVideoItems(videoIds);

@@ -3,23 +3,13 @@ package com.redrumming.thecreaturehub.view.fragments.content.playlistvideo;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.google.api.services.youtube.model.PlaylistItem;
-import com.google.api.services.youtube.model.PlaylistItemListResponse;
-import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoListResponse;
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.ContentContainer;
 import com.redrumming.thecreaturehub.models.content.ContentType;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainerFactory;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItem;
-import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItemFactory;
 import com.redrumming.thecreaturehub.view.fragments.content.ContentFragmentPresenterImpl;
-import com.redrumming.thecreaturehub.youtube.YouTubeServiceCalls;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import rx.Observer;
 import rx.functions.Func1;
@@ -39,17 +29,17 @@ public class PlaylistVideoFragmentPresenterImpl extends ContentFragmentPresenter
     public void onSelect(int position) {
 
         PlaylistVideoItem playlistVideo = null;
-        ChannelItem channelItem = null;
+        Channel channel = null;
 
         if(getContainer().getItems().get(position).getItemType() == ContentType.PLAYLIST_VIDEO_ITEM){
 
             playlistVideo = (PlaylistVideoItem) getContainer().getItems().get(position);
-            channelItem = getContainer().getChannelItem();
+            channel = getContainer().getChannel();
         }
 
         ((PlaylistVideoFragmentView) getView()).removePlayerFragment();
 
-        if(playlistVideo != null && channelItem != null){
+        if(playlistVideo != null && channel != null){
 
             ((PlaylistVideoFragmentView) getView()).addPlayerFragment(getContainer(), playlistVideo.getPosition().intValue());
         }
@@ -102,7 +92,7 @@ public class PlaylistVideoFragmentPresenterImpl extends ContentFragmentPresenter
             public void onNext(ContentContainer contentContainer) {
 
                 PlaylistVideoFragmentPresenterImpl.this.updateView(contentContainer);
-                Log.i(this.getClass().getName(), "Recieved playlist videos for channel id: " + contentContainer.getChannelItem().getChannelName() + " with page token: " + contentContainer.getPageToken());
+                Log.i(this.getClass().getName(), "Recieved playlist videos for channel id: " + contentContainer.getChannel().getSnippet().getTitle() + " with page token: " + contentContainer.getPageToken());
             }
         };
     }

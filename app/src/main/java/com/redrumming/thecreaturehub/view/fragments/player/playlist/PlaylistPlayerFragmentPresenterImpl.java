@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainer;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoContainerFactory;
 import com.redrumming.thecreaturehub.models.content.playlistvideo.PlaylistVideoItem;
@@ -116,12 +116,12 @@ public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenter
                                 playlistVideoContainer.getItems().addAll(container.getItems());
                                 playlistVideoContainer.setPageToken(container.getPageToken());
 
-                                PlaylistPlayerFragmentPresenterImpl.this.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
+                                PlaylistPlayerFragmentPresenterImpl.this.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannel());
                             }
                         }
                     });
 
-            super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
+            super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannel());
 
         }else if(position > lastVideo){
 
@@ -129,7 +129,7 @@ public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenter
 
         }else {
 
-            super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
+            super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannel());
         }
     }
 
@@ -139,7 +139,7 @@ public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenter
 
         position--;
 
-        super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannelItem());
+        super.getView().updateBottomFragment(playlistVideoContainer.getItems().get(position), playlistVideoContainer.getChannel());
     }
 
     @Override
@@ -149,9 +149,9 @@ public class PlaylistPlayerFragmentPresenterImpl extends PlayerFragmentPresenter
     }
 
     @Override
-    public ChannelItem getChannelItem() {
+    public Channel getChannelItem() {
 
-        return playlistVideoContainer.getChannelItem();
+        return playlistVideoContainer.getChannel();
     }
 
 

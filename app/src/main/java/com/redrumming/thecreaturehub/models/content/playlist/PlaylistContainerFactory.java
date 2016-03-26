@@ -18,7 +18,7 @@ public class PlaylistContainerFactory {
 
         PlaylistContainer updateContainer = new PlaylistContainer();
 
-        updateContainer.setChannelItem(container.getChannelItem());
+        updateContainer.setChannel(container.getChannel());
         updateContainer.setPageToken(container.getPageToken());
 
         updateContainer = getPlaylists(context, updateContainer);
@@ -32,7 +32,7 @@ public class PlaylistContainerFactory {
 
         try{
 
-            PlaylistListResponse searchResponse = new YouTubeServiceCalls(context).getPlaylists(container.getChannelItem().getChannelId(), container.getPageToken());
+            PlaylistListResponse searchResponse = new YouTubeServiceCalls(context).getPlaylists(container.getChannel().getId(), container.getPageToken());
 
             container.getItems().addAll(PlaylistItemFactory.createPlaylistItems(searchResponse));
             container.setPageToken(searchResponse.getNextPageToken());

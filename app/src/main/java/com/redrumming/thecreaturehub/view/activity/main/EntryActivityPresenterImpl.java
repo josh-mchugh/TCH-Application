@@ -1,6 +1,6 @@
 package com.redrumming.thecreaturehub.view.activity.main;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsContainer;
 
 /**
  * Created by ME on 1/2/2016.
@@ -17,6 +17,6 @@ public class EntryActivityPresenterImpl implements EntryActivityPresenter{
     @Override
     public String setTitle() {
 
-        return ChannelsContainer.getInstance().getSelectedChannel().getChannelName();
+        return ChannelsContainer.getInstance().getSelectedChannel().getSnippet().getTitle();
     }
 }

@@ -1,117 +1,132 @@
 
 package com.redrumming.thecreaturehub.api.youtube.comment.reply.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("org.jsonschema2pojo")
-public class Snippet {
+public class Snippet implements Parcelable{
 
     @SerializedName("authorDisplayName")
     @Expose
     private String authorDisplayName;
+
     @SerializedName("authorProfileImageUrl")
     @Expose
     private String authorProfileImageUrl;
+
     @SerializedName("textDisplay")
     @Expose
     private String textDisplay;
+
     @SerializedName("parentId")
     @Expose
     private String parentId;
+
     @SerializedName("publishedAt")
     @Expose
     private String publishedAt;
 
-    /**
-     * 
-     * @return
-     *     The authorDisplayName
-     */
+
     public String getAuthorDisplayName() {
+
         return authorDisplayName;
     }
 
-    /**
-     * 
-     * @param authorDisplayName
-     *     The authorDisplayName
-     */
     public void setAuthorDisplayName(String authorDisplayName) {
+
         this.authorDisplayName = authorDisplayName;
     }
 
-    /**
-     * 
-     * @return
-     *     The authorProfileImageUrl
-     */
     public String getAuthorProfileImageUrl() {
+
         return authorProfileImageUrl;
     }
 
-    /**
-     * 
-     * @param authorProfileImageUrl
-     *     The authorProfileImageUrl
-     */
     public void setAuthorProfileImageUrl(String authorProfileImageUrl) {
+
         this.authorProfileImageUrl = authorProfileImageUrl;
     }
 
-    /**
-     * 
-     * @return
-     *     The textDisplay
-     */
     public String getTextDisplay() {
+
         return textDisplay;
     }
 
-    /**
-     * 
-     * @param textDisplay
-     *     The textDisplay
-     */
     public void setTextDisplay(String textDisplay) {
+
         this.textDisplay = textDisplay;
     }
 
-    /**
-     * 
-     * @return
-     *     The parentId
-     */
     public String getParentId() {
+
         return parentId;
     }
 
-    /**
-     * 
-     * @param parentId
-     *     The parentId
-     */
     public void setParentId(String parentId) {
+
         this.parentId = parentId;
     }
 
-    /**
-     * 
-     * @return
-     *     The publishedAt
-     */
     public String getPublishedAt() {
+
         return publishedAt;
     }
 
-    /**
-     * 
-     * @param publishedAt
-     *     The publishedAt
-     */
     public void setPublishedAt(String publishedAt) {
+
         this.publishedAt = publishedAt;
     }
 
+    /**
+     *
+     *
+     * Parcelable Interface for this object below.
+     *
+     *
+     */
+
+    protected Snippet(Parcel parcel){
+
+        authorDisplayName = parcel.readString();
+        authorProfileImageUrl = parcel.readString();
+        textDisplay = parcel.readString();
+        parentId = parcel.readString();
+        publishedAt = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(authorDisplayName);
+        dest.writeString(authorProfileImageUrl);
+        dest.writeString(textDisplay);
+        dest.writeString(parentId);
+        dest.writeString(publishedAt);
+    }
+
+    public static Parcelable.Creator<Snippet> CREATOR = new Parcelable.Creator<Snippet>(){
+
+        @Override
+        public Snippet createFromParcel(Parcel parcel) {
+
+            return new Snippet(parcel);
+        }
+
+        @Override
+        public Snippet[] newArray(int size) {
+
+            return new Snippet[size];
+        }
+    };
 }

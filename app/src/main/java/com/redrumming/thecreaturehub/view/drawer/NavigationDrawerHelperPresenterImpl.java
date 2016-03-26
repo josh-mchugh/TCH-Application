@@ -1,7 +1,7 @@
 package com.redrumming.thecreaturehub.view.drawer;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
-import com.redrumming.thecreaturehub.models.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.api.youtube.channel.ChannelsContainer;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.drawer.DrawerChannelItem;
 import com.redrumming.thecreaturehub.models.drawer.DrawerHeaderItem;
 import com.redrumming.thecreaturehub.models.drawer.DrawerItem;
@@ -51,7 +51,7 @@ public class NavigationDrawerHelperPresenterImpl implements NavigationDrawerHelp
     @Override
     public String getTitle() {
 
-        return ChannelsContainer.getInstance().getSelectedChannel().getChannelName();
+        return ChannelsContainer.getInstance().getSelectedChannel().getSnippet().getTitle();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class NavigationDrawerHelperPresenterImpl implements NavigationDrawerHelp
         if (drawerItem.getType() == DrawerItem.CHANNEL) {
 
             DrawerChannelItem channelItem = (DrawerChannelItem) drawerItem;
-            ChannelItem channel = channelItem.getChannelItem();
+            Channel channel = channelItem.getChannelItem();
 
             ChannelsContainer.getInstance().setSelectedChannel(channel);
 

@@ -2,7 +2,7 @@ package com.redrumming.thecreaturehub.view.fragments.detail;
 
 import android.os.Bundle;
 
-import com.redrumming.thecreaturehub.models.channel.ChannelItem;
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 import com.redrumming.thecreaturehub.models.content.video.VideoItem;
 import com.redrumming.thecreaturehub.models.detail.DetailItem;
 import com.redrumming.thecreaturehub.models.detail.comments.CommentContainer;
@@ -19,7 +19,7 @@ public interface DetailsFragmentPresenter {
     void onCreateView();
 
     VideoItem getVideoItem();
-    ChannelItem getChannelItem();
+    Channel getChannel();
     CommentContainer getCommentContainer();
     List<DetailItem> getItems();
 

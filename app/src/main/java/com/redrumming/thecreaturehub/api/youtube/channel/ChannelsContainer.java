@@ -1,16 +1,22 @@
-package com.redrumming.thecreaturehub.models.channel;
+package com.redrumming.thecreaturehub.api.youtube.channel;
+
+
+import com.redrumming.thecreaturehub.api.youtube.channel.model.Channel;
 
 import java.util.List;
 
 /**
  * Created by ME on 11/13/2015.
+ *
+ * A Singleton of the channel information for this application. These variables never change since the
+ * application revolves around these YouTube content creators.
  */
 public class ChannelsContainer {
 
     private static ChannelsContainer INSTANCE = new ChannelsContainer();
 
-    private List<ChannelItem> channels;
-    private ChannelItem selectedChannel;
+    private List<Channel> channels;
+    private Channel selectedChannel;
 
     public static ChannelsContainer getInstance() {
 
@@ -21,20 +27,22 @@ public class ChannelsContainer {
 
     }
 
-    public List<ChannelItem> getChannels() {
+    public List<Channel> getChannels() {
+
         return channels;
     }
 
-    public void setChannels(List<ChannelItem> channels) {
+    public void setChannels(List<Channel> channels) {
+
         this.channels = channels;
     }
 
-    public void setSelectedChannel(ChannelItem selectedChannel) {
+    public void setSelectedChannel(Channel selectedChannel) {
 
         this.selectedChannel = selectedChannel;
     }
 
-    public ChannelItem getSelectedChannel() {
+    public Channel getSelectedChannel() {
 
         if(selectedChannel == null){
 

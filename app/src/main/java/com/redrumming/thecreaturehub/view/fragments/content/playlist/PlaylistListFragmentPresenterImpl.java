@@ -42,7 +42,7 @@ public class PlaylistListFragmentPresenterImpl extends ContentFragmentPresenterI
             PlaylistVideoContainer playlistVideoContainer = new PlaylistVideoContainer();
             playlistVideoContainer.setPageToken("");
             playlistVideoContainer.setPlaylistId(playlist.getId());
-            playlistVideoContainer.setChannelItem(container.getChannelItem());
+            playlistVideoContainer.setChannel(container.getChannel());
 
             ((PlaylistListFragmentView) getView()).addPlaylistVideoFragment(playlistVideoContainer, playlist.getTitle());
         }
@@ -89,7 +89,7 @@ public class PlaylistListFragmentPresenterImpl extends ContentFragmentPresenterI
             public void onNext(ContentContainer contentContainer) {
 
                 PlaylistListFragmentPresenterImpl.this.updateView(contentContainer);
-                Log.i(this.getClass().getName(), "Recieved Playlist information for channel id: " + contentContainer.getChannelItem().getChannelName() + " with page token: " + contentContainer.getPageToken());
+                Log.i(this.getClass().getName(), "Recieved Playlist information for channel id: " + contentContainer.getChannel().getSnippet().getTitle() + " with page token: " + contentContainer.getPageToken());
             }
         };
     }

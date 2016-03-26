@@ -1,96 +1,115 @@
 
 package com.redrumming.thecreaturehub.api.youtube.video.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("org.jsonschema2pojo")
-public class Item {
+public class Item implements Parcelable{
 
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("snippet")
     @Expose
     private Snippet snippet;
+
     @SerializedName("status")
     @Expose
     private Status status;
+
     @SerializedName("statistics")
     @Expose
     private Statistics statistics;
 
-    /**
-     * 
-     * @return
-     *     The id
-     */
     public String getId() {
+
         return id;
     }
 
-    /**
-     * 
-     * @param id
-     *     The id
-     */
     public void setId(String id) {
+
         this.id = id;
     }
 
-    /**
-     * 
-     * @return
-     *     The snippet
-     */
     public Snippet getSnippet() {
+
         return snippet;
     }
 
-    /**
-     * 
-     * @param snippet
-     *     The snippet
-     */
     public void setSnippet(Snippet snippet) {
+
         this.snippet = snippet;
     }
 
-    /**
-     * 
-     * @return
-     *     The status
-     */
     public Status getStatus() {
+
         return status;
     }
 
-    /**
-     * 
-     * @param status
-     *     The status
-     */
     public void setStatus(Status status) {
+
         this.status = status;
     }
 
-    /**
-     * 
-     * @return
-     *     The statistics
-     */
     public Statistics getStatistics() {
+
         return statistics;
     }
 
-    /**
-     * 
-     * @param statistics
-     *     The statistics
-     */
     public void setStatistics(Statistics statistics) {
+
         this.statistics = statistics;
     }
 
+    /**
+     *
+     *
+     * Parcelable interface for this object below
+     *
+     *
+     */
+
+    protected Item(Parcel parcel){
+
+        id = parcel.readString();
+        snippet = parcel.readParcelable(Snippet.class.getClassLoader());
+        status = parcel.readParcelable(Status.class.getClassLoader());
+        statistics = parcel.readParcelable(Status.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(id);
+        dest.writeParcelable(snippet, flags);
+        dest.writeParcelable(status, flags);
+        dest.writeParcelable(statistics, flags);
+    }
+
+    public static Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>(){
+
+        @Override
+        public Item createFromParcel(Parcel parcel) {
+
+            return new Item(parcel);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+
+            return new Item[size];
+        }
+    };
 }
